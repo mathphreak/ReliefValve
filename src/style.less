@@ -1,3 +1,6 @@
+@import "colors.less";
+@import "elements.less";
+
 @font-face {
   font-family: 'NotoSans';
   font-weight: normal;
@@ -25,4 +28,42 @@
 
 body {
   font-family: "NotoSans";
+  color: @white;
+  background-color: @darkGray;
+  font-size: 9pt;
+}
+
+#gameList {
+  width: 100%;
+}
+
+#gameList td {
+  border: none;
+}
+
+#gameList thead tr {
+  color: lighten(@white, 100%);
+  .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
+  border: 2px solid lighten(@darkGray, 15%);
+}
+
+#gameList tr:hover {
+  background-color: lighten(@darkGray, 10%);
+  color: lighten(@white, 100%);
+}
+
+#gameList select {
+  width: 100%;
+  .gradient(@gray, @gray, lighten(@gray, 15%));
+  color: @white;
+  border: none;
+}
+
+#gameList option {
+  background-color: @darkGray;
+  color: @white;
+
+  &:hover {
+    background-color: @green;
+  }
 }

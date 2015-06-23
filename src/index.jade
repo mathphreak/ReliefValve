@@ -5,15 +5,18 @@ html
     link(rel='stylesheet', href='style.css', charset='utf-8')
     title Hello World.
   body
-    h1 Hello World
-    | We are using 
-    em io.js
-    |  
-    script.
-      document.write(process.version)
-    | and 
-    strong Electron
-    |  
-    script.
-      document.write(process.versions['electron'])
-    | .
+    table#gameList
+      thead
+        tr
+          th Game
+          th Location
+      tbody
+        tr
+          td Portal
+          td
+            select
+              option(selected) Heaven
+              option Hell
+        tr
+          td AC: Unity
+          td Hell
