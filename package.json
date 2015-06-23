@@ -10,6 +10,7 @@
     "gulp-less": "^3.0.3",
     "gulp-run-electron": "^1.2.0",
     "iconv-lite": "^0.4.10",
+    "lodash": "^3.9.3",
     "vdf": "0.0.2"
   },
   "devDependencies": {

@@ -14,4 +14,6 @@ keys = Object.getOwnPropertyNames(parsedFolders).filter (x) ->
 libraryPaths = (parsedFolders[n].replace(/\\\\/g, "\\") for n in keys)
 libraryPaths.push "C:\\Program Files (x86)\\Steam"
 
-console.log libraryPaths
+paths = (abbr: b.split("\\")[0..0].join("\\"), path: b for b in libraryPaths)
+# TODO handle non-uniqueness
+console.log paths
