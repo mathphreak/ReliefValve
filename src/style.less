@@ -1,5 +1,8 @@
 @import "colors.less";
 @import "elements.less";
+@import "pure/base";
+@import "pure/buttons";
+@import "pure/tables";
 
 @font-face {
   font-family: 'NotoSans';
@@ -37,14 +40,9 @@ body {
   width: 100%;
 }
 
-#gameList td {
-  border: none;
-}
-
 #gameList thead tr {
   color: lighten(@white, 100%);
   .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
-  border: 2px solid lighten(@darkGray, 15%);
 }
 
 #gameList tr:hover {
@@ -52,18 +50,42 @@ body {
   color: lighten(@white, 100%);
 }
 
+#gameList .actions {
+  float: right;
+}
+
+#gameList tr .actions {
+  visibility: hidden;
+}
+
+#gameList tr:hover .actions {
+  visibility: visible;
+}
+
+#gameList a {
+  padding: 0.25em;
+  .gradient(@gray, @gray, lighten(@gray, 15%));
+  color: @white;
+}
+
 #gameList select {
   width: 100%;
   .gradient(@gray, @gray, lighten(@gray, 15%));
   color: @white;
   border: none;
+  font: inherit;
 }
 
 #gameList option {
   background-color: @darkGray;
   color: @white;
+  font: inherit;
+}
 
-  &:hover {
-    background-color: @green;
-  }
+#gameList tr .rest {
+  color: darken(@white, 50%);
+}
+
+#gameList tr:hover .rest {
+  color: @white;
 }

@@ -3,21 +3,11 @@ html
   head
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='style.css', charset='utf-8')
-    script(type='text/javascript',src='client.js')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', charset='utf-8')
+    script(type='text/javascript',src='runtime.js')
+    script(type='text/javascript',src='gameList.js')
+    script(type='text/javascript',src='onDomReady.js')
     title Hello World.
+    script(type='text/javascript',src='client.js')
   body
-    table#gameList
-      thead
-        tr
-          th Game
-          th Location
-      tbody
-        tr
-          td Portal
-          td
-            select
-              option(selected) Heaven
-              option Hell
-        tr
-          td AC: Unity
-          td Hell
+    div.loading Loading...

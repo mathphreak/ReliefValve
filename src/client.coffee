@@ -1,10 +1,13 @@
 vdf = require 'vdf'
 fs = require 'fs'
 iconv = require 'iconv-lite'
+_ = require "lodash"
+{normalize, parse} = require 'path'
 
-path = "C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"
+# TODO handle multiple platforms
+folderListPath = "C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"
 
-lfBuffer = fs.readFileSync path
+lfBuffer = fs.readFileSync folderListPath
 rawVDF = iconv.decode lfBuffer, 'win1252'
 parsedFolders = vdf.parse(rawVDF).LibraryFolders
 
@@ -12,8 +15,30 @@ keys = Object.getOwnPropertyNames(parsedFolders).filter (x) ->
   parseInt(x) > 0
 
 libraryPaths = (parsedFolders[n].replace(/\\\\/g, "\\") for n in keys)
-libraryPaths.push "C:\\Program Files (x86)\\Steam"
+# TODO handle multiple platforms
+libraryPaths.unshift "C:\\Program Files (x86)\\Steam"
 
-paths = (abbr: b.split("\\")[0..0].join("\\"), path: b for b in libraryPaths)
+libraryPaths = _(libraryPaths).map(normalize).sortBy().value()
+
+makePathObj = (path) ->
+  abbr: parse(path).root
+  path: normalize("#{path}/steamapps/common")
+  rest: normalize("#{path}/steamapps/common").replace(parse(path).root, "")
+
+paths = _.map libraryPaths, makePathObj
 # TODO handle non-uniqueness
-console.log paths
+
+games = _(paths)
+  .map ({abbr, path}, i) ->
+    _.map fs.readdirSync(path), (name) ->
+      abbr: abbr
+      rest: normalize("#{path}/#{name}").replace(abbr, "")
+      name: name
+      i: i
+  .flatten()
+  .sortBy "name"
+  .value()
+
+onDomReady ->
+  result = template(games: games, paths: paths)
+  document.getElementsByTagName("body")[0].innerHTML = result

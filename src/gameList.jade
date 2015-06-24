@@ -1,0 +1,25 @@
+table.pure-table#gameList
+  thead
+    tr
+      th Game
+      th Location
+  tbody
+    each game in games
+      tr
+        td
+          = game.name
+        td
+          strong.base= game.abbr
+          span.rest= game.rest
+          .actions
+            a.edit(href="#"): i.fa.fa-pencil
+    tr
+      td Test
+      td
+        select
+          each path in paths
+            option
+              strong.base= path.abbr
+              span.rest
+                = path.rest
+                | \Test
