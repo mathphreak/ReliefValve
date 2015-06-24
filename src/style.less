@@ -69,7 +69,7 @@ body {
 }
 
 #gameList select {
-  width: 100%;
+  width: auto;
   .gradient(@gray, @gray, lighten(@gray, 15%));
   color: @white;
   border: none;
@@ -88,4 +88,20 @@ body {
 
 #gameList tr:hover .rest {
   color: @white;
+}
+
+td .default {
+  display: block;
+}
+
+td .editing {
+  display: none;
+}
+
+td.editing .default {
+  display: none;
+}
+
+td.editing .editing {
+  display: block;
 }

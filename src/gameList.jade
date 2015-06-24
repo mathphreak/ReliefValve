@@ -9,17 +9,18 @@ table.pure-table#gameList
         td
           = game.name
         td
-          strong.base= game.abbr
-          span.rest= game.rest
-          .actions
-            a.edit(href="#"): i.fa.fa-pencil
-    tr
-      td Test
-      td
-        select
-          each path in paths
-            option
-              strong.base= path.abbr
-              span.rest
-                = path.rest
-                | \Test
+          .default
+            strong.base= game.abbr
+            span.rest= game.rest
+            .actions
+              a.edit(href="#"): i.fa.fa-pencil
+          .editing
+            select
+              each path, pathidx in paths
+                option(selected=game.i===pathidx)
+                  strong.base= path.path
+                  span.rest
+                    | \
+                    = game.name
+            .actions
+              a.save(href="#"): i.fa.fa-save
