@@ -3,6 +3,8 @@ coffee = require 'gulp-coffee'
 less = require 'gulp-less'
 runElectron = require 'gulp-run-electron'
 jade = require 'gulp-jade'
+namespace = require 'gulp-jade-namespace'
+concat = require 'gulp-concat'
 
 gulp.task "js-client", ->
   gulp.src "./src/client.coffee"
@@ -37,8 +39,10 @@ gulp.task "html-index", ->
   .pipe gulp.dest "./out/"
 
 gulp.task "html-gameList", ->
-  gulp.src "./src/gameList.jade"
+  gulp.src ["./src/*.jade", "!./src/index.jade"]
   .pipe jade(client: yes)
+  .pipe namespace()
+  .pipe concat "templates.js"
   .pipe gulp.dest "./out/"
 
 gulp.task "html", ["html-index", "html-gameList"], ->
