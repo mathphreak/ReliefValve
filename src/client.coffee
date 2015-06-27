@@ -15,17 +15,11 @@ Rx.config.longStackSupport = yes
 # TODO handle multiple platforms
 folderListPath = "C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"
 
-alreadyParsed = no
-
 $ ->
   folderListStream = Rx.Observable.just folderListPath
 
   pathsStream = folderListStream
     .flatMap (detailsPath) ->
-      console.log "Parsing libraryfolders.vdf"
-      if alreadyParsed
-        console.err "GOD DAMN IT WE'RE DOUBLE PARSING"
-      alreadyParsed = yes
       readFile = Rx.Observable.fromNodeCallback fs.readFile
       readFile detailsPath, 'win1252'
     .flatMap (detailsVDF) ->
@@ -56,7 +50,6 @@ $ ->
     .concatMap (x) -> x # we can't just return an array of observables
     .bufferWithCount 2
     .flatMap ([{d: {path, abbr, name}, i}, files]) ->
-      console.log "Reading #{abbr}..."
       _.map files, (name) ->
         abbr: abbr
         rest: pathMod.normalize("#{path}/#{name}").replace(abbr, "")
@@ -86,24 +79,23 @@ $ ->
         .addClass("fa-spin")
         .removeClass("fa-gamepad")
     .flatMap (game) ->
-      console.log "Finding size for #{game.name}"
       duLater = Rx.Observable.fromNodeCallback du
       gamePath = game.abbr + game.rest
-      duLater(gamePath).map (d) -> {name: game.name, data: filesize d}
+      duLater(gamePath).map (d) -> {name: game.name, data: filesize(d, exponent: 3)}
     .subscribe(({name, data}) ->
       $("#gameList tbody tr")
         .filter -> @dataset.name is name
         .children()
         .last()
         .text(data)
-    , -> console.log "Bad stuff happened"
+    , (-> console.log "Bad stuff happened")
     , -> console.log "Done finding sizes!"
     )
 
-  $(".edit").on "click", (event) ->
+  $(document).on "click", ".edit", (event) ->
     # TODO document this terrible hack
     this.parentElement.parentElement.parentElement.classList.add("editing")
 
-  $(".save").on "click", (event) ->
+  $(document).on "click", ".save", (event) ->
     # TODO document this terrible hack
     this.parentElement.parentElement.parentElement.classList.remove("editing")
