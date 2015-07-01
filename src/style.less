@@ -130,4 +130,19 @@ html, body {
   tr td:last-child {
     text-align: right;
   }
+
+  select {
+    width: auto;
+    .gradient(@gray, @gray, lighten(@gray, 15%));
+    color: @white;
+    border: none;
+    font: inherit;
+    float: right;
+  }
+
+  option {
+    background-color: @darkGray;
+    color: @white;
+    font: inherit;
+  }
 }

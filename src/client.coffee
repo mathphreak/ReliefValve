@@ -39,7 +39,10 @@ $ ->
       path: pathMod.normalize("#{path}/steamapps/common")
       rest: pathMod.normalize("#{path}/steamapps/common").replace(abbr, "")
     .toArray()
-    .do (d) -> window.paths = d
+    .do (d) ->
+      window.paths = d
+      footer = Templates.footer(paths: d)
+      $("tfoot").replaceWith(footer)
     .flatMap _.identity
     .share()
 
@@ -117,18 +120,18 @@ $ ->
       .get()
       .map (el) -> parseFloat(el.innerText) * 100
       .reduce(((a, b) -> a + b), 0)) / 100
-    $("tfoot td:first-child").text(names)
-    $("tfoot td:nth-child(2)").text(paths)
+    $("#all-names").text(names)
+    $("#all-paths").text(paths)
     if _.isNaN sizes
-      if $("tfoot td:last-child").text() isnt ""
-        $("tfoot td:last-child").html("")
+      if $("#total-size").text() isnt ""
+        $("#total-size").html("")
         $("<i></i>")
           .addClass("fa")
           .addClass("fa-circle-o-notch")
           .addClass("fa-spin")
-          .appendTo("tfoot td:last-child")
+          .appendTo("#total-size")
     else
-      $("tfoot td:last-child").text("#{sizes} GB")
+      $("#total-size").text("#{sizes} GB")
     $("tfoot").toggle(hasSelection)
 
   $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->

@@ -1,0 +1,10 @@
+tfoot(style="display:none;")
+  tr
+    td#all-names
+    td
+      span#all-paths
+      select
+        each path, pathidx in paths
+          option
+            strong.base= path.abbr
+    td#total-size
