@@ -1,21 +1,13 @@
 tr(data-name=game.name)
   td
     = game.name
+    .actions
+      a.select(href="#")
+        i.fa.fa-fw.fa-square-o.deselected
+        i.fa.fa-fw.fa-check-square-o.selected
   td
     .default
       strong.base= game.abbr
       span.rest= game.rest
-      .actions
-        a.edit(href="#"): i.fa.fa-pencil
-    .editing
-      select
-        each path, pathidx in paths
-          option(selected=game.pathIndex===pathidx)
-            strong.base= path.path
-            span.rest
-              | \
-              = game.name
-      .actions
-        a.save(href="#"): i.fa.fa-save
   td
     i.fa.fa-gamepad

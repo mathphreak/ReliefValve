@@ -15,10 +15,17 @@ html
       thead
         tr
           th Game
+            .actions
+              a#globalSelect.select(href="#"): i.fa.fa-fw.fa-square-o
           th Location
           th Size
       tbody
         tr.loading(data-name="     LOADING")
           td Loading...
-          td ...your stuff
-          td 7 GB
+          td ...your games
+          td 1337 GB
+      tfoot(style="display:none;")
+        tr
+          td TEST
+          td POST
+          td PLEASE IGNORE

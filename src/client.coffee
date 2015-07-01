@@ -70,6 +70,7 @@ $ ->
     $("#gameList .loading").remove()
 
   sizesStream = gamesStream
+    .observeOn Rx.Scheduler.currentThread
     .do (game) ->
       $("#gameList tbody tr")
         .filter -> @dataset.name is game.name
@@ -81,21 +82,66 @@ $ ->
     .flatMap (game) ->
       duLater = Rx.Observable.fromNodeCallback du
       gamePath = game.abbr + game.rest
-      duLater(gamePath).map (d) -> {name: game.name, data: filesize(d, exponent: 3)}
+      duLater(gamePath)
+        .map (d) -> {name: game.name, data: filesize(d, exponent: 3)}
     .subscribe(({name, data}) ->
       $("#gameList tbody tr")
         .filter -> @dataset.name is name
         .children()
         .last()
         .text(data)
+      updateSelected()
     , (-> console.log "Bad stuff happened")
-    , -> console.log "Done finding sizes!"
+    , -> # console.log "Done finding sizes!"
     )
 
-  $(document).on "click", ".edit", (event) ->
-    # TODO document this terrible hack
-    this.parentElement.parentElement.parentElement.classList.add("editing")
+  updateSelected = ->
+    hasSelection = $("tr.selected").size() > 0
+    if hasSelection
+      $("#globalSelect i")
+        .addClass "fa-check-square-o"
+        .removeClass "fa-square-o"
+    else
+      $("#globalSelect i")
+        .removeClass "fa-check-square-o"
+        .addClass "fa-square-o"
+    names = $("tr.selected")
+      .get()
+      .map (el) -> el.dataset.name
+      .join ", "
+    paths = $("tr.selected td .base")
+      .get()
+      .map (el) -> el.innerText
+      .join ", "
+    sizes = Math.round($("tr.selected td:last-child")
+      .get()
+      .map (el) -> parseFloat(el.innerText) * 100
+      .reduce(((a, b) -> a + b), 0)) / 100
+    $("tfoot td:first-child").text(names)
+    $("tfoot td:nth-child(2)").text(paths)
+    if _.isNaN sizes
+      if $("tfoot td:last-child").text() isnt ""
+        $("tfoot td:last-child").html("")
+        $("<i></i>")
+          .addClass("fa")
+          .addClass("fa-circle-o-notch")
+          .addClass("fa-spin")
+          .appendTo("tfoot td:last-child")
+    else
+      $("tfoot td:last-child").text("#{sizes} GB")
+    $("tfoot").toggle(hasSelection)
 
-  $(document).on "click", ".save", (event) ->
-    # TODO document this terrible hack
-    this.parentElement.parentElement.parentElement.classList.remove("editing")
+  $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->
+    $("tr.selected").removeClass("selected")
+    updateSelected()
+    event.stopImmediatePropagation()
+
+  $(document).on "click", "#globalSelect i.fa-square-o", (event) ->
+    $("tbody tr").addClass("selected")
+    updateSelected()
+    event.stopImmediatePropagation()
+
+  $(document).on "click", "tbody .select", (event) ->
+    $(@).closest("tr").toggleClass("selected")
+    updateSelected()
+    event.stopImmediatePropagation()

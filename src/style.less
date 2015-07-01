@@ -4,6 +4,34 @@
 @import "pure/buttons";
 @import "pure/tables";
 
+@scrollbar-width: 17px;
+.table-scrollable() {
+  display: flex;
+  flex-flow: column;
+
+  thead,
+  tfoot,
+  tbody tr {
+    display: table;
+    table-layout: fixed;
+  }
+
+  thead, tfoot {
+    flex: 0 0 auto;
+    width: ~"calc(100% - @{scrollbar-width})";
+  }
+
+  tbody {
+    display: block;
+    flex: 1 1 auto;
+    overflow-y: scroll;
+
+    tr {
+      width: 100%;
+    }
+  }
+}
+
 @font-face {
   font-family: 'NotoSans';
   font-weight: normal;
@@ -36,76 +64,70 @@ body {
   font-size: 9pt;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
 #gameList {
   width: 100%;
-}
+  height: 100%;
+  .table-scrollable();
 
-#gameList thead tr {
-  color: lighten(@white, 100%);
-  .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
-}
+  thead, tfoot {
+    color: lighten(@white, 100%);
+    .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
+  }
 
-#gameList tr:hover {
-  background-color: lighten(@darkGray, 10%);
-  color: lighten(@white, 100%);
-}
+  tbody tr:hover {
+    background-color: lighten(@darkGray, 10%);
+    color: lighten(@white, 100%);
+  }
 
-#gameList .actions {
-  float: right;
-}
+  .actions {
+    float: right;
+  }
 
-#gameList tr .actions {
-  visibility: hidden;
-}
+  tr .actions {
+    visibility: hidden;
+  }
 
-#gameList tr:hover .actions {
-  visibility: visible;
-}
+  tr:hover .actions, tr.selected .actions, thead tr .actions {
+    visibility: visible;
+  }
 
-#gameList a {
-  padding: 0.25em;
-  .gradient(@gray, @gray, lighten(@gray, 15%));
-  color: @white;
-}
+  a {
+    //padding: 0.25em;
+    //.gradient(@gray, @gray, lighten(@gray, 15%));
+    color: inherit;
+    text-decoration: none;
+  }
 
-#gameList select {
-  width: auto;
-  .gradient(@gray, @gray, lighten(@gray, 15%));
-  color: @white;
-  border: none;
-  font: inherit;
-}
+  tr .rest {
+    color: darken(@white, 50%);
+  }
 
-#gameList option {
-  background-color: @darkGray;
-  color: @white;
-  font: inherit;
-}
+  tr:hover .rest {
+    color: @white;
+  }
 
-#gameList tr .rest {
-  color: darken(@white, 50%);
-}
+  tr .deselected {
+    display: inline;
+  }
 
-#gameList tr:hover .rest {
-  color: @white;
-}
+  tr .selected {
+    display: none;
+  }
 
-td .default {
-  display: block;
-}
+  tr.selected .deselected {
+    display: none;
+  }
 
-td .editing {
-  display: none;
-}
+  tr.selected .selected {
+    display: inline;
+  }
 
-td.editing .default {
-  display: none;
-}
-
-td.editing .editing {
-  display: block;
-}
-
-#gameList tr td:last-child {
-  text-align: right;
+  tr td:last-child {
+    text-align: right;
+  }
 }

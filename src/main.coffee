@@ -3,6 +3,8 @@ app = require('app')
 # Module to create native browser window.
 BrowserWindow = require('browser-window')
 
+# use http://git.io/vt4FS
+
 # Report crashes to our server.
 require('crash-reporter').start()
 
