@@ -1,5 +1,5 @@
 vdf = require 'vdf'
-fs = require 'fs'
+fs = require 'fs.extra'
 iconv = require 'iconv-lite'
 _ = require "lodash"
 pathMod = require 'path'
@@ -14,6 +14,16 @@ Rx.config.longStackSupport = yes
 
 # TODO handle multiple platforms
 folderListPath = "C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"
+
+Games = []
+Paths = []
+
+# TODO reorganize code because holy mother of everything this is not ok
+moveGame = ({source, destination, gameInfo}) ->
+  # TODO show progress in some way
+  copyRec = Rx.Observable.fromNodeCallback fs.copyRecursive
+  copyRec source, destination
+  # TODO delete source and possibly verify
 
 $ ->
   folderListStream = Rx.Observable.just folderListPath
@@ -40,7 +50,7 @@ $ ->
       rest: pathMod.normalize("#{path}/steamapps/common").replace(abbr, "")
     .toArray()
     .do (d) ->
-      window.paths = d
+      Paths = d
       footer = Templates.footer(paths: d)
       $("tfoot").replaceWith(footer)
     .flatMap _.identity
@@ -54,15 +64,20 @@ $ ->
     .bufferWithCount 2
     .flatMap ([{d: {path, abbr, name}, i}, files]) ->
       _.map files, (name) ->
-        abbr: abbr
+        pathAbbr: abbr
+        fullPath: pathMod.normalize "#{path}/#{name}"
         rest: pathMod.normalize("#{path}/#{name}").replace(abbr, "")
         name: name
         pathIndex: i
+    .toArray()
+    .do (d) ->
+      Games = d
+    .flatMap _.identity
     .share()
 
   gamesStream.subscribe (game) ->
     # console.log "Rendering #{game.name}"
-    result = Templates.game(game: game, paths: paths)
+    result = Templates.game(game: game, paths: Paths)
     $("#gameList tbody tr")
       .filter -> @dataset.name.localeCompare(game.name) < 0
       .last()
@@ -84,17 +99,23 @@ $ ->
         .removeClass("fa-gamepad")
     .flatMap (game) ->
       duLater = Rx.Observable.fromNodeCallback du
-      gamePath = game.abbr + game.rest
+      gamePath = game.fullPath
       duLater(gamePath)
-        .map (d) -> {name: game.name, data: filesize(d, exponent: 3)}
+        .map (d) -> {name: game.name, data: d}
     .subscribe(({name, data}) ->
+      # update Games
+      _.find(Games, "name", name).size = data
+
+      # update game in table
       $("#gameList tbody tr")
         .filter -> @dataset.name is name
         .children()
         .last()
-        .text(data)
+        .text filesize(data, exponent: 3)
+
+      # update the footer (recalculate total size of all selected)
       updateSelected()
-    , (-> console.log "Bad stuff happened")
+    , ((e) -> throw e)
     , -> # console.log "Done finding sizes!"
     )
 
@@ -148,3 +169,31 @@ $ ->
     $(@).closest("tr").toggleClass("selected")
     updateSelected()
     event.stopImmediatePropagation()
+
+  $(document).on "click", "#move", (event) ->
+    # get the selected path
+    pathIndex = $("tfoot select")
+      .children()
+      .map (i,a) ->
+        if a.innerHTML is $("tfoot select").val()
+          i
+        else
+          -1
+      .get()
+      .filter( (x) -> x > -1 )[0]
+
+    destination = Paths[pathIndex].path
+
+    Rx.Observable.from(Games)
+      .filter (game) ->
+        $("tr[data-name=\"#{game.name}\"]").hasClass("selected")
+      .map (game) ->
+        source: game.fullPath
+        destination: pathMod.normalize "#{destination}/#{game.name}"
+        gameInfo: game
+      .do (x) -> console.log x
+      .flatMap (x) -> moveGame x
+      .subscribe (x) ->
+        # TODO provide some visual indication of feedback
+        console.log x
+    console.log "Moving stuff"

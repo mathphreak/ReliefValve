@@ -3,8 +3,16 @@ tfoot(style="display:none;")
     td#all-names
     td
       span#all-paths
-      select
-        each path, pathidx in paths
-          option
-            strong.base= path.abbr
-    td#total-size
+      .actions
+        i.fa.fa-arrow-right
+        | &nbsp;
+        select
+          each path, pathidx in paths
+            option
+              strong.base= path.abbr
+    td
+      span#total-size
+      .actions
+        a#move(href="#")
+          | Move 
+          i.fa.fa-arrow-right

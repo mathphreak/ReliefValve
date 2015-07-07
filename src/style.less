@@ -88,11 +88,11 @@ html, body {
     float: right;
   }
 
-  tr .actions {
+  tbody tr .actions {
     visibility: hidden;
   }
 
-  tr:hover .actions, tr.selected .actions, thead tr .actions {
+  tr:hover .actions, tr.selected .actions {
     visibility: visible;
   }
 
@@ -129,6 +129,13 @@ html, body {
 
   tr td:last-child {
     text-align: right;
+    .actions {
+      float: left;
+    }
+    a {
+      .gradient(@gray, @gray, lighten(@gray, 15%));
+      padding: 0.25em;
+    }
   }
 
   select {
@@ -137,7 +144,6 @@ html, body {
     color: @white;
     border: none;
     font: inherit;
-    float: right;
   }
 
   option {
