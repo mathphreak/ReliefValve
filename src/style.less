@@ -84,6 +84,19 @@ html, body {
     color: lighten(@white, 100%);
   }
 
+  tbody {
+    td {
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .name {
+      display: inline-block;
+      max-width: ~"calc(100% - 1em)";
+      overflow: hidden;
+    }
+  }
+
   .actions {
     float: right;
   }
