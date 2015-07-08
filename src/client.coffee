@@ -52,7 +52,7 @@ $ ->
     .do (d) ->
       Paths = d
       footer = Templates.footer(paths: d)
-      $("tfoot").replaceWith(footer)
+      $("tfoot#selection").replaceWith(footer)
     .flatMap _.identity
     .share()
 
@@ -153,7 +153,12 @@ $ ->
           .appendTo("#total-size")
     else
       $("#total-size").text("#{sizes} GB")
-    $("tfoot").toggle(hasSelection)
+    $("tfoot#selection").toggle(hasSelection)
+
+  updateProgress = (current) ->
+    percent = current / parseInt($("#progress-inner").data("total")) * 100
+
+    $("#progress-inner").width("#{percent}%")
 
   $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->
     $("tr.selected").removeClass("selected")
@@ -172,10 +177,10 @@ $ ->
 
   $(document).on "click", "#move", (event) ->
     # get the selected path
-    pathIndex = $("tfoot select")
+    pathIndex = $("tfoot#selection select")
       .children()
       .map (i,a) ->
-        if a.innerHTML is $("tfoot select").val()
+        if a.innerHTML is $("tfoot#selection select").val()
           i
         else
           -1
@@ -187,6 +192,18 @@ $ ->
     Rx.Observable.from(Games)
       .filter (game) ->
         $("tr[data-name=\"#{game.name}\"]").hasClass("selected")
+      .toArray()
+      .do (games) ->
+        # calculate total size
+        totalSize = _(games).pluck("size").reduce((a,b)->a+b)
+        $("#progress-inner").data("total", totalSize)
+
+        # make sure the progress bar starts at zero
+        $("#progress-inner").width("0%")
+
+        # show the progress bar
+        $("#progress-container").show()
+      .flatMap (x) -> x
       .map (game) ->
         source: game.fullPath
         destination: pathMod.normalize "#{destination}/#{game.name}"
@@ -194,6 +211,8 @@ $ ->
       .do (x) -> console.log x
       .flatMap (x) -> moveGame x
       .subscribe (x) ->
-        # TODO provide some visual indication of feedback
-        console.log x
+        # TODO usefully calculate current progress instead of always using 100%
+        updateProgress parseInt $("#progress-inner").data("total")
+      , ((x) -> console.log "Error while moving: #{x}")
+      , -> $("#progress-container").hide()
     console.log "Moving stuff"
