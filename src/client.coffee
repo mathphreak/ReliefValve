@@ -156,8 +156,12 @@ $ ->
     $("tfoot#selection").toggle(hasSelection)
 
   updateProgress = (current) ->
-    percent = current / parseInt($("#progress-inner").data("total")) * 100
+    # save the current state
+    $("#progress-inner").data("current", current)
 
+    # do the calculation
+    total = parseInt($("#progress-inner").data("total"))
+    percent = current / total * 100
     $("#progress-inner").width("#{percent}%")
 
   $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->
@@ -198,8 +202,11 @@ $ ->
         totalSize = _(games).pluck("size").reduce((a,b)->a+b)
         $("#progress-inner").data("total", totalSize)
 
+        # set total to number of games because we're lazy
+        $("#progress-inner").data("total", games.length)
+
         # make sure the progress bar starts at zero
-        $("#progress-inner").width("0%")
+        updateProgress 0
 
         # show the progress bar
         $("#progress-container").show()
@@ -212,7 +219,7 @@ $ ->
       .flatMap (x) -> moveGame x
       .subscribe (x) ->
         # TODO usefully calculate current progress instead of always using 100%
-        updateProgress parseInt $("#progress-inner").data("total")
+        updateProgress parseInt $("#progress-inner").data("current") + 1
       , ((x) -> console.log "Error while moving: #{x}")
       , -> $("#progress-container").hide()
     console.log "Moving stuff"
