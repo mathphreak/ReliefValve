@@ -23,6 +23,9 @@ app.on 'ready', ->
   # Create the browser window.
   mainWindow = new BrowserWindow width: 800, height: 600, show: false
 
+  # Don't use a menu bar.
+  mainWindow.setMenu null
+
   url = "file://#{__dirname}/index.html"
 
   # and load the index.html of the app.
@@ -36,5 +39,4 @@ app.on 'ready', ->
     # in an array if your app supports multi windows, this is the time
     # when you should delete the corresponding element.
 
-    # don't exit since we're still testing
-    # mainWindow = null
+    mainWindow = null
