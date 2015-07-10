@@ -5,6 +5,10 @@ runElectron = require 'gulp-run-electron'
 jade = require 'gulp-jade'
 namespace = require 'gulp-jade-namespace'
 concat = require 'gulp-concat'
+electron = require 'gulp-atom-electron'
+del = require 'del'
+packageInfo = require './package.json'
+zip = require 'gulp-zip'
 
 gulp.task "js-client", ->
   gulp.src "./src/client.coffee"
@@ -17,11 +21,10 @@ gulp.task "js-main", ->
   .pipe gulp.dest "./out/"
 
 gulp.task "js-vendor", ->
-  gulp.src "./src/*.js"
-  .pipe gulp.dest "./out/"
-
-gulp.task "js-jade-runtime", ->
-  gulp.src "./node_modules/gulp-jade/node_modules/jade/runtime.js"
+  gulp.src [
+    "./src/*.js"
+    "./node_modules/gulp-jade/node_modules/jade/runtime.js"
+  ]
   .pipe gulp.dest "./out/"
 
 gulp.task "js-util", ->
@@ -29,7 +32,7 @@ gulp.task "js-util", ->
   .pipe coffee()
   .pipe gulp.dest "./out/util/"
 
-gulp.task "js", ["js-client", "js-main", "js-vendor", "js-jade-runtime", "js-util"], ->
+gulp.task "js", ["js-client", "js-main", "js-vendor", "js-util"], ->
 
 gulp.task "css-style", ->
   gulp.src "./src/style.less"
@@ -43,25 +46,45 @@ gulp.task "html-index", ->
   .pipe jade()
   .pipe gulp.dest "./out/"
 
-gulp.task "html-gameList", ->
+gulp.task "html-client-templates", ->
   gulp.src ["./src/*.jade", "!./src/index.jade"]
   .pipe jade(client: yes)
   .pipe namespace()
   .pipe concat "templates.js"
   .pipe gulp.dest "./out/"
 
-gulp.task "html", ["html-index", "html-gameList"], ->
+gulp.task "html", ["html-index", "html-client-templates"], ->
 
-gulp.task "run", ["js", "css", "html"], ->
+gulp.task "compile", ["js", "css", "html"], ->
+
+gulp.task "run", ["compile"], ->
   gulp.src "."
   .pipe runElectron()
 
 gulp.task "restart", runElectron.rerun
 
-gulp.task "watch", ->
-  gulp.watch "./src/*.coffee", ['js', 'restart']
-  gulp.watch "./src/*.less", ['css', 'restart']
-  gulp.watch "./src/*.jade", ['html', 'restart']
+gulp.task "live", ["compile", "run"], ->
+  gulp.watch "./src/**/*", ["compile", "restart"]
 
-gulp.task "default", ["run", "watch"], ->
-  # maybe do something idk
+gulp.task "watch", ->
+  gulp.watch "./src/**/*", "compile"
+
+gulp.task "clean", (cb) ->
+  del ["out/", "dist/", "build/"], cb
+
+gulp.task "default", ["compile", "watch"], ->
+
+gulp.task "dist", ["compile"], ->
+  gulp.src [
+    "./assets/**/*"
+    "./node_modules/**/*"
+    "./out/**/*"
+    "./package.json"
+  ], {base: "."}
+  .pipe electron version: '0.29.2', platform: 'win32', arch: 'x64'
+  .pipe gulp.dest "./dist/Relief Valve v#{packageInfo.version}/"
+
+gulp.task "build", ["dist"], ->
+  gulp.src "./dist/**/*", base: "./dist"
+  .pipe zip "Relief Valve v#{packageInfo.version}.zip"
+  .pipe gulp.dest "./build/"

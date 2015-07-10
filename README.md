@@ -16,10 +16,6 @@ be true forever.
 5.  Click "Copy".
 6.  Wait for your selected games to finish copying.
     A progress bar should appear below the footer you just clicked inside.
-    Currently, it measures how many games have finished copying.
-    Eventually, it will be more useful.
-    It will disappear once everything is done, so if you are only moving one
-    game, just wait until it goes away and you'll know your game has been copied.
 7.  In your Steam library, find one of the games you moved over.
 8.  Right-click it, click "Delete Local Content...", and confirm that you want to delete it.
 9.  Install the game and select the new location. Steam will not re-download everything,
