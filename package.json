@@ -21,7 +21,7 @@
     "gulp-jade": "^1.0.1",
     "gulp-jade-namespace": "^1.2.3",
     "gulp-less": "^3.0.3",
-    "gulp-run-electron": "^1.2.0",
+    "gulp-run-electron": "^1.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
