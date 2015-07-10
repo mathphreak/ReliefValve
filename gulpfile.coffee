@@ -24,7 +24,12 @@ gulp.task "js-jade-runtime", ->
   gulp.src "./node_modules/gulp-jade/node_modules/jade/runtime.js"
   .pipe gulp.dest "./out/"
 
-gulp.task "js", ["js-client", "js-main", "js-vendor", "js-jade-runtime"], ->
+gulp.task "js-util", ->
+  gulp.src "./src/util/*.coffee"
+  .pipe coffee()
+  .pipe gulp.dest "./out/util/"
+
+gulp.task "js", ["js-client", "js-main", "js-vendor", "js-jade-runtime", "js-util"], ->
 
 gulp.task "css-style", ->
   gulp.src "./src/style.less"

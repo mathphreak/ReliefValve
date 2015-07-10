@@ -12,7 +12,8 @@
     "iconv-lite": "^0.4.10",
     "lodash": "^3.9.3",
     "rx": "^2.5.3",
-    "vdf": "0.0.2"
+    "vdf": "0.0.2",
+    "walk": "^2.3.9"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

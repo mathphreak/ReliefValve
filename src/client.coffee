@@ -5,7 +5,8 @@ _ = require "lodash"
 pathMod = require 'path'
 Rx = require 'rx'
 filesize = require 'filesize'
-du = require './du'
+du = require './util/du'
+copyRecursive = require './util/copy-recursive'
 
 # bind encodings like win1252 to Node's default tools
 iconv.extendNodeEncodings()
@@ -19,9 +20,7 @@ Games = []
 Paths = []
 
 moveGame = ({source, destination, gameInfo}) ->
-  copyRec = Rx.Observable.fromNodeCallback fs.copyRecursive
-  copyRec(source, destination)
-    .map -> gameInfo
+  copyRecursive(source, destination)
 
 readFolderList = (detailsPath) ->
   readFile = Rx.Observable.fromNodeCallback fs.readFile
@@ -116,9 +115,8 @@ gamesStreamObserver = Rx.Observer.create (game) ->
   $("#gameList .loading").remove()
 
 loadGameSize = (game) ->
-  duLater = Rx.Observable.fromNodeCallback du
   gamePath = game.fullPath
-  duLater(gamePath)
+  du(gamePath)
     .map (d) -> {name: game.name, data: d}
 
 sizesStreamObserver = Rx.Observer.create ({name, data}) ->
@@ -142,18 +140,14 @@ initializeProgress = (games) ->
   totalSize = _(games).pluck("size").reduce((a,b)->a+b)
   $("#progress-inner").data("total", totalSize)
 
-  # set total to number of games because we're lazy
-  $("#progress-inner").data("total", games.length)
-
   # make sure the progress bar starts at zero
   updateProgress 0
 
   # show the progress bar
   $("#progress-container").show()
 
-progressObserver = Rx.Observer.create (x) ->
-  console.log x
-  updateProgress parseInt $("#progress-inner").data("current") + 1
+makeProgressObserver = -> Rx.Observer.create (x) ->
+  updateProgress parseInt $("#progress-inner").data("current") + x
 , ((x) -> console.log "Error while moving: #{x}")
 , -> $("#progress-container").hide()
 
@@ -230,5 +224,5 @@ $ ->
         destination: pathMod.normalize "#{destination}/#{game.name}"
         gameInfo: game
       .flatMap (x) -> moveGame x
-      .subscribe progressObserver
+      .subscribe makeProgressObserver()
     console.log "Moving stuff"
