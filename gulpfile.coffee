@@ -69,22 +69,32 @@ gulp.task "live", ["compile", "run"], ->
 gulp.task "watch", ->
   gulp.watch "./src/**/*", "compile"
 
-gulp.task "clean", (cb) ->
-  del ["out/", "dist/", "build/"], cb
+gulp.task "clean:out", (cb) ->
+  del ["out/"], cb
+
+gulp.task "clean:dist", (cb) ->
+  del ["dist/"], cb
+
+gulp.task "clean:build", (cb) ->
+  del ["build/"], cb
+
+gulp.task "clean", ["clean:out", "clean:dist", "clean:build"], ->
 
 gulp.task "default", ["compile", "watch"], ->
 
-gulp.task "dist", ["compile"], ->
+gulp.task "dist", ["clean:dist", "compile"], ->
   gulp.src [
     "./assets/**/*"
     "./node_modules/**/*"
+    "!./node_modules/gulp*"
+    "!./node_modules/gulp*/**/*"
     "./out/**/*"
     "./package.json"
   ], {base: "."}
   .pipe electron version: '0.29.2', platform: 'win32', arch: 'x64'
   .pipe gulp.dest "./dist/Relief Valve v#{packageInfo.version}/"
 
-gulp.task "build", ["dist"], ->
+gulp.task "build", ["clean:build", "dist"], ->
   gulp.src "./dist/**/*", base: "./dist"
   .pipe zip "Relief Valve v#{packageInfo.version}.zip"
   .pipe gulp.dest "./build/"
