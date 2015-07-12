@@ -7,6 +7,7 @@ Rx = require 'rx'
 filesize = require 'filesize'
 du = require './util/du'
 copyRecursive = require './util/copy-recursive'
+glob = require 'glob'
 
 # bind encodings like win1252 to Node's default tools
 iconv.extendNodeEncodings()
@@ -22,12 +23,16 @@ Paths = []
 moveGame = ({source, destination, gameInfo}) ->
   copyRecursive(source, destination)
 
-readFolderList = (detailsPath) ->
+readVDF = (target) ->
   readFile = Rx.Observable.fromNodeCallback fs.readFile
-  readFile detailsPath, 'win1252'
+  readFile(target, 'win1252').map vdf.parse
 
-parseFolderList = (detailsVDF) ->
-  parsed = vdf.parse(detailsVDF).LibraryFolders
+readACF = (target) ->
+  readFile = Rx.Observable.fromNodeCallback fs.readFile
+  readFile(target, 'utf8').map vdf.parse
+
+parseFolderList = (details) ->
+  parsed = details.LibraryFolders
   parsed["0"] = "C:\\Program Files (x86)\\Steam"
   folders = _.pick parsed, (v, k) ->
     _.isFinite parseInt k
@@ -39,16 +44,23 @@ parseFolderList = (detailsVDF) ->
 buildPathObject = (path) ->
   abbr = pathMod.parse(path).root
   abbr: abbr
-  path: pathMod.normalize("#{path}/steamapps/common")
-  rest: pathMod.normalize("#{path}/steamapps/common").replace(abbr, "")
+  path: pathMod.normalize(path)
+  rest: pathMod.normalize(path).replace(abbr, "")
 
-buildGameObjects = ([{d: {path, abbr, name}, i}, files]) ->
-  _.map files, (name) ->
-    pathAbbr: abbr
-    fullPath: pathMod.normalize "#{path}/#{name}"
-    rest: pathMod.normalize("#{path}/#{name}").replace(abbr, "")
-    name: name
-    pathIndex: i
+buildGameObject = ({path, i, gameInfo, acfPath}) ->
+  fullPath = pathMod.join(
+    path.path,
+    "steamapps",
+    "common",
+    gameInfo.installdir
+  )
+  pathAbbr: path.abbr
+  fullPath: fullPath
+  rest: fullPath.replace(path.abbr, "")
+  rel: fullPath.replace(path.path, "")
+  name: gameInfo.name
+  pathIndex: i
+  acfPath: acfPath
 
 markGameLoading = (game) ->
   $("#gameList tbody tr")
@@ -151,11 +163,27 @@ makeProgressObserver = -> Rx.Observer.create (x) ->
 , ((x) -> console.log "Error while moving: #{x}")
 , -> $("#progress-container").hide()
 
+getPathACFs = (pathDetails, i) ->
+  globBetter = Rx.Observable.fromNodeCallback glob
+  steamappsPath = pathMod.join(pathDetails.path, "steamapps")
+  globBetter("appmanifest_*.acf", cwd: steamappsPath)
+    .map (matches) ->
+      paths = _.map matches, (x) ->
+        pathMod.join(steamappsPath, x)
+      {path: pathDetails, i: i, apps: paths}
+
+readAllACFs = (pathObj) ->
+  Rx.Observable.fromArray(pathObj.apps)
+    .flatMap (path) ->
+      readACF(path).map (obj) -> {acfPath: path, data: obj}
+    .map ({acfPath, data: {AppState}}) ->
+      {path: pathObj.path, i: pathObj.i, gameInfo: AppState, acfPath: acfPath}
+
 $ ->
   folderListStream = Rx.Observable.just folderListPath
 
   pathsStream = folderListStream
-    .flatMap readFolderList
+    .flatMap readVDF
     .flatMap parseFolderList
     .map buildPathObject
     .toArray()
@@ -167,12 +195,9 @@ $ ->
     .share()
 
   gamesStream = pathsStream
-    .flatMap (pathDetails, i) ->
-      readdir = Rx.Observable.fromNodeCallback fs.readdir
-      [Rx.Observable.just({d: pathDetails, i: i}), readdir pathDetails.path]
-    .concatMap (x) -> x # we can't just return an array of observables
-    .bufferWithCount 2
-    .flatMap buildGameObjects
+    .flatMap getPathACFs
+    .flatMap readAllACFs
+    .map buildGameObject
     .toArray()
     .do (d) ->
       Games = d
@@ -221,7 +246,7 @@ $ ->
       .flatMap (x) -> x
       .map (game) ->
         source: game.fullPath
-        destination: pathMod.normalize "#{destination}/#{game.name}"
+        destination: pathMod.join destination, game.rel
         gameInfo: game
       .flatMap (x) -> moveGame x
       .subscribe makeProgressObserver()
