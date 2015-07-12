@@ -22,7 +22,7 @@ gulp.task "js-main", ->
 
 gulp.task "js-vendor", ->
   gulp.src [
-    "./src/*.js"
+    "./src/vendor/*.js"
     "./node_modules/gulp-jade/node_modules/jade/runtime.js"
   ]
   .pipe gulp.dest "./out/"
