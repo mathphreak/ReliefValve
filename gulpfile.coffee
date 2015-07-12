@@ -96,5 +96,5 @@ gulp.task "dist", ["clean:dist", "compile"], ->
 
 gulp.task "build", ["clean:build", "dist"], ->
   gulp.src "./dist/**/*", base: "./dist"
-  .pipe zip "Relief Valve v#{packageInfo.version}.zip"
+  .pipe zip "Relief-Valve-v#{packageInfo.version}.zip"
   .pipe gulp.dest "./build/"

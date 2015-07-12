@@ -25,7 +25,11 @@ copy = (src, dst) ->
           # crap
           console.log "Something went bad while copying"
         else
-          allNext(stat.size)
+          allNext
+            id: Math.random()
+            src: curFile
+            dst: newFile
+            size: stat.size
           next()
 
     # TODO handle errors properly

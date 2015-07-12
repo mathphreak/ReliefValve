@@ -7,7 +7,9 @@ Rx = require 'rx'
 filesize = require 'filesize'
 du = require './util/du'
 copyRecursive = require './util/copy-recursive'
+verify = require './util/verify'
 glob = require 'glob'
+del = require 'del'
 
 # bind encodings like win1252 to Node's default tools
 iconv.extendNodeEncodings()
@@ -20,8 +22,31 @@ folderListPath = "C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"
 Games = []
 Paths = []
 
-moveGame = ({source, destination, gameInfo}) ->
-  copyRecursive(source, destination)
+DUMMY_ACF_SIZE = 1337
+
+moveGame = (data) ->
+  copyFile = Rx.Observable.fromNodeCallback(fs.copy)
+  copyGame = copyRecursive data.source, data.destination
+  copyACF = copyFile(data.acfSource, data.acfDest).map ->
+    id: Math.random()
+    src: data.acfSource
+    dst: data.acfDest
+    size: DUMMY_ACF_SIZE
+  copyGame
+    .merge copyACF
+
+verifyFile = (data) ->
+  verify(data.src, data.dst).map (x) ->
+    if x
+      # verified properly
+      return data
+    else
+      # not verified
+      return x
+
+deleteOriginal = (data) ->
+  delLater = Rx.Observable.fromNodeCallback del
+  delLater([data.source, data.acfSource], force: yes)
 
 readVDF = (target) ->
   readFile = Rx.Observable.fromNodeCallback fs.readFile
@@ -107,15 +132,6 @@ updateSelected = ->
     $("#total-size").text("#{sizes} GB")
   $("tfoot#selection").toggle(hasSelection)
 
-updateProgress = (current) ->
-  # save the current state
-  $("#progress-inner").data("current", current)
-
-  # do the calculation
-  total = parseInt($("#progress-inner").data("total"))
-  percent = current / total * 100
-  $("#progress-inner").width("#{percent}%")
-
 gamesStreamObserver = Rx.Observer.create (game) ->
   result = Templates.game(game: game, paths: Paths)
   $("#gameList tbody tr")
@@ -149,19 +165,43 @@ sizesStreamObserver = Rx.Observer.create ({name, data}) ->
 
 initializeProgress = (games) ->
   # calculate total size
-  totalSize = _(games).pluck("size").reduce((a,b)->a+b)
-  $("#progress-inner").data("total", totalSize)
+  totalSize = _(games).pluck("size").reduce((a,b)->a+b+DUMMY_ACF_SIZE)
+  $("#progress-outer").data("total", totalSize)
 
   # make sure the progress bar starts at zero
-  updateProgress 0
+  resetProgress()
 
   # show the progress bar
   $("#progress-container").show()
+  $("#progress-container").height("2rem")
 
-makeProgressObserver = -> Rx.Observer.create (x) ->
-  updateProgress parseInt $("#progress-inner").data("current") + x
+resetProgress = ->
+  $("#progress-outer").html("")
+
+addProgress = (x) ->
+  el = $('<div class="progress">&nbsp;</div>')
+  el.appendTo("#progress-outer")
+  el.data("size", x.size)
+  el.data("id", x.id)
+  total = parseInt($("#progress-outer").data("total"))
+  percent = x.size / total * 100
+  el.width 0
+  setTimeout (-> el.width("#{percent}%")), 1
+  yes
+
+makeCopyProgressObserver = -> Rx.Observer.create (x) ->
+  addProgress x
 , ((x) -> console.log "Error while moving: #{x}")
-, -> $("#progress-container").hide()
+
+makeVerifyProgressObserver = -> Rx.Observer.create (x) ->
+  $(".progress[data-id='#{x.id}']").addClass("verified")
+
+makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log x),
+  ((e)->throw e), (x) ->
+    setTimeout ->
+      $("#progress-container").height("0%")
+      $(".progress").height(0)
+    , 400
 
 getPathACFs = (pathDetails, i) ->
   globBetter = Rx.Observable.fromNodeCallback glob
@@ -238,6 +278,10 @@ $ ->
 
     destination = Paths[pathIndex].path
 
+    copyProgressObserver = makeCopyProgressObserver()
+    verifyProgressObserver = makeVerifyProgressObserver()
+    deleteProgressObserver = makeDeleteProgressObserver()
+
     Rx.Observable.from(Games)
       .filter (game) ->
         $("tr[data-name=\"#{game.name}\"]").hasClass("selected")
@@ -245,9 +289,20 @@ $ ->
       .do initializeProgress
       .flatMap (x) -> x
       .map (game) ->
+        acfName = pathMod.basename game.acfPath
         source: game.fullPath
         destination: pathMod.join destination, game.rel
+        acfSource: game.acfPath
+        acfDest: pathMod.join destination, "steamapps", acfName
         gameInfo: game
-      .flatMap (x) -> moveGame x
-      .subscribe makeProgressObserver()
-    console.log "Moving stuff"
+      .flatMap (x) ->
+        moveGame(x)
+          .do copyProgressObserver
+          .flatMap verifyFile
+          .do verifyProgressObserver
+          .last()
+          .map -> x
+      .flatMap (data) ->
+        deleteOriginal(data)
+          .map -> data
+      .subscribe deleteProgressObserver

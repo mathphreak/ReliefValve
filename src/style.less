@@ -67,6 +67,7 @@ body {
 html, body {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 #gameList {
@@ -165,11 +166,24 @@ html, body {
     font: inherit;
   }
 
-  #progress-outer {
-    padding: 0px;
+  #progress-container {
+    height: 2rem;
+    transition: height 400ms;
   }
 
-  #progress-inner {
-    background-color: @green;
+  #progress-outer {
+    padding: 0px;
+    height: 0px;
+  }
+
+  .progress {
+    transition: width 400ms, background-color 400ms, height 400ms;
+    overflow: hidden;
+    background-color: desaturate(@green, 50%);
+    height: 100%;
+    float: left;
+    &.verified {
+      background-color: @green;
+    }
   }
 }
