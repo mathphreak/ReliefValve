@@ -67,7 +67,7 @@ gulp.task "live", ["compile", "run"], ->
   gulp.watch "./src/**/*", ["compile", "restart"]
 
 gulp.task "watch", ->
-  gulp.watch "./src/**/*", "compile"
+  gulp.watch "./src/**/*", ["compile"]
 
 gulp.task "clean:out", (cb) ->
   del ["out/"], cb
