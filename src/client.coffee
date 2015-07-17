@@ -132,22 +132,28 @@ updateSelected = ->
     $("#total-size").text("#{sizes} GB")
   $("tfoot#selection").toggle(hasSelection)
 
-gamesStreamObserver = Rx.Observer.create (game) ->
-  result = Templates.game(game: game, paths: Paths)
-  $("#gameList tbody tr")
-    .filter -> @dataset.name.localeCompare(game.name) < 0
-    .last()
-    .after(result)
-, off # use default error handling for now
-, ->
-  $("#gameList .loading").remove()
+makeGamesStreamObserver = ->
+  seen = no
+  Rx.Observer.create (game) ->
+    if not seen
+      seen = yes
+      $("#gameList tbody tr:not(.loading)").remove()
+      $("#gameList .loading").show()
+    result = Templates.game(game: game, paths: Paths)
+    $("#gameList tbody tr")
+      .filter -> @dataset.name.localeCompare(game.name) < 0
+      .last()
+      .after(result)
+  , off # use default error handling for now
+  , ->
+    $("#gameList .loading").hide()
 
 loadGameSize = (game) ->
   gamePath = game.fullPath
   du(gamePath)
     .map (d) -> {name: game.name, data: d}
 
-sizesStreamObserver = Rx.Observer.create ({name, data}) ->
+makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
   # update Games
   _.find(Games, "name", name).size = data
 
@@ -196,11 +202,12 @@ makeCopyProgressObserver = -> Rx.Observer.create (x) ->
 makeVerifyProgressObserver = -> Rx.Observer.create (x) ->
   $(".progress[data-id='#{x.id}']").addClass("verified")
 
-makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log x),
+makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
   ((e)->throw e), (x) ->
     setTimeout ->
       $("#progress-container").height("0%")
       $(".progress").height(0)
+      runProcess()
     , 400
 
 getPathACFs = (pathDetails, i) ->
@@ -219,10 +226,8 @@ readAllACFs = (pathObj) ->
     .map ({acfPath, data: {AppState}}) ->
       {path: pathObj.path, i: pathObj.i, gameInfo: AppState, acfPath: acfPath}
 
-$ ->
-  folderListStream = Rx.Observable.just folderListPath
-
-  pathsStream = folderListStream
+runProcess = ->
+  Rx.Observable.just folderListPath
     .flatMap readVDF
     .flatMap parseFolderList
     .map buildPathObject
@@ -232,9 +237,6 @@ $ ->
       footer = Templates.footer(paths: d)
       $("tfoot#selection").replaceWith(footer)
     .flatMap _.identity
-    .share()
-
-  gamesStream = pathsStream
     .flatMap getPathACFs
     .flatMap readAllACFs
     .map buildGameObject
@@ -242,15 +244,16 @@ $ ->
     .do (d) ->
       Games = d
     .flatMap _.identity
-    .share()
-
-  gamesStream.subscribe gamesStreamObserver
-
-  sizesStream = gamesStream
+    .do makeGamesStreamObserver()
     .observeOn Rx.Scheduler.currentThread
     .do markGameLoading
     .flatMap loadGameSize
-    .subscribe sizesStreamObserver
+    .subscribe makeSizesStreamObserver()
+
+$ ->
+  Rx.Observable.fromEvent $("#refresh"), 'click'
+    .startWith "initial load event"
+    .subscribe runProcess
 
   $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->
     $("tr.selected").removeClass("selected")
