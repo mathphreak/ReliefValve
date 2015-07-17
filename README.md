@@ -25,8 +25,9 @@ Yahoo's pure.css, Font Awesome, Zepto.js, and
 [all this stuff][npm dependencies].
 
 # Design
-ReliefValve is designed to imitate the Pressure skin because it's the best.
+ReliefValve is designed to imitate the [Pressure][] skin because it's the best.
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.3.0/package.json#L6-L31
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.4.0/package.json#L6-L31
+[Pressure]: http://hydra.tf/pressure/
