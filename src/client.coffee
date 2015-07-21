@@ -265,7 +265,7 @@ $ ->
     updateSelected()
     event.stopImmediatePropagation()
 
-  $(document).on "click", "tbody .select", (event) ->
+  $(document).on "click", "tbody tr", (event) ->
     $(@).closest("tr").toggleClass("selected")
     updateSelected()
     event.stopImmediatePropagation()
