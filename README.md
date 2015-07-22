@@ -1,5 +1,6 @@
 # Relief Valve
 [![Travis](https://img.shields.io/travis/mathphreak/ReliefValve.svg?style=flat-square)](https://travis-ci.org/mathphreak/ReliefValve)
+[![Coveralls](https://img.shields.io/coveralls/mathphreak/ReliefValve.svg?style=flat-square)](https://coveralls.io/github/mathphreak/ReliefValve)
 
 Prevents dangerous Steam buildups by letting you juggle games
 between library locations.
