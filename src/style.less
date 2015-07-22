@@ -164,6 +164,10 @@ html, body {
     background-color: @darkGray;
     color: @white;
     font: inherit;
+
+    &:disabled {
+      color: darken(@white, 30%);
+    }
   }
 
   #progress-container {

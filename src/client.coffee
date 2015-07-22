@@ -37,17 +37,23 @@ updateSelected = ->
   names = $("tr.selected")
     .get()
     .map (el) -> el.dataset.name
-    .join ", "
   paths = $("tr.selected td .base")
     .get()
     .map (el) -> el.innerText
-    .join ", "
   sizes = Math.round($("tr.selected td:last-child")
     .get()
     .map (el) -> parseFloat(el.innerText) * 100
     .reduce(((a, b) -> a + b), 0)) / 100
-  $("#all-names").text(names)
-  $("#all-paths").text(paths)
+  goodIndex = null
+  $("#selection option").attr "disabled", (i) ->
+    if _.contains(paths, Paths[i].abbr)
+      yes
+    else
+      goodIndex ?= i
+      null
+  $("#selection option:not(:disabled)").first().prop("selected", true)
+  $("#all-names").text names.join ", "
+  $("#all-paths").text paths.join ", "
   if _.isNaN sizes
     if $("#total-size").text() isnt ""
       $("#total-size").html("")
