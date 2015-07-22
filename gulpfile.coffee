@@ -1,7 +1,6 @@
 gulp = require "gulp"
 coffee = require 'gulp-coffee'
 less = require 'gulp-less'
-runElectron = require 'gulp-run-electron'
 jade = require 'gulp-jade'
 namespace = require 'gulp-jade-namespace'
 concat = require 'gulp-concat'
@@ -47,15 +46,6 @@ gulp.task "html", ["html-index", "html-client-templates"], ->
 
 gulp.task "compile", ["js", "css", "html"], ->
 
-gulp.task "run", ["compile"], ->
-  gulp.src "."
-  .pipe runElectron()
-
-gulp.task "restart", runElectron.rerun
-
-gulp.task "live", ["compile", "run"], ->
-  gulp.watch "./src/**/*", ["compile", "restart"]
-
 gulp.task "watch", ->
   gulp.watch "./src/**/*", ["compile"]
 
@@ -81,7 +71,7 @@ gulp.task "dist", ["clean:dist", "compile"], ->
     "./out/**/*"
     "./package.json"
   ], {base: "."}
-  .pipe electron version: '0.29.2', platform: 'win32', arch: 'x64'
+  .pipe electron version: '0.30.0', platform: 'win32', arch: 'x64'
   .pipe gulp.dest "./dist/Relief Valve v#{packageInfo.version}/"
 
 gulp.task "build", ["clean:build", "dist"], ->
