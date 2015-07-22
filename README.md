@@ -1,6 +1,11 @@
-# Relief Valve
-[![Travis](https://img.shields.io/travis/mathphreak/ReliefValve.svg?style=flat-square)](https://travis-ci.org/mathphreak/ReliefValve)
-[![Coveralls](https://img.shields.io/coveralls/mathphreak/ReliefValve.svg?style=flat-square)](https://coveralls.io/github/mathphreak/ReliefValve)
+# Relief Valve [![Travis](https://img.shields.io/travis/mathphreak/ReliefValve.svg?style=flat-square)](https://travis-ci.org/mathphreak/ReliefValve) [![Coveralls](https://img.shields.io/coveralls/mathphreak/ReliefValve.svg?style=flat-square)](https://coveralls.io/github/mathphreak/ReliefValve)
+
+[![GitHub Release Downloads](https://img.shields.io/github/downloads/mathphreak/ReliefValve/latest/total.svg?style=flat-square)](https://github.com/mathphreak/ReliefValve/releases/latest)
+[![GitHub Latest Release](https://img.shields.io/github/release/mathphreak/ReliefValve.svg?style=flat-square)](https://github.com/mathphreak/ReliefValve/releases/latest)
+[![GitHub issues](https://img.shields.io/github/issues/mathphreak/ReliefValve.svg?style=flat-square)](https://github.com/mathphreak/ReliefValve/issues)
+
+[![Dependencies](https://img.shields.io/david/mathphreak/ReliefValve.svg?style=flat-square)](https://david-dm.org/mathphreak/ReliefValve)
+[![Development Dpendencies](https://img.shields.io/david/dev/mathphreak/ReliefValve.svg?style=flat-square)](https://david-dm.org/mathphreak/ReliefValve#info=devDependencies)
 
 Prevents dangerous Steam buildups by letting you juggle games
 between library locations.
