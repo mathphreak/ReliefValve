@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
+    "codecov.io": "^0.1.5",
     "coffee-coverage": "^0.6.2",
-    "coveralls": "^2.11.3",
     "gulp": "^3.9.0",
     "gulp-atom-electron": "^0.12.0",
     "gulp-coffee": "^2.3.1",
