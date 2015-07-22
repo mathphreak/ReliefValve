@@ -1,18 +1,11 @@
-vdf = require 'vdf'
-fs = require 'fs.extra'
-iconv = require 'iconv-lite'
 _ = require "lodash"
-pathMod = require 'path'
 Rx = require 'rx'
 filesize = require 'filesize'
-du = require './util/du'
-copyRecursive = require './util/copy-recursive'
-verify = require './util/verify'
-glob = require 'glob'
-del = require 'del'
 
-# bind encodings like win1252 to Node's default tools
-iconv.extendNodeEncodings()
+pathSteps = require './steps/path'
+gameSteps = require './steps/game'
+sizeSteps = require './steps/size'
+moveSteps = require './steps/move'
 
 # enable long stack traces so that RxJS errors are less terrible to debug
 Rx.config.longStackSupport = yes
@@ -21,71 +14,6 @@ folderListPath = "C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"
 
 Games = []
 Paths = []
-
-DUMMY_ACF_SIZE = 1337
-
-moveGame = (data) ->
-  copyFile = Rx.Observable.fromNodeCallback(fs.copy)
-  copyGame = copyRecursive data.source, data.destination
-  copyACF = copyFile(data.acfSource, data.acfDest).map ->
-    id: Math.random()
-    src: data.acfSource
-    dst: data.acfDest
-    size: DUMMY_ACF_SIZE
-  copyGame
-    .merge copyACF
-
-verifyFile = (data) ->
-  verify(data.src, data.dst).map (x) ->
-    if x
-      # verified properly
-      return data
-    else
-      # not verified
-      return x
-
-deleteOriginal = (data) ->
-  delLater = Rx.Observable.fromNodeCallback del
-  delLater([data.source, data.acfSource], force: yes)
-
-readVDF = (target) ->
-  readFile = Rx.Observable.fromNodeCallback fs.readFile
-  readFile(target, 'win1252').map vdf.parse
-
-readACF = (target) ->
-  readFile = Rx.Observable.fromNodeCallback fs.readFile
-  readFile(target, 'utf8').map vdf.parse
-
-parseFolderList = (details) ->
-  parsed = details.LibraryFolders
-  parsed["0"] = "C:\\Program Files (x86)\\Steam"
-  folders = _.pick parsed, (v, k) ->
-    _.isFinite parseInt k
-  result = []
-  _.forOwn folders, (v, k) ->
-    result[k] = pathMod.normalize v.replace(/\\\\/g, "\\")
-  result
-
-buildPathObject = (path) ->
-  abbr = pathMod.parse(path).root
-  abbr: abbr
-  path: pathMod.normalize(path)
-  rest: pathMod.normalize(path).replace(abbr, "")
-
-buildGameObject = ({path, i, gameInfo, acfPath}) ->
-  fullPath = pathMod.join(
-    path.path,
-    "steamapps",
-    "common",
-    gameInfo.installdir
-  )
-  pathAbbr: path.abbr
-  fullPath: fullPath
-  rest: fullPath.replace(path.abbr, "")
-  rel: fullPath.replace(path.path, "")
-  name: gameInfo.name
-  pathIndex: i
-  acfPath: acfPath
 
 markGameLoading = (game) ->
   $("#gameList tbody tr")
@@ -148,11 +76,6 @@ makeGamesStreamObserver = ->
   , ->
     $("#gameList .loading").hide()
 
-loadGameSize = (game) ->
-  gamePath = game.fullPath
-  du(gamePath)
-    .map (d) -> {name: game.name, data: d}
-
 makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
   # update Games
   _.find(Games, "name", name).size = data
@@ -171,7 +94,7 @@ makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
 
 initializeProgress = (games) ->
   # calculate total size
-  totalSize = _(games).pluck("size").reduce((a,b)->a+b+DUMMY_ACF_SIZE)
+  totalSize = _(games).pluck("size").reduce((a,b)->a+b+moveSteps.DUMMY_ACF_SIZE)
   $("#progress-outer").data("total", totalSize)
 
   # make sure the progress bar starts at zero
@@ -210,36 +133,20 @@ makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
       runProcess()
     , 400
 
-getPathACFs = (pathDetails, i) ->
-  globBetter = Rx.Observable.fromNodeCallback glob
-  steamappsPath = pathMod.join(pathDetails.path, "steamapps")
-  globBetter("appmanifest_*.acf", cwd: steamappsPath)
-    .map (matches) ->
-      paths = _.map matches, (x) ->
-        pathMod.join(steamappsPath, x)
-      {path: pathDetails, i: i, apps: paths}
-
-readAllACFs = (pathObj) ->
-  Rx.Observable.fromArray(pathObj.apps)
-    .flatMap (path) ->
-      readACF(path).map (obj) -> {acfPath: path, data: obj}
-    .map ({acfPath, data: {AppState}}) ->
-      {path: pathObj.path, i: pathObj.i, gameInfo: AppState, acfPath: acfPath}
-
 runProcess = ->
   Rx.Observable.just folderListPath
-    .flatMap readVDF
-    .flatMap parseFolderList
-    .map buildPathObject
+    .flatMap pathSteps.readVDF
+    .flatMap pathSteps.parseFolderList
+    .map pathSteps.buildPathObject
     .toArray()
     .do (d) ->
       Paths = d
       footer = Templates.footer(paths: d)
       $("tfoot#selection").replaceWith(footer)
     .flatMap _.identity
-    .flatMap getPathACFs
-    .flatMap readAllACFs
-    .map buildGameObject
+    .flatMap gameSteps.getPathACFs
+    .flatMap gameSteps.readAllACFs
+    .map gameSteps.buildGameObject
     .toArray()
     .do (d) ->
       Games = d
@@ -247,7 +154,7 @@ runProcess = ->
     .do makeGamesStreamObserver()
     .observeOn Rx.Scheduler.currentThread
     .do markGameLoading
-    .flatMap loadGameSize
+    .flatMap sizeSteps.loadGameSize
     .subscribe makeSizesStreamObserver()
 
 $ ->
@@ -291,21 +198,15 @@ $ ->
       .toArray()
       .do initializeProgress
       .flatMap (x) -> x
-      .map (game) ->
-        acfName = pathMod.basename game.acfPath
-        source: game.fullPath
-        destination: pathMod.join destination, game.rel
-        acfSource: game.acfPath
-        acfDest: pathMod.join destination, "steamapps", acfName
-        gameInfo: game
+      .map moveSteps.makeBuilder destination
       .flatMap (x) ->
-        moveGame(x)
+        moveSteps.moveGame(x)
           .do copyProgressObserver
-          .flatMap verifyFile
+          .flatMap moveSteps.verifyFile
           .do verifyProgressObserver
           .last()
           .map -> x
       .flatMap (data) ->
-        deleteOriginal(data)
+        moveSteps.deleteOriginal(data)
           .map -> data
       .subscribe deleteProgressObserver

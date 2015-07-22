@@ -10,16 +10,6 @@ del = require 'del'
 packageInfo = require './package.json'
 zip = require 'gulp-zip'
 
-gulp.task "js-client", ->
-  gulp.src "./src/client.coffee"
-  .pipe coffee()
-  .pipe gulp.dest "./out/"
-
-gulp.task "js-main", ->
-  gulp.src "./src/main.coffee"
-  .pipe coffee()
-  .pipe gulp.dest "./out/"
-
 gulp.task "js-vendor", ->
   gulp.src [
     "./src/vendor/*.js"
@@ -27,12 +17,12 @@ gulp.task "js-vendor", ->
   ]
   .pipe gulp.dest "./out/"
 
-gulp.task "js-util", ->
-  gulp.src "./src/util/*.coffee"
+gulp.task "js-coffee", ->
+  gulp.src "./src/**/*.coffee", base: "./src"
   .pipe coffee()
-  .pipe gulp.dest "./out/util/"
+  .pipe gulp.dest "./out/"
 
-gulp.task "js", ["js-client", "js-main", "js-vendor", "js-util"], ->
+gulp.task "js", ["js-vendor", "js-coffee"], ->
 
 gulp.task "css-style", ->
   gulp.src "./src/style.less"
