@@ -1,4 +1,4 @@
-# Relief Valve [![Travis](https://img.shields.io/travis/mathphreak/ReliefValve.svg?style=flat-square)](https://travis-ci.org/mathphreak/ReliefValve) [![Codecov](https://img.shields.io/codecov/c/github/mathphreak/ReliefValve.svg)](https://codecov.io/github/mathphreak/ReliefValve)
+# Relief Valve [![Travis](https://img.shields.io/travis/mathphreak/ReliefValve.svg?style=flat-square)](https://travis-ci.org/mathphreak/ReliefValve) [![Codecov](https://img.shields.io/codecov/c/github/mathphreak/ReliefValve.svg?style=flat-square)](https://codecov.io/github/mathphreak/ReliefValve)
 
 [![GitHub Release Downloads](https://img.shields.io/github/downloads/mathphreak/ReliefValve/latest/total.svg?style=flat-square)](https://github.com/mathphreak/ReliefValve/releases/latest)
 [![GitHub Latest Release](https://img.shields.io/github/release/mathphreak/ReliefValve.svg?style=flat-square)](https://github.com/mathphreak/ReliefValve/releases/latest)
