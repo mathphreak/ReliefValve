@@ -18,9 +18,9 @@ getDefaultSteamLibraryPath = ->
         when 'ia32'
           "C:\\Program Files\\Steam"
     when 'darwin'
-      "~/Library/Application Support/Steam"
+      "#{process.env.HOME}/Library/Application Support/Steam"
     when 'linux'
-      "~/.local/share/Steam"
+      "#{process.env.HOME}/.local/share/Steam"
     else
       throw Error "Unsupported OS"
 
