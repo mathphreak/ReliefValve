@@ -45,6 +45,7 @@ buildPathObject = (path) ->
   rest: pathMod.normalize(path).replace(abbr, "")
 
 module.exports =
+  getDefaultSteamLibraryPath: getDefaultSteamLibraryPath
   readVDF: readVDF
   parseFolderList: parseFolderList
   buildPathObject: buildPathObject

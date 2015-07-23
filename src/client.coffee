@@ -10,7 +10,9 @@ moveSteps = require './steps/move'
 # enable long stack traces so that RxJS errors are less terrible to debug
 Rx.config.longStackSupport = yes
 
-folderListPath = "C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"
+libraryPath = pathSteps.getDefaultSteamLibraryPath()
+
+folderListPath = "#{libraryPath}/steamapps/libraryfolders.vdf"
 
 Games = []
 Paths = []
