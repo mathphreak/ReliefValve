@@ -10,6 +10,7 @@ os = require 'os'
 iconv.extendNodeEncodings()
 
 getDefaultSteamLibraryPath = ->
+  ### !pragma coverage-skip-next ###
   switch os.platform()
     when 'win32'
       switch os.arch()

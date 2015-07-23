@@ -20,6 +20,7 @@
     "codecov.io": "0.1.5",
     "coffee-coverage": "0.6.2",
     "coffee-script": "1.9.3",
+    "electron-prebuilt": "^0.30.0",
     "gulp": "3.9.0",
     "gulp-atom-electron": "0.12.0",
     "gulp-coffee": "2.3.1",
@@ -33,7 +34,8 @@
     "mocha": "2.2.5"
   },
   "scripts": {
-    "test": "mocha && istanbul report text-summary lcov"
+    "test": "mocha && istanbul report text-summary lcov",
+    "start": "gulp compile && electron ."
   },
   "repository": {
     "type": "git",
