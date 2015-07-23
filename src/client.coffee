@@ -145,7 +145,6 @@ runProcess = ->
   Rx.Observable.just folderListPath
     .flatMap pathSteps.readVDF
     .flatMap pathSteps.parseFolderList
-    .map pathSteps.buildPathObject
     .toArray()
     .do (d) ->
       Paths = d

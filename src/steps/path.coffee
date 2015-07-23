@@ -34,19 +34,45 @@ parseFolderList = (details) ->
   parsed["0"] = getDefaultSteamLibraryPath()
   folders = _.pick parsed, (v, k) ->
     _.isFinite parseInt k
-  result = []
+  paths = []
   _.forOwn folders, (v, k) ->
-    result[k] = pathMod.normalize v.replace(/\\\\/g, "\\")
-  result
+    paths[k] = pathMod.normalize v.replace(/\\\\/g, "\\")
 
-buildPathObject = (path) ->
-  abbr = pathMod.parse(path).root
-  abbr: abbr
-  path: pathMod.normalize(path)
-  rest: pathMod.normalize(path).replace(abbr, "")
+  result = []
+
+  buildPathObject = (path, i) ->
+    segments = pathMod.normalize(path).split(pathMod.sep)
+    k = 1
+    conflict = -1
+    x = -1
+    find = -> _.findIndex result, (otherPath) ->
+      otherPathSegments = pathMod.normalize(otherPath.path).split(pathMod.sep)
+      myKAbbr = segments[0...k].join(pathMod.sep)
+      otherKAbbr = otherPathSegments[0...k].join(pathMod.sep)
+      myKAbbr is otherKAbbr
+    while (x = find()) > -1 and x isnt i
+      k++
+      conflict = x
+    result[i] =
+      abbr: segments[0...k].join(pathMod.sep) + pathMod.sep
+      path: pathMod.normalize(path)
+      rest: segments[k..].join(pathMod.sep)
+    if conflict > -1
+      conflictPath = result[conflict].path
+      conflictSegments = pathMod.normalize(conflictPath).split(pathMod.sep)
+      result[conflict] =
+        abbr: conflictSegments[0...k].join(pathMod.sep) + pathMod.sep
+        path: pathMod.normalize(conflictPath)
+        rest: conflictSegments[k..].join(pathMod.sep)
+
+  paths.forEach buildPathObject
+
+  result.map (x) ->
+    abbr: x.abbr
+    path: x.path
+    rest: x.rest
 
 module.exports =
   getDefaultSteamLibraryPath: getDefaultSteamLibraryPath
   readVDF: readVDF
   parseFolderList: parseFolderList
-  buildPathObject: buildPathObject
