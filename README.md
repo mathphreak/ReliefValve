@@ -13,7 +13,7 @@ between library locations.
 # Usage
 ReliefValve now works properly, and maybe even on Mac/Linux.
 I'd say it's now better than [Steam Mover][]
-in some ways, but it will keep improving.
+in most ways, but it will keep improving.
 
 0. Make sure Steam already knows about your existing libraries.
 1. Exit Steam (this is important).
@@ -37,5 +37,5 @@ ReliefValve is designed to imitate the [Pressure][] skin because it's the best.
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.6.0/package.json#L6-L35
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.6.1/package.json#L6-L35
 [Pressure]: http://hydra.tf/pressure/
