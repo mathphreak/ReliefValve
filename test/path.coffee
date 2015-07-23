@@ -2,6 +2,7 @@ expect = require('chai').expect
 iconv = require 'iconv-lite'
 fs = require 'fs.extra'
 del = require 'del'
+pathMod = require 'path'
 
 iconv.extendNodeEncodings()
 
@@ -9,6 +10,8 @@ pathSteps = require '../src/steps/path'
 
 # syntactic sugar ftw
 even = it
+
+libraryPath = pathSteps.getDefaultSteamLibraryPath()
 
 before ->
   fs.mkdirpSync "testdata"
@@ -42,6 +45,9 @@ before ->
     """, {encoding: 'win1252'}
 
 describe 'pathSteps', ->
+  describe '#getDefaultSteamLibraryPath', ->
+    it 'should return an absolute path', ->
+      expect(pathMod.isAbsolute libraryPath).to.be.true
   describe '#readVDF', ->
     context 'when there are no folders', ->
       it 'should parse the file properly', (done) ->
@@ -74,7 +80,7 @@ describe 'pathSteps', ->
             TimeNextStatsReport: 42
             ContentStatsID: 1
         expect(result).to.have.length(1)
-        expect(result).to.include("C:\\Program Files (x86)\\Steam")
+        expect(result).to.include(libraryPath)
     context 'when there are folders', ->
       result = pathSteps.parseFolderList
         LibraryFolders:
@@ -83,7 +89,7 @@ describe 'pathSteps', ->
           '1': "E:\\\\TestOne"
           '2': "F:\\\\TestTwo"
       it 'should start with the default library', ->
-        expect(result[0]).to.equal("C:\\Program Files (x86)\\Steam")
+        expect(result[0]).to.equal(libraryPath)
       it 'should include the extra libraries', ->
         expect(result).to.include("E:\\TestOne")
         expect(result).to.include("F:\\TestTwo")
