@@ -102,10 +102,10 @@ makeBuildTask = (platform, arch) ->
       frameworks.forEach fixFramework
   gulp.task "build:#{id}", ["clean:build", "fix:#{id}"], ->
     if platform is 'darwin'
-      gulp.src "./dist/#{id}/**/*", base: "./dist/#{id}"
-      .pipe tar "Relief-Valve-v#{packageInfo.version}-#{id}.tar"
-      .pipe gzip()
-      .pipe gulp.dest "./build/"
+      child.execSync "mkdir -p ../../build", cwd: "./dist/#{id}"
+      child.execSync "tar czf
+        ../../build/Relief-Valve-v#{packageInfo.version}-#{id}.tar.gz
+        *", cwd: "./dist/#{id}"
     else
       gulp.src "./dist/#{id}/**/*", base: "./dist/#{id}"
       .pipe zip "Relief-Valve-v#{packageInfo.version}-#{id}.zip"
