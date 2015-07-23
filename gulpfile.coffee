@@ -8,8 +8,11 @@ electron = require 'gulp-atom-electron'
 del = require 'del'
 packageInfo = require './package.json'
 zip = require 'gulp-zip'
+tar = require 'gulp-tar'
+gzip = require 'gulp-gzip'
 _ = require 'lodash'
 os = require 'os'
+child = require 'child_process'
 
 gulp.task "js:vendor", ->
   gulp.src [
@@ -86,10 +89,27 @@ makeBuildTask = (platform, arch) ->
     gulp.src distSources, {base: "."}
     .pipe electron version: '0.30.0', platform: platform, arch: arch
     .pipe gulp.dest "./dist/#{id}/Relief Valve v#{packageInfo.version}/"
-  gulp.task "build:#{id}", ["clean:build", "dist:#{id}"], ->
-    gulp.src "./dist/#{id}/**/*", base: "./dist/#{id}"
-    .pipe zip "Relief-Valve-v#{packageInfo.version}-#{id}.zip"
-    .pipe gulp.dest "./build/"
+  gulp.task "fix:#{id}", ["dist:#{id}"], ->
+    path = "./dist/#{id}/Relief Valve
+      v#{packageInfo.version}/relief-valve.app/Contents/Frameworks"
+    if platform is 'darwin' and os.platform() isnt 'win32'
+      # fix things that don't download properly
+      frameworks = ['Electron Framework', 'Mantle', 'ReactiveCocoa', 'Squirrel']
+      fixFramework = (framework) ->
+        fPath = "#{path}/#{framework}.framework"
+        child.execSync "ln -s A Current", cwd: "#{fPath}/Versions"
+        child.execSync "ln -s Versions/Current/* .", cwd: fPath
+      frameworks.forEach fixFramework
+  gulp.task "build:#{id}", ["clean:build", "fix:#{id}"], ->
+    if platform is 'darwin'
+      gulp.src "./dist/#{id}/**/*", base: "./dist/#{id}"
+      .pipe tar "Relief-Valve-v#{packageInfo.version}-#{id}.tar"
+      .pipe gzip()
+      .pipe gulp.dest "./build/"
+    else
+      gulp.src "./dist/#{id}/**/*", base: "./dist/#{id}"
+      .pipe zip "Relief-Valve-v#{packageInfo.version}-#{id}.zip"
+      .pipe gulp.dest "./build/"
 
 makeBuildTask 'win32', 'x64'
 makeBuildTask 'win32', 'ia32'
