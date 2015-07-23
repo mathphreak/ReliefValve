@@ -92,6 +92,11 @@ makeBuildTask = (platform, arch) ->
     .pipe gulp.dest "./build/"
 
 makeBuildTask 'win32', 'x64'
+makeBuildTask 'win32', 'ia32'
+makeBuildTask 'darwin', 'x64'
+makeBuildTask 'linux', 'arm'
+makeBuildTask 'linux', 'ia32'
+makeBuildTask 'linux', 'x64'
 
 gulp.task "dist:all", outputs.map((x) -> "dist:#{x}"), ->
 
