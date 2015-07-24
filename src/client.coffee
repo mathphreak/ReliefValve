@@ -2,6 +2,7 @@ _ = require "lodash"
 Rx = require 'rx'
 filesize = require 'filesize'
 
+initSteps = require './steps/init'
 pathSteps = require './steps/path'
 gameSteps = require './steps/game'
 sizeSteps = require './steps/size'
@@ -141,6 +142,20 @@ makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
       runProcess()
     , 400
 
+runningConfirm = (running) ->
+  if running
+    message = "It looks like Steam is currently running.
+      \nIf you move games while Steam is running, bad things may happen.
+      \nIf you have quit Steam or Steam isn't actually running, click OK here.
+      \nContinue?"
+    window.confirm message
+  else
+    yes
+
+makeSteamRunningObserver = -> Rx.Observer.create (continuing) ->
+  if not continuing
+    window.close()
+
 runProcess = ->
   Rx.Observable.just folderListPath
     .flatMap pathSteps.readVDF
@@ -165,6 +180,10 @@ runProcess = ->
     .subscribe makeSizesStreamObserver()
 
 $ ->
+  initSteps.isSteamRunning()
+    .map runningConfirm
+    .subscribe makeSteamRunningObserver()
+
   Rx.Observable.fromEvent $("#refresh"), 'click'
     .startWith "initial load event"
     .subscribe runProcess
@@ -199,7 +218,13 @@ $ ->
     verifyProgressObserver = makeVerifyProgressObserver()
     deleteProgressObserver = makeDeleteProgressObserver()
 
-    Rx.Observable.from(Games)
+    initSteps.isSteamRunning()
+      .map runningConfirm
+      .flatMap (go) ->
+        if go
+          Rx.Observable.from Games
+        else
+          Rx.Observable.empty()
       .filter (game) ->
         $("tr[data-name=\"#{game.name}\"]").hasClass("selected")
       .toArray()
