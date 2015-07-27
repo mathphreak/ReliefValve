@@ -116,9 +116,8 @@ describe 'moveSteps', ->
         child.exec "/usr/bin/time -f %e sh -c 'cp -R #{sourcePath}.acf
           #{benchPath} && cp -R #{sourcePath} #{benchPath}'",
           (err, stdout, stderr) ->
-            console.log "err: #{err}"
-            console.log "stdout: #{stdout.toString()}"
-            console.log "stderr: #{stderr.toString()}"
+            if err?
+              console.log "copy error: #{err}"
             cpDuration = parseFloat(stderr.toString()) * 1000
             del [benchPath], done
     it 'should be no more than 5x as slow as cp', (done) ->
