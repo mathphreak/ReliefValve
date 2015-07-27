@@ -110,12 +110,17 @@ describe 'moveSteps', ->
       if process.platform is 'win32'
         # I ran the 'else' clause in a VM and am just hard coding the result
         cpDuration = 30
+        done()
       else
         # use /usr/bin/time for better results
-        out = child.execSync("/usr/bin/time -f %e sh -c 'cp -R #{sourcePath}.acf
-          #{benchPath} && cp -R #{sourcePath} #{benchPath}' 2>&1").toString()
-        cpDuration = parseFloat(out) * 1000
-      del [benchPath], done
+        child.exec "/usr/bin/time -f %e sh -c 'cp -R #{sourcePath}.acf
+          #{benchPath} && cp -R #{sourcePath} #{benchPath}'",
+          (err, stdout, stderr) ->
+            console.log "err: #{err}"
+            console.log "stdout: #{stdout.toString()}"
+            console.log "stderr: #{stderr.toString()}"
+            cpDuration = parseFloat(stderr.toString()) * 1000
+            del [benchPath], done
     it 'should be no more than 5x as slow as cp', (done) ->
       stepsStart = Date.now()
       moveSteps.moveGame
