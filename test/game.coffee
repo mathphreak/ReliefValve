@@ -4,20 +4,20 @@ del = require 'del'
 
 gameSteps = require '../src/steps/game'
 
-before ->
-  fs.mkdirpSync "testdata/library1/steamapps"
-  fs.mkdirpSync "testdata/library2/steamapps/common/TestGame"
-  fs.writeFileSync 'testdata/library2/steamapps/appmanifest_1337.acf',
-    """
-    "AppState"
-    {
-      "appID"		"1337"
-      "name"		"A Test Game"
-      "installdir"		"TestGame"
-    }
-    """
-
 describe 'gameSteps', ->
+  before ->
+    fs.mkdirpSync "testdata/library1/steamapps"
+    fs.mkdirpSync "testdata/library2/steamapps/common/TestGame"
+    fs.writeFileSync 'testdata/library2/steamapps/appmanifest_1337.acf',
+      """
+      "AppState"
+      {
+        "appID"		"1337"
+        "name"		"A Test Game"
+        "installdir"		"TestGame"
+      }
+      """
+
   describe '#getPathACFs', ->
     context 'when there are no games installed', ->
       emptyLibPathData = {path: "testdata/library1"}
@@ -54,5 +54,5 @@ describe 'gameSteps', ->
             expect(gameInfo.installdir).to.equal("TestGame")
             done()
 
-after (done) ->
-  del ['testdata/library*'], done
+  after (done) ->
+    del ['testdata/library*'], done

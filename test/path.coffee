@@ -13,38 +13,38 @@ libraryPath = pathSteps.getDefaultSteamLibraryPath()
 
 n = (p) -> pathMod.normalize p
 
-before ->
-  fs.mkdirpSync "testdata"
-  fs.writeFileSync 'testdata/none.vdf',
-    """
-    "LibraryFolders"
-    {
-      "TimeNextStatsReport"		"1337133769"
-      "ContentStatsID"		"-1337133713371337137"
-    }
-    """, {encoding: 'win1252'}
-  fs.writeFileSync 'testdata/several-ascii.vdf',
-    """
-    "LibraryFolders"
-    {
-      "TimeNextStatsReport"		"1337133769"
-      "ContentStatsID"		"-1337133713371337137"
-      "1"		"E:\\\\TestOne"
-      "2"		"F:\\\\TestTwo"
-    }
-    """, {encoding: 'win1252'}
-  fs.writeFileSync 'testdata/several-extended.vdf',
-    """
-    "LibraryFolders"
-    {
-      "TimeNextStatsReport"		"1337133769"
-      "ContentStatsID"		"-1337133713371337137"
-      "1"		"E:\\\\TestÖne"
-      "2"		"F:\\\\TéstTwô"
-    }
-    """, {encoding: 'win1252'}
-
 describe 'pathSteps', ->
+  before ->
+    fs.mkdirpSync "testdata"
+    fs.writeFileSync 'testdata/none.vdf',
+      """
+      "LibraryFolders"
+      {
+        "TimeNextStatsReport"		"1337133769"
+        "ContentStatsID"		"-1337133713371337137"
+      }
+      """, {encoding: 'win1252'}
+    fs.writeFileSync 'testdata/several-ascii.vdf',
+      """
+      "LibraryFolders"
+      {
+        "TimeNextStatsReport"		"1337133769"
+        "ContentStatsID"		"-1337133713371337137"
+        "1"		"E:\\\\TestOne"
+        "2"		"F:\\\\TestTwo"
+      }
+      """, {encoding: 'win1252'}
+    fs.writeFileSync 'testdata/several-extended.vdf',
+      """
+      "LibraryFolders"
+      {
+        "TimeNextStatsReport"		"1337133769"
+        "ContentStatsID"		"-1337133713371337137"
+        "1"		"E:\\\\TestÖne"
+        "2"		"F:\\\\TéstTwô"
+      }
+      """, {encoding: 'win1252'}
+
   describe '#getDefaultSteamLibraryPath', ->
     it 'should return an absolute path', ->
       expect(pathMod.isAbsolute libraryPath).to.be.true
@@ -111,5 +111,5 @@ describe 'pathSteps', ->
       it 'should give them different abbreviations', ->
         expect(result[1].abbr).to.not.equal(result[2].abbr)
 
-after (done) ->
-  del ['testdata/'], done
+  after (done) ->
+    del ['testdata/'], done
