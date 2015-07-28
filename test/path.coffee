@@ -111,5 +111,5 @@ describe 'pathSteps', ->
       it 'should give them different abbreviations', ->
         expect(result[1].abbr).to.not.equal(result[2].abbr)
 
-  after (done) ->
-    del ['testdata/'], done
+after (done) ->
+  del ['testdata/'], done

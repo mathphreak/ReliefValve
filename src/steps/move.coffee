@@ -46,7 +46,7 @@ moveGame = (data) ->
     gameCopyProcess = child.spawn "cp", [
       "-Rvp"
       data.source
-      data.destination
+      pathMod.resolve data.destination, ".."
     ]
     processLine = (line) ->
       if line.trim() isnt ""
