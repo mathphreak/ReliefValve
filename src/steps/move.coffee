@@ -51,8 +51,7 @@ moveGame = (data) ->
     ]
     processLine = (line) ->
       if line.trim() isnt ""
-        console.log line
-        pieces = /‘(.*?)’ -> ‘(.*?)’/.exec line
+        pieces = /[‘`](.*?)[’'] -> [‘`](.*?)[’']/.exec line
         console.log pieces
         fileData =
           id: Math.random()
