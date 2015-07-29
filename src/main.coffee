@@ -40,7 +40,7 @@ fullMenu = ->
         ]
       }
       {
-        label: 'View'
+        label: 'Tools'
         submenu: [
           {
             label: 'Reload'
@@ -51,6 +51,11 @@ fullMenu = ->
             label: 'Toggle DevTools'
             accelerator: 'Alt+Cmd+I'
             click: -> mainWindow.toggleDevTools()
+          }
+          {
+            label: 'Toggle Verification'
+            accelerator: 'Alt+Shift+V'
+            click: -> mainWindow.webContents.send 'menuItem', 'verifyToggle'
           }
         ]
       }
@@ -67,7 +72,7 @@ fullMenu = ->
         ]
       }
       {
-        label: 'View'
+        label: 'Tools'
         submenu: [
           {
             label: 'Reload'
@@ -78,6 +83,11 @@ fullMenu = ->
             label: 'Toggle DevTools'
             accelerator: 'Shift+Ctrl+I'
             click: -> mainWindow.toggleDevTools()
+          }
+          {
+            label: 'Toggle Verification'
+            accelerator: 'Alt+Shift+V'
+            click: -> mainWindow.webContents.send 'menuItem', 'verifyToggle'
           }
         ]
       }

@@ -19,6 +19,8 @@ folderListPath = "#{libraryPath}/steamapps/libraryfolders.vdf"
 Games = []
 Paths = []
 
+shouldVerify = no
+
 markGameLoading = (game) ->
   $("#gameList tbody tr")
     .filter -> @dataset.name is game.name
@@ -208,7 +210,12 @@ watchForKonamiCode = ->
 ipc.on 'menuItem', (item) ->
   switch item
     when 'about'
-      alert 'Relief Valve vX.Y.Z'
+      alert "You are running Relief Valve
+        v#{require('../package.json').version}"
+    when 'verifyToggle'
+      shouldVerify = window.confirm "Verifying copied files is currently broken,
+        \nand Steam can already verify installed games.
+        \nEnable anyways?"
 
 $ ->
   initSteps.isSteamRunning()
@@ -266,12 +273,18 @@ $ ->
       .flatMap (x) -> x
       .map moveSteps.makeBuilder destination
       .flatMap (x) ->
-        moveSteps.moveGame(x)
-          .do copyProgressObserver
-          .flatMap moveSteps.verifyFile
-          .do verifyProgressObserver
-          .last()
-          .map -> x
+        if shouldVerify
+          moveSteps.moveGame(x)
+            .do copyProgressObserver
+            .flatMap moveSteps.verifyFile
+            .do verifyProgressObserver
+            .last()
+            .map -> x
+        else
+          moveSteps.moveGame(x)
+            .do copyProgressObserver
+            .last()
+            .map -> x
       .flatMap (data) ->
         moveSteps.deleteOriginal(data)
           .map -> data

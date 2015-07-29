@@ -38,8 +38,8 @@ moveGame = (data) ->
       if pieces.length is 2
         fileData =
           id: Math.random()
-          dst: pieces[1]
-          src: pieces[1].replace data.destination, data.source
+          src: pathMod.normalize pieces[1]
+          dst: pathMod.normalize pieces[1].replace data.source, data.destination
           size: parseInt pieces[0]
         observers.forEach (observer) ->
           observer.onNext fileData
@@ -56,8 +56,8 @@ moveGame = (data) ->
         console.log pieces
         fileData =
           id: Math.random()
-          src: pieces[1]
-          dst: pieces[2]
+          src: pathMod.normalize pieces[1]
+          dst: pathMod.normalize pieces[2]
           size: DUMMY_ACF_SIZE
         observers.forEach (observer) ->
           observer.onNext fileData
@@ -69,7 +69,7 @@ moveGame = (data) ->
     while nextNewlineIndex > -1
       lastNewlineIndex = nextNewlineIndex
       nextNewlineIndex = dataBuffer.indexOf("\n", lastNewlineIndex+1)
-    if nextNewlineIndex > -1
+    if lastNewlineIndex > -1
       lines = dataBuffer.slice(0, lastNewlineIndex).toString().trim().split "\n"
       dataBuffer = dataBuffer.slice lastNewlineIndex+1
       for line in lines
