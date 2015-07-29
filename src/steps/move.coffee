@@ -21,6 +21,7 @@ moveGame = (data) ->
   processLine = (line) ->
   gameCopyProcess = {}
   if process.platform is 'win32'
+    ### !pragma coverage-skip-block ###
     gameCopyProcess = child.spawn "robocopy.exe", [
       data.source
       data.destination
@@ -45,7 +46,7 @@ moveGame = (data) ->
   else
     gameCopyProcess = child.spawn "cp", [
       "-Rvp"
-      data.source
+      pathMod.resolve data.source
       pathMod.resolve data.destination, ".."
     ]
     processLine = (line) ->
@@ -55,7 +56,11 @@ moveGame = (data) ->
         console.log pieces
         fileData =
           id: Math.random()
-          src: pathMod.resolve data.source, line.trim()
+          src: pieces[1]
+          dst: pieces[2]
+          size: DUMMY_ACF_SIZE
+        observers.forEach (observer) ->
+          observer.onNext fileData
   dataBuffer = new Buffer(0)
   gameCopyProcess.stdout.on 'data', (newData) ->
     dataBuffer = Buffer.concat [dataBuffer, newData]
