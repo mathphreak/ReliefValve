@@ -11,11 +11,25 @@ Menu = require 'menu'
 # be closed automatically when the javascript object is GCed.
 mainWindow = null
 
-emptyMenuTemplate = -> []
-
-menuTemplate = ->
+noMenu = ->
   if process.platform is 'darwin'
-    [
+    Menu.buildFromTemplate [
+      {
+        label: 'Relief Valve'
+        submenu: [
+          {
+            label: 'About Relief Valve'
+            selector: 'orderFrontStandardAboutPanel:'
+          }
+        ]
+      }
+    ]
+  else
+    null
+
+fullMenu = ->
+  if process.platform is 'darwin'
+    Menu.buildFromTemplate [
       {
         label: 'Relief Valve'
         submenu: [
@@ -35,14 +49,14 @@ menuTemplate = ->
           }
           {
             label: 'Toggle DevTools'
-            accelerator: 'Option+Cmd+I'
+            accelerator: 'Alt+Cmd+I'
             click: -> mainWindow.toggleDevTools()
           }
         ]
       }
     ]
   else
-    [
+    Menu.buildFromTemplate [
       {
         label: 'Relief Valve'
         submenu: [
@@ -79,9 +93,9 @@ ipc.on 'running', (event, arg) ->
 ipc.on 'showMenu', (event, arg) ->
   console.log "Menu: #{arg}"
   if arg is yes
-    Menu.setApplicationMenu Menu.buildFromTemplate menuTemplate()
+    Menu.setApplicationMenu fullMenu()
   else
-    Menu.setApplicationMenu Menu.buildFromTemplate emptyMenuTemplate()
+    Menu.setApplicationMenu noMenu()
 
 # Quit when all windows are closed.
 app.on 'window-all-closed', ->
@@ -95,7 +109,7 @@ app.on 'ready', ->
   mainWindow = new BrowserWindow width: 800, height: 600, show: false
 
   # Don't use a menu bar.
-  Menu.setApplicationMenu Menu.buildFromTemplate emptyMenuTemplate()
+  Menu.setApplicationMenu noMenu()
 
   url = "file://#{__dirname}/index.html"
 
