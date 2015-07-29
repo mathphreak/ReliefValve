@@ -1,6 +1,7 @@
 _ = require "lodash"
 Rx = require 'rx'
 filesize = require 'filesize'
+ipc = require 'ipc'
 
 initSteps = require './steps/init'
 pathSteps = require './steps/path'
@@ -137,6 +138,7 @@ makeVerifyProgressObserver = -> Rx.Observer.create (x) ->
 makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
   ((e)->throw e), (x) ->
     setTimeout ->
+      ipc.send 'running', no
       $("#progress-container").height("0%")
       $(".progress").height(0)
       runProcess()
@@ -179,10 +181,41 @@ runProcess = ->
     .flatMap sizeSteps.loadGameSize
     .subscribe makeSizesStreamObserver()
 
+watchForKonamiCode = ->
+  codes = [
+    38 # up
+    38 # up
+    40 # down
+    40 # down
+    37 # left
+    39 # right
+    37 # left
+    39 # right
+    66 # b
+    65 # a
+  ]
+  konami = Rx.Observable.fromArray codes
+
+  Rx.Observable.fromEvent $(document), 'keyup'
+    .map (e) ->
+      e.keyCode
+    .windowWithCount 10, 1 # always take the most recent ten
+    .selectMany (x) -> x.sequenceEqual konami
+    .filter (x) -> x
+    .subscribe ->
+      ipc.send 'showMenu', yes
+
+ipc.on 'menuItem', (item) ->
+  switch item
+    when 'about'
+      alert 'Relief Valve vX.Y.Z'
+
 $ ->
   initSteps.isSteamRunning()
     .map runningConfirm
     .subscribe makeSteamRunningObserver()
+
+  watchForKonamiCode()
 
   Rx.Observable.fromEvent $("#refresh"), 'click'
     .startWith "initial load event"
@@ -222,6 +255,7 @@ $ ->
       .map runningConfirm
       .flatMap (go) ->
         if go
+          ipc.send 'running', yes
           Rx.Observable.from Games
         else
           Rx.Observable.empty()

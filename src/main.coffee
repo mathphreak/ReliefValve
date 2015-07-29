@@ -2,12 +2,56 @@
 app = require('app')
 # Module to create native browser window.
 BrowserWindow = require('browser-window')
-
-# use http://git.io/vt4FS
+# Module to communicate with browser window.
+ipc = require 'ipc'
+# Module to control application menu
+Menu = require 'menu'
 
 # Keep a global reference of the window object, if you don't, the window will
 # be closed automatically when the javascript object is GCed.
 mainWindow = null
+
+menuTemplate = -> [
+  {
+    label: 'Relief Valve'
+    submenu: [
+      {
+        label: 'About Relief Valve'
+        selector: 'orderFrontStandardAboutPanel:'
+        click: -> mainWindow.webContents.send 'menuItem', 'about'
+      }
+    ]
+  }
+  {
+    label: 'View'
+    submenu: [
+      {
+        label: 'Reload'
+        accelerator: 'Ctrl+R'
+        click: -> mainWindow.reload()
+      }
+      {
+        label: 'Toggle DevTools'
+        accelerator: 'Shift+Ctrl+I'
+        click: -> mainWindow.toggleDevTools()
+      }
+    ]
+  }
+]
+
+ipc.on 'running', (event, arg) ->
+  console.log "Running: #{arg}"
+  if arg is yes
+    mainWindow?.setProgressBar 1.1
+  else
+    mainWindow?.setProgressBar -1
+
+ipc.on 'showMenu', (event, arg) ->
+  console.log "Menu: #{arg}"
+  if arg is yes
+    Menu.setApplicationMenu Menu.buildFromTemplate menuTemplate()
+  else
+    Menu.setApplicationMenu null
 
 # Quit when all windows are closed.
 app.on 'window-all-closed', ->
