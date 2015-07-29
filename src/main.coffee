@@ -11,33 +11,63 @@ Menu = require 'menu'
 # be closed automatically when the javascript object is GCed.
 mainWindow = null
 
-menuTemplate = -> [
-  {
-    label: 'Relief Valve'
-    submenu: [
+emptyMenuTemplate = -> []
+
+menuTemplate = ->
+  if process.platform is 'darwin'
+    [
       {
-        label: 'About Relief Valve'
-        selector: 'orderFrontStandardAboutPanel:'
-        click: -> mainWindow.webContents.send 'menuItem', 'about'
+        label: 'Relief Valve'
+        submenu: [
+          {
+            label: 'About Relief Valve'
+            selector: 'orderFrontStandardAboutPanel:'
+          }
+        ]
+      }
+      {
+        label: 'View'
+        submenu: [
+          {
+            label: 'Reload'
+            accelerator: 'Cmd+R'
+            click: -> mainWindow.reload()
+          }
+          {
+            label: 'Toggle DevTools'
+            accelerator: 'Option+Cmd+I'
+            click: -> mainWindow.toggleDevTools()
+          }
+        ]
       }
     ]
-  }
-  {
-    label: 'View'
-    submenu: [
+  else
+    [
       {
-        label: 'Reload'
-        accelerator: 'Ctrl+R'
-        click: -> mainWindow.reload()
+        label: 'Relief Valve'
+        submenu: [
+          {
+            label: 'About Relief Valve'
+            click: -> mainWindow.webContents.send 'menuItem', 'about'
+          }
+        ]
       }
       {
-        label: 'Toggle DevTools'
-        accelerator: 'Shift+Ctrl+I'
-        click: -> mainWindow.toggleDevTools()
+        label: 'View'
+        submenu: [
+          {
+            label: 'Reload'
+            accelerator: 'Ctrl+R'
+            click: -> mainWindow.reload()
+          }
+          {
+            label: 'Toggle DevTools'
+            accelerator: 'Shift+Ctrl+I'
+            click: -> mainWindow.toggleDevTools()
+          }
+        ]
       }
     ]
-  }
-]
 
 ipc.on 'running', (event, arg) ->
   console.log "Running: #{arg}"
@@ -51,7 +81,7 @@ ipc.on 'showMenu', (event, arg) ->
   if arg is yes
     Menu.setApplicationMenu Menu.buildFromTemplate menuTemplate()
   else
-    Menu.setApplicationMenu null
+    Menu.setApplicationMenu Menu.buildFromTemplate emptyMenuTemplate()
 
 # Quit when all windows are closed.
 app.on 'window-all-closed', ->
@@ -65,7 +95,7 @@ app.on 'ready', ->
   mainWindow = new BrowserWindow width: 800, height: 600, show: false
 
   # Don't use a menu bar.
-  mainWindow.setMenu null
+  Menu.setApplicationMenu Menu.buildFromTemplate emptyMenuTemplate()
 
   url = "file://#{__dirname}/index.html"
 
