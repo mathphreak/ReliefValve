@@ -145,7 +145,7 @@ describe 'moveSteps', ->
               console.log "native copy error: #{err}"
             cpDuration = parseFloat(stderr.toString()) * 1000
             del ["#{benchPath}/*"], done
-    it 'should be no more than 2x as slow as cp', (done) ->
+    it 'should be no more than 3x as slow as cp', (done) ->
       stepsStart = Date.now()
       moveSteps.moveGame
         source: sourcePath
@@ -158,10 +158,10 @@ describe 'moveSteps', ->
         ###
         console.log "minimum: #{cpDuration}"
         console.log "actual: #{stepsDuration}"
-        console.log "maximum: #{2*cpDuration}"
+        console.log "maximum: #{3*cpDuration}"
         ###
         expect(stepsDuration, 'duration (ms)')
-          .to.be.below(2*cpDuration)
+          .to.be.below(3*cpDuration)
         done()
 
   after (done) ->
