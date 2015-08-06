@@ -105,8 +105,8 @@ describe 'pathSteps', ->
           '2': "E:\\\\Test\\\\Two\\\\Library"
       it 'should include everything', ->
         expect(_.pluck(result, 'path')).to.include n(libraryPath)
-        expect(_.pluck(result, 'path')).to.include n("E:\\Test\\\\One\\Library")
-        expect(_.pluck(result, 'path')).to.include n("E:\\Test\\\\Two\\Library")
+        expect(_.pluck(result, 'path')).to.include n("E:\\Test\\One\\Library")
+        expect(_.pluck(result, 'path')).to.include n("E:\\Test\\Two\\Library")
         expect(result).to.have.length(3)
       it 'should give them different abbreviations', ->
         expect(result[1].abbr).to.not.equal(result[2].abbr)
