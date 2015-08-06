@@ -52,7 +52,6 @@ moveGame = (data) ->
     processLine = (line) ->
       if line.trim() isnt ""
         pieces = /[‘`](.*?)[’'] -> [‘`](.*?)[’']/.exec line
-        console.log pieces[1..2]
         fileData =
           id: Math.random()
           src: pathMod.normalize pieces[1]
