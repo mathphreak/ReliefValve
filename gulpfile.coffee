@@ -87,7 +87,10 @@ makeBuildTask = (platform, arch) ->
   outputs.push id
   gulp.task "dist:#{id}", ["clean:dist", "compile"], ->
     gulp.src distSources, {base: "."}
-    .pipe electron version: '0.30.0', platform: platform, arch: arch
+    .pipe electron
+      version: packageInfo.devDependencies["electron-prebuilt"]
+      platform: platform
+      arch: arch
     .pipe gulp.dest "./dist/#{id}/Relief Valve v#{packageInfo.version}/"
   gulp.task "fix:#{id}", ["dist:#{id}"], ->
     path = "./dist/#{id}/Relief Valve
