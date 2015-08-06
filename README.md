@@ -11,7 +11,7 @@ Prevents dangerous Steam buildups by letting you juggle games
 between library locations.
 
 # Usage
-ReliefValve now works properly, and maybe even on Mac/Linux.
+ReliefValve now works well on Windows and acceptably on Mac/Linux.
 I'd say it's now better than [Steam Mover][]
 in most ways, but it will keep improving.
 
@@ -37,5 +37,5 @@ ReliefValve is designed to imitate the [Pressure][] skin because it's the best.
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.7.0/package.json#L6-L38
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.8.0/package.json#L6-L38
 [Pressure]: http://hydra.tf/pressure/
