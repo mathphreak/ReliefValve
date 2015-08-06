@@ -152,7 +152,7 @@ describe 'moveSteps', ->
         destination: "#{benchPath}/Test"
         acfSource: "#{sourcePath}.acf"
         acfDest: "#{benchPath}/Test.acf"
-      .flatMap moveSteps.verifyFile
+      # .flatMap moveSteps.verifyFile
       .subscribe ((x) -> expect(x).to.be.ok), (->), ->
         stepsDuration = Date.now() - stepsStart
         ###

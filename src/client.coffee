@@ -214,7 +214,7 @@ ipc.on 'menuItem', (item) ->
         v#{require('../package.json').version}"
     when 'verifyToggle'
       shouldVerify = window.confirm "Verifying copied files is currently broken,
-        \nand Steam can already verify installed games.
+        and Steam can already verify installed games.
         \nEnable anyways?"
 
 $ ->

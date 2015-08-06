@@ -4,7 +4,7 @@ initSteps = require '../src/steps/init'
 
 describe 'initSteps', ->
   describe '#isSteamRunning', ->
-    @timeout 5000
+    @timeout 10000
     @slow 2000
     it 'should see when something is not running', (done) ->
       initSteps.isSteamRunning('xyzzy_dummy_task_name')
