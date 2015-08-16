@@ -11,7 +11,7 @@ pathSteps = require '../src/steps/path'
 
 libraryPath = pathSteps.getDefaultSteamLibraryPath()
 
-n = (p) -> pathMod.normalize p
+n = (p...) -> pathMod.normalize p.join pathMod.sep
 
 describe 'pathSteps', ->
   before ->
@@ -88,25 +88,26 @@ describe 'pathSteps', ->
         LibraryFolders:
           TimeNextStatsReport: 42
           ContentStatsID: 1
-          '1': "E:\\\\TestOne"
-          '2': "F:\\\\TestTwo"
+          '1': n("E:","TestOne")
+          '2': n("F:","TestTwo")
       it 'should start with the default library', ->
         expect(result[0].path).to.equal n(libraryPath)
       it 'should include the extra libraries', ->
-        expect(_.pluck(result, 'path')).to.include n("E:\\TestOne")
-        expect(_.pluck(result, 'path')).to.include n("F:\\TestTwo")
+        expect(_.pluck(result, 'path')).to.include n("E:","TestOne")
+        expect(_.pluck(result, 'path')).to.include n("F:","TestTwo")
         expect(result).to.have.length(3)
     context 'when there are folders in similar places', ->
       result = pathSteps.parseFolderList
         LibraryFolders:
           TimeNextStatsReport: 42
           ContentStatsID: 1
-          '1': "E:\\\\Test\\\\One\\\\Library"
-          '2': "E:\\\\Test\\\\Two\\\\Library"
+          '1': n("E:", "Test", "One", "Library")
+          '2': n("E:", "Test", "Two", "Library")
       it 'should include everything', ->
-        expect(_.pluck(result, 'path')).to.include n(libraryPath)
-        expect(_.pluck(result, 'path')).to.include n("E:\\Test\\One\\Library")
-        expect(_.pluck(result, 'path')).to.include n("E:\\Test\\Two\\Library")
+        paths = _.pluck(result, 'path')
+        expect(paths).to.include n(libraryPath)
+        expect(paths).to.include n("E:","Test","One","Library")
+        expect(paths).to.include n("E:","Test","Two","Library")
         expect(result).to.have.length(3)
       it 'should give them different abbreviations', ->
         expect(result[1].abbr).to.not.equal(result[2].abbr)
