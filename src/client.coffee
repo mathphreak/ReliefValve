@@ -160,6 +160,13 @@ makeSteamRunningObserver = -> Rx.Observer.create (continuing) ->
   if not continuing
     window.close()
 
+runUpdateCheck = ->
+  initSteps.updateMessage()
+    .subscribe ([message, url]) ->
+      if window.confirm "#{message}.
+        \nPress OK to download the update or Cancel to not do that."
+        require("shell").openExternal url
+
 runProcess = ->
   Rx.Observable.just folderListPath
     .flatMap pathSteps.readVDF
@@ -223,6 +230,8 @@ $ ->
     .subscribe makeSteamRunningObserver()
 
   watchForKonamiCode()
+
+  runUpdateCheck()
 
   Rx.Observable.fromEvent $("#refresh"), 'click'
     .startWith "initial load event"
