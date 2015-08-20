@@ -24,6 +24,7 @@ readAllACFs = (pathObj) ->
       readACF(path).map (obj) -> {acfPath: path, data: obj}
     .map ({acfPath, data: {AppState}}) ->
       {path: pathObj.path, i: pathObj.i, gameInfo: AppState, acfPath: acfPath}
+    .filter ({gameInfo}) -> gameInfo.StateFlags is '4'
 
 buildGameObject = ({path, i, gameInfo, acfPath}) ->
   fullPath = pathMod.join(

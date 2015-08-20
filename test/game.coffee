@@ -15,24 +15,36 @@ describe 'gameSteps', ->
         "appID"		"1337"
         "name"		"A Test Game"
         "installdir"		"TestGame"
+        "StateFlags"		"4"
+      }
+      """
+    fs.writeFileSync 'testdata/library2/steamapps/appmanifest_9001.acf',
+      """
+      "AppState"
+      {
+        "appID"		"9001"
+        "name"		"A Downloading Game"
+        "installdir"		"Downloading"
+        "StateFlags"		"1026"
       }
       """
 
   describe '#getPathACFs', ->
-    context 'when there are no games installed', ->
+    context 'when there are no games', ->
       emptyLibPathData = {path: "testdata/library1"}
       it 'should find no games', (done) ->
         gameSteps.getPathACFs(emptyLibPathData, 0)
           .subscribe ({apps}) ->
             expect(apps).to.be.empty
             done()
-    context 'when there is a game installed', ->
+    context 'when there are games listed', ->
       fullLibPathData = {path: "testdata/library2"}
-      it 'should find the game', (done) ->
+      it 'should find the games', (done) ->
         gameSteps.getPathACFs(fullLibPathData, 0)
           .subscribe ({apps}) ->
-            expect(apps).to.have.length(1)
+            expect(apps).to.have.length(2)
             expect(apps[0]).to.contain("appmanifest_1337.acf")
+            expect(apps[1]).to.contain("appmanifest_9001.acf")
             done()
 
   describe '#readAllACFs', ->
@@ -52,6 +64,18 @@ describe 'gameSteps', ->
             expect(gameInfo.appID).to.equal("1337")
             expect(gameInfo.name).to.equal("A Test Game")
             expect(gameInfo.installdir).to.equal("TestGame")
+            done()
+    context 'when there is a game downloading', ->
+      desiredACFPath = "testdata/library2/steamapps/appmanifest_9001.acf"
+      input =
+        path: {path: "testdata/library2"}
+        i: 0
+        apps: [desiredACFPath]
+      it 'should not parse the ACF file', (done) ->
+        gameSteps.readAllACFs(input)
+          .toArray()
+          .subscribe (games) ->
+            expect(games).to.have.length(0)
             done()
 
   after (done) ->
