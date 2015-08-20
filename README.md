@@ -37,5 +37,5 @@ ReliefValve is designed to imitate the [Pressure][] skin because it's the best.
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.8.0/package.json#L6-L38
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.9.0/package.json#L6-L40
 [Pressure]: http://hydra.tf/pressure/
