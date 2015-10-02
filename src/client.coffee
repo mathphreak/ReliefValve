@@ -12,6 +12,21 @@ moveSteps = require './steps/move'
 # enable long stack traces so that RxJS errors are less terrible to debug
 Rx.config.longStackSupport = yes
 
+vex.defaultOptions.className = 'vex-theme-plain'
+
+# Helper utilities for building buttons
+vexSubmitButton = (text) ->
+  text: text
+  type: 'submit'
+  className: 'vex-dialog-button-primary'
+vexCancelButton = (text) ->
+  text: text
+  type: 'button'
+  className: 'vex-dialog-button-secondary'
+  click: ($vexContent, event) ->
+    $vexContent.data().vex.value = false
+    return vex.close($vexContent.data().vex.id)
+
 libraryPath = pathSteps.getDefaultSteamLibraryPath()
 
 folderListPath = "#{libraryPath}/steamapps/libraryfolders.vdf"
@@ -146,15 +161,25 @@ makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
       runProcess()
     , 400
 
-runningConfirm = (running) ->
+runningConfirm = (cancelText) -> (running) ->
+  result = new Rx.Subject()
   if running
-    message = "It looks like Steam is currently running.
-      \nIf you move games while Steam is running, bad things may happen.
-      \nIf you have quit Steam or Steam isn't actually running, click OK here.
-      \nContinue?"
-    window.confirm message
+    message = "<p>It looks like Steam is currently running.</p>
+      <p>If you move games while Steam is running, bad things may happen.</p>
+      <p>If you have quit Steam or Steam isn't actually running,
+      just continue.</p>"
+    vex.dialog.confirm
+      message: message
+      buttons: [
+        vexSubmitButton "Continue"
+        vexCancelButton cancelText
+      ]
+      callback: (x) ->
+        result.onNext(x)
+        result.onCompleted()
   else
-    yes
+    result = Rx.Observable.just(yes)
+  return result
 
 makeSteamRunningObserver = -> Rx.Observer.create (continuing) ->
   if not continuing
@@ -163,9 +188,10 @@ makeSteamRunningObserver = -> Rx.Observer.create (continuing) ->
 runUpdateCheck = ->
   initSteps.updateMessage()
     .subscribe ([message, url]) ->
-      if window.confirm "#{message}.
-        \nPress OK to download the update or Cancel to not do that."
-        require("shell").openExternal url
+      vex.dialog.confirm
+        message: "<p>#{message}.</p>
+          <p>Press OK to download the update or Cancel to not do that.</p>"
+        callback: (x) -> require("shell").openExternal url if x
 
 runProcess = ->
   Rx.Observable.just folderListPath
@@ -217,16 +243,18 @@ watchForKonamiCode = ->
 ipc.on 'menuItem', (item) ->
   switch item
     when 'about'
-      alert "You are running Relief Valve
-        v#{require('../package.json').version}"
+      vex.dialog.alert "<p>You are running Relief Valve
+        v#{require('../package.json').version}</p>"
     when 'verifyToggle'
-      shouldVerify = window.confirm "Verifying copied files is currently broken,
-        and Steam can already verify installed games.
-        \nEnable anyways?"
+      vex.dialog.confirm
+        message: "<p>Verifying copied files is currently
+          broken, and Steam can already verify installed games.</p>
+          <p>Enable anyways?</p>"
+        callback: (x) -> shouldVerify = x
 
 $ ->
   initSteps.isSteamRunning()
-    .map runningConfirm
+    .flatMap runningConfirm "Quit"
     .subscribe makeSteamRunningObserver()
 
   watchForKonamiCode()
@@ -268,7 +296,7 @@ $ ->
     deleteProgressObserver = makeDeleteProgressObserver()
 
     initSteps.isSteamRunning()
-      .map runningConfirm
+      .flatMap runningConfirm "Cancel"
       .flatMap (go) ->
         if go
           ipc.send 'running', yes
