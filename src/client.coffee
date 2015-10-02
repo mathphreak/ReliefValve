@@ -271,7 +271,7 @@ $ ->
     event.stopImmediatePropagation()
 
   $(document).on "click", "#globalSelect i.fa-square-o", (event) ->
-    $("tbody tr").addClass("selected")
+    $("tbody tr:not(.loading)").addClass("selected")
     updateSelected()
     event.stopImmediatePropagation()
 
