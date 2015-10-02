@@ -40,7 +40,10 @@
   },
   "scripts": {
     "test": "mocha && istanbul report text-summary lcov",
-    "start": "gulp compile && electron ."
+    "start": "gulp compile && electron .",
+    "watch": "gulp compile watch",
+    "exec": "electron .",
+    "build-all": "mocha && gulp build:all"
   },
   "repository": {
     "type": "git",

@@ -52,7 +52,12 @@ gulp.task "html", ["html:index", "html:client-templates"], ->
 gulp.task "compile", ["js", "css", "html"], ->
 
 gulp.task "watch", ->
-  gulp.watch "./src/**/*", ["compile"]
+  gulp.watch "./src/vendor/*.js", ["js:vendor"]
+  gulp.watch "./src/**/*.coffee", ["js:coffee"]
+  gulp.watch "./src/**/*.less", ["css:style"]
+  gulp.watch "./src/**/*.css", ["css:style"]
+  gulp.watch "./src/index.jade", ["html:index"]
+  gulp.watch ["./src/*.jade", "!./src/index.jade"], ["html:client-templates"]
 
 gulp.task "clean:out", (cb) ->
   del ["out/"], cb
