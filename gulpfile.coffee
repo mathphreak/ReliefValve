@@ -59,17 +59,13 @@ gulp.task "watch", ->
   gulp.watch "./src/index.jade", ["html:index"]
   gulp.watch ["./src/*.jade", "!./src/index.jade"], ["html:client-templates"]
 
-gulp.task "clean:out", (cb) ->
-  del ["out/"], cb
+gulp.task "clean:out", -> del ["out/"]
 
-gulp.task "clean:dist", (cb) ->
-  del ["dist/"], cb
+gulp.task "clean:dist", -> del ["dist/"]
 
-gulp.task "clean:build", (cb) ->
-  del ["build/"], cb
+gulp.task "clean:build", -> del ["build/"]
 
-gulp.task "clean:dev", (cb) ->
-  del ["coverage/"], cb
+gulp.task "clean:dev", -> del ["coverage/"]
 
 gulp.task "clean", ["clean:out", "clean:dist", "clean:build", "clean:dev"], ->
 

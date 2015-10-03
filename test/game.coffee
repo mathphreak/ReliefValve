@@ -78,5 +78,5 @@ describe 'gameSteps', ->
             expect(games).to.have.length(0)
             done()
 
-  after (done) ->
-    del ['testdata/library*'], done
+  after ->
+    del ['testdata/library*']

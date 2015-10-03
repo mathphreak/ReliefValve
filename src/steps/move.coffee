@@ -94,8 +94,7 @@ verifyFile = (data) ->
       return x
 
 deleteOriginal = (data) ->
-  delLater = Rx.Observable.fromNodeCallback del
-  delLater([data.source, data.acfSource], force: yes)
+  Rx.Observable.fromPromise del([data.source, data.acfSource], force: yes)
 
 module.exports =
   DUMMY_ACF_SIZE: DUMMY_ACF_SIZE

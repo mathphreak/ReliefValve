@@ -107,7 +107,7 @@ describe 'moveSteps', ->
   describe 'as a whole', ->
     @timeout 10000
     cpDuration = -1
-    before (done) ->
+    before ->
       # we need to get the time without JS overhead
       if process.platform is 'win32'
         powershellPath =
@@ -137,14 +137,14 @@ describe 'moveSteps', ->
         output = child.execSync(command).toString()
         match = /TotalMilliseconds\s*:\s*([\d\.]+)/.exec(output)
         cpDuration = parseFloat match[1]
-        del ["#{benchPath}/*"], done
+        del ["#{benchPath}/*"]
       else
         child.exec "/usr/bin/time -f %e cp -R #{sourcePath} #{benchPath}",
           (err, stdout, stderr) ->
             if err?
               console.log "native copy error: #{err}"
             cpDuration = parseFloat(stderr.toString()) * 1000
-            del ["#{benchPath}/*"], done
+            del ["#{benchPath}/*"]
     it 'should be no more than 3x as slow as cp', (done) ->
       stepsStart = Date.now()
       moveSteps.moveGame
@@ -164,7 +164,5 @@ describe 'moveSteps', ->
           .to.be.below(3*cpDuration)
         done()
 
-  after (done) ->
-    # I was getting issues with this, so we run it twice rather than debugging
-    del ['testdata/move_*'], ->
-      del ['testdata/move_*'], done
+  after ->
+    del ['testdata/move_*']

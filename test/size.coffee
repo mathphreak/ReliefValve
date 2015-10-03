@@ -29,5 +29,5 @@ describe 'sizeSteps', ->
           expect(data).to.equal(totalSize)
           done()
 
-  after (done) ->
-    del ['testdata/size_library'], done
+  after ->
+    del ['testdata/size_library']
