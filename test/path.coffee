@@ -5,8 +5,6 @@ del = require 'del'
 pathMod = require 'path'
 _ = require 'lodash'
 
-iconv.extendNodeEncodings()
-
 pathSteps = require '../src/steps/path'
 
 libraryPath = pathSteps.getDefaultSteamLibraryPath()
@@ -16,15 +14,15 @@ n = (p...) -> pathMod.normalize p.join pathMod.sep
 describe 'pathSteps', ->
   before ->
     fs.mkdirpSync "testdata"
-    fs.writeFileSync 'testdata/none.vdf',
+    fs.writeFileSync 'testdata/none.vdf', iconv.encode(
       """
       "LibraryFolders"
       {
         "TimeNextStatsReport"		"1337133769"
         "ContentStatsID"		"-1337133713371337137"
       }
-      """, {encoding: 'win1252'}
-    fs.writeFileSync 'testdata/several-ascii.vdf',
+      """, 'win1252')
+    fs.writeFileSync 'testdata/several-ascii.vdf', iconv.encode(
       """
       "LibraryFolders"
       {
@@ -33,8 +31,8 @@ describe 'pathSteps', ->
         "1"		"E:\\\\TestOne"
         "2"		"F:\\\\TestTwo"
       }
-      """, {encoding: 'win1252'}
-    fs.writeFileSync 'testdata/several-extended.vdf',
+      """, 'win1252')
+    fs.writeFileSync 'testdata/several-extended.vdf', iconv.encode(
       """
       "LibraryFolders"
       {
@@ -43,7 +41,7 @@ describe 'pathSteps', ->
         "1"		"E:\\\\TestÖne"
         "2"		"F:\\\\TéstTwô"
       }
-      """, {encoding: 'win1252'}
+      """, 'win1252')
 
   describe '#getDefaultSteamLibraryPath', ->
     it 'should return an absolute path', ->

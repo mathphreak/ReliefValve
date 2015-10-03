@@ -6,9 +6,6 @@ _ = require "lodash"
 pathMod = require 'path'
 os = require 'os'
 
-# bind encodings like win1252 to Node's default tools
-iconv.extendNodeEncodings()
-
 getDefaultSteamLibraryPath = ->
   ### !pragma coverage-skip-next ###
   switch os.platform()
@@ -27,7 +24,9 @@ getDefaultSteamLibraryPath = ->
 
 readVDF = (target) ->
   readFile = Rx.Observable.fromNodeCallback fs.readFile
-  readFile(target, 'win1252').map vdf.parse
+  readFile(target)
+    .map (x) -> iconv.decode(x, 'win1252')
+    .map vdf.parse
 
 parseFolderList = (details) ->
   parsed = details.LibraryFolders
