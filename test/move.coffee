@@ -2,7 +2,6 @@ expect = require('chai').expect
 fs = require 'fs.extra'
 del = require 'del'
 lipsum = require 'lorem-ipsum'
-child = require 'child_process'
 pathMod = require 'path'
 
 moveSteps = require '../src/steps/move'
@@ -11,7 +10,6 @@ sourcePath = "testdata/move_src/Test"
 destPath = "testdata/move_dst/Test"
 failPath = "testdata/move_fail/Test"
 deletePath = "testdata/move_delete/Test"
-benchPath = "testdata/move_benchmark/"
 
 acfData = lipsum()
 test1Data = lipsum()
@@ -38,7 +36,6 @@ describe 'moveSteps', ->
     fs.mkdirpSync deletePath
     fs.writeFileSync "#{deletePath}.acf", acfData
     fs.writeFileSync "#{deletePath}/Test1.txt", test1Data
-    fs.mkdirpSync benchPath
 
   describe '#moveGame', ->
     context "when the destination doesn't already exist", ->
@@ -102,61 +99,6 @@ describe 'moveSteps', ->
         expect(-> fs.readFileSync("#{deletePath}/Test1.txt")).to.throw(Error)
         expect(-> fs.readdirSync(deletePath)).to.throw(Error)
         expect(-> fs.readFileSync("#{deletePath}.acf")).to.throw(Error)
-        done()
-
-  describe 'as a whole', ->
-    @timeout 10000
-    cpDuration = -1
-    before ->
-      # we need to get the time without JS overhead
-      if process.platform is 'win32'
-        powershellPath =
-          'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
-        args = [
-          "-command"
-          "\"& {& 'Measure-Command' {robocopy
-            #{pathMod.normalize sourcePath}
-            #{pathMod.normalize benchPath} /e}}\""
-        ]
-        command = "powershell -command \"& {& 'Measure-Command' {robocopy
-          #{pathMod.normalize sourcePath} #{pathMod.normalize benchPath} /e}}\""
-        ###
-        child.exec command, (err, stdout, stderr) ->
-          console.log "It Finished!"
-          if err?
-            console.log "native copy error: #{err}"
-          else
-            console.log "no native copy error"
-          match = /TotalMilliseconds\s*:\s*([\d\.]+)/.exec(stdout.toString())
-          console.log "Native copy result: #{match}"
-          cpDuration = match[1]
-          del [benchPath], done
-        timeProcess = child.spawn powershellPath, args, {stdio: 'inherit'}
-        timeProcess.on 'exit', done
-        ###
-        output = child.execSync(command).toString()
-        match = /TotalMilliseconds\s*:\s*([\d\.]+)/.exec(output)
-        cpDuration = parseFloat match[1]
-        del ["#{benchPath}/*"]
-      else
-        child.exec "/usr/bin/time -f %e cp -R #{sourcePath} #{benchPath}",
-          (err, stdout, stderr) ->
-            if err?
-              console.log "native copy error: #{err}"
-            cpDuration = parseFloat(stderr.toString()) * 1000
-            del ["#{benchPath}/*"]
-    it 'should be no more than 10x as slow as cp', (done) ->
-      stepsStart = Date.now()
-      moveSteps.moveGame
-        source: sourcePath
-        destination: "#{benchPath}/Test"
-        acfSource: "#{sourcePath}.acf"
-        acfDest: "#{benchPath}/Test.acf"
-      # .flatMap moveSteps.verifyFile
-      .subscribe ((x) -> expect(x).to.be.ok), (->), ->
-        stepsDuration = Date.now() - stepsStart
-        expect(stepsDuration, 'duration (ms)')
-          .to.be.below(10*cpDuration)
         done()
 
   after ->
