@@ -72,6 +72,10 @@ updateSelected = ->
     else
       goodIndex ?= i
       null
+  if goodIndex is null
+    $("#move").addClass "disabled"
+  else
+    $("#move").removeClass "disabled"
   $("#selection option:not(:disabled)").first().prop("selected", true)
   $("#all-names").text names.join ", "
   $("#all-paths").text paths.join ", "
@@ -280,7 +284,7 @@ $ ->
     updateSelected()
     event.stopImmediatePropagation()
 
-  $(document).on "click", "#move", (event) ->
+  $(document).on "click", "#move:not(.disabled)", (event) ->
     # get the selected path
     pathIndex = $("tfoot#selection select")
       .children()
