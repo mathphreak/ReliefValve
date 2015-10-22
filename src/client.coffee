@@ -244,6 +244,21 @@ watchForKonamiCode = ->
     .subscribe ->
       ipc.send 'showMenu', yes
 
+combineOverlappingGames = (allGames) ->
+  _(allGames)
+    .map (oldGame, idx) ->
+      game = _.clone oldGame
+      duplicates = _.filter allGames, (otherGame, idx2) ->
+        otherGame.source is game.source
+      _.each duplicates, (otherGame, idx2) ->
+        if idx2 isnt idx
+          otherGame.drop = yes
+      game.acfSource = _.pluck duplicates, 'acfSource'
+      game.acfDest = _.pluck duplicates, 'acfDest'
+      game
+    .reject 'drop'
+    .value()
+
 ipc.on 'menuItem', (item) ->
   switch item
     when 'about'
@@ -313,6 +328,9 @@ $ ->
       .do initializeProgress
       .flatMap (x) -> x
       .map moveSteps.makeBuilder destination
+      .toArray()
+      .map combineOverlappingGames
+      .flatMap (x) -> x
       .flatMap (x) ->
         if shouldVerify
           moveSteps.moveGame(x)

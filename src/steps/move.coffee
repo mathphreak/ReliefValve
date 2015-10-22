@@ -80,12 +80,11 @@ moveGame = (data) ->
   acfPairs = _.zip([].concat(data.acfSource), [].concat(data.acfDest))
   copyACFs = Rx.Observable.fromArray(acfPairs)
     .flatMap ([src, dst]) ->
-      copyFile(src, dst)
-    .map ->
-      id: Math.random()
-      src: data.acfSource
-      dst: data.acfDest
-      size: DUMMY_ACF_SIZE
+      copyFile(src, dst).map ->
+        id: Math.random()
+        src: src
+        dst: dst
+        size: DUMMY_ACF_SIZE
   copyACFs.merge Rx.Observable.create (observer) ->
     observers.push observer
 
@@ -99,7 +98,7 @@ verifyFile = (data) ->
       return x
 
 deleteOriginal = (data) ->
-  Rx.Observable.fromPromise del([data.source, data.acfSource], force: yes)
+  Rx.Observable.fromPromise del [data.source].concat(data.acfSource), force: yes
 
 module.exports =
   DUMMY_ACF_SIZE: DUMMY_ACF_SIZE
