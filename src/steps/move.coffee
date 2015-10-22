@@ -4,6 +4,7 @@ verify = require '../util/verify'
 del = require 'del'
 pathMod = require 'path'
 child = require 'child_process'
+_ = require 'lodash'
 
 DUMMY_ACF_SIZE = 1337
 
@@ -76,12 +77,15 @@ moveGame = (data) ->
   gameCopyProcess.stdout.on 'end', ->
     observers.forEach (observer) ->
       observer.onCompleted()
-  copyACF = copyFile(data.acfSource, data.acfDest).map ->
-    id: Math.random()
-    src: data.acfSource
-    dst: data.acfDest
-    size: DUMMY_ACF_SIZE
-  copyACF.merge Rx.Observable.create (observer) ->
+  acfPairs = _.zip([].concat(data.acfSource), [].concat(data.acfDest))
+  copyACFs = Rx.Observable.fromArray(acfPairs)
+    .flatMap ([src, dst]) ->
+      copyFile(src, dst).map ->
+        id: Math.random()
+        src: src
+        dst: dst
+        size: DUMMY_ACF_SIZE
+  copyACFs.merge Rx.Observable.create (observer) ->
     observers.push observer
 
 verifyFile = (data) ->
@@ -94,7 +98,7 @@ verifyFile = (data) ->
       return x
 
 deleteOriginal = (data) ->
-  Rx.Observable.fromPromise del([data.source, data.acfSource], force: yes)
+  Rx.Observable.fromPromise del [data.source].concat(data.acfSource), force: yes
 
 module.exports =
   DUMMY_ACF_SIZE: DUMMY_ACF_SIZE

@@ -5,6 +5,11 @@ fs = require 'fs'
 _ = require "lodash"
 vdf = require 'vdf'
 
+validStateFlags =
+  1: no
+  4: yes
+  32: no
+
 readACF = (target) ->
   readFile = Rx.Observable.fromNodeCallback fs.readFile
   readFile(target, 'utf8').map vdf.parse
@@ -24,7 +29,10 @@ readAllACFs = (pathObj) ->
       readACF(path).map (obj) -> {acfPath: path, data: obj}
     .map ({acfPath, data: {AppState}}) ->
       {path: pathObj.path, i: pathObj.i, gameInfo: AppState, acfPath: acfPath}
-    .filter ({gameInfo}) -> gameInfo.StateFlags is '4'
+    .filter ({gameInfo}) ->
+      state = parseInt(gameInfo.StateFlags)
+      _.all _.pairs(validStateFlags), ([flag, val]) ->
+        ((state & parseInt(flag)) is parseInt(flag)) is val
 
 buildGameObject = ({path, i, gameInfo, acfPath}) ->
   fullPath = pathMod.join(

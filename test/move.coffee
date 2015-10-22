@@ -8,6 +8,8 @@ moveSteps = require '../src/steps/move'
 
 sourcePath = "testdata/move_src/Test"
 destPath = "testdata/move_dst/Test"
+dualSrcPath = "testdata/move_dsrc/Test"
+dualDstPath = "testdata/move_ddst/Test"
 failPath = "testdata/move_fail/Test"
 deletePath = "testdata/move_delete/Test"
 
@@ -31,6 +33,11 @@ describe 'moveSteps', ->
     for i in [0..1000]
       fs.writeFileSync "#{sourcePath}/Sub/#{Math.random()}.txt", lipsum()
     fs.mkdirpSync "#{destPath}"
+    fs.mkdirpSync dualSrcPath
+    fs.writeFileSync "#{dualSrcPath}1.acf", "1 #{acfData}"
+    fs.writeFileSync "#{dualSrcPath}2.acf", "2 #{acfData}"
+    fs.writeFileSync "#{dualSrcPath}/Test1.txt", test1Data
+    fs.mkdirpSync dualDstPath
     fs.mkdirpSync failPath
     fs.writeFileSync "#{failPath}.acf", "Nope!"
     fs.mkdirpSync deletePath
@@ -71,6 +78,22 @@ describe 'moveSteps', ->
         expect(error).to.exist
       it 'should not copy anything', ->
         expect(-> fs.readFileSync("#{failPath}/Test1.txt")).to.throw(Error)
+    context 'when there are multiple ACF files', ->
+      before (done) ->
+        moveSteps.moveGame
+          source: dualSrcPath
+          destination: dualDstPath
+          acfSource: ["#{dualSrcPath}1.acf", "#{dualSrcPath}2.acf"]
+          acfDest: ["#{dualDstPath}1.acf", "#{dualDstPath}2.acf"]
+        .subscribe (->), done, done
+      it 'should move both ACFs properly', ->
+        newContents1 = fs.readFileSync "#{dualDstPath}1.acf", opt
+        expect(newContents1).to.equal("1 #{acfData}")
+        newContents2 = fs.readFileSync "#{dualDstPath}2.acf", opt
+        expect(newContents2).to.equal("2 #{acfData}")
+      it 'should move the game files only once', ->
+        newContents = fs.readFileSync "#{destPath}/Test1.txt", opt
+        expect(newContents).to.equal(test1Data)
 
   describe '#verifyFile', ->
     context 'when the files are different', ->

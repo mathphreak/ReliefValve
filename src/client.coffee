@@ -45,6 +45,15 @@ markGameLoading = (game) ->
     .addClass("fa-spin")
     .removeClass("fa-gamepad")
 
+toggleOverlap = (toggledRow) ->
+  thisName = toggledRow.data("name")
+  thisFullPath = toggledRow.children("td:nth-child(2)").text()
+  thisSelected = toggledRow.is(".selected")
+  $("tr td:nth-child(2)").get().filter (child) ->
+    child.innerText.trim() is thisFullPath.trim()
+  .forEach (child) ->
+    $(child).closest("tr").toggleClass("selected", thisSelected)
+
 updateSelected = ->
   hasSelection = $("tr.selected").size() > 0
   if hasSelection
@@ -244,6 +253,21 @@ watchForKonamiCode = ->
     .subscribe ->
       ipc.send 'showMenu', yes
 
+combineOverlappingGames = (allGames) ->
+  _(allGames)
+    .map (oldGame, idx) ->
+      game = _.clone oldGame
+      duplicates = _.filter allGames, (otherGame, idx2) ->
+        otherGame.source is game.source
+      _.each duplicates, (otherGame, idx2) ->
+        if idx2 isnt idx
+          otherGame.drop = yes
+      game.acfSource = _.pluck duplicates, 'acfSource'
+      game.acfDest = _.pluck duplicates, 'acfDest'
+      game
+    .reject 'drop'
+    .value()
+
 ipc.on 'menuItem', (item) ->
   switch item
     when 'about'
@@ -281,6 +305,7 @@ $ ->
 
   $(document).on "click", "tbody tr", (event) ->
     $(@).closest("tr").toggleClass("selected")
+    toggleOverlap $(event.target).closest("tr")
     updateSelected()
     event.stopImmediatePropagation()
 
@@ -313,6 +338,9 @@ $ ->
       .do initializeProgress
       .flatMap (x) -> x
       .map moveSteps.makeBuilder destination
+      .toArray()
+      .map combineOverlappingGames
+      .flatMap (x) -> x
       .flatMap (x) ->
         if shouldVerify
           moveSteps.moveGame(x)
