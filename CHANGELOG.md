@@ -1,5 +1,14 @@
 # Change Log
 
+## [v0.10.0](https://github.com/mathphreak/ReliefValve/tree/v0.10.0) (2015-10-22)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.9.0...v0.10.0)
+
+**Fixed bugs:**
+
+- Selecting all games includes LOADING [\#32](https://github.com/mathphreak/ReliefValve/issues/32)
+- Selecting a game from each location causes problems [\#23](https://github.com/mathphreak/ReliefValve/issues/23)
+- Can't handle different games that install to the same directory [\#21](https://github.com/mathphreak/ReliefValve/issues/21)
+
 ## [v0.9.0](https://github.com/mathphreak/ReliefValve/tree/v0.9.0) (2015-08-20)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.8.0...v0.9.0)
 
