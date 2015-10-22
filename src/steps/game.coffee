@@ -32,7 +32,7 @@ readAllACFs = (pathObj) ->
     .filter ({gameInfo}) ->
       state = parseInt(gameInfo.StateFlags)
       _.all _.pairs(validStateFlags), ([flag, val]) ->
-        ((state & flag) is flag) is val
+        ((state & parseInt(flag)) is parseInt(flag)) is val
 
 buildGameObject = ({path, i, gameInfo, acfPath}) ->
   fullPath = pathMod.join(
