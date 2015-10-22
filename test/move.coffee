@@ -37,6 +37,7 @@ describe 'moveSteps', ->
     fs.writeFileSync "#{dualSrcPath}1.acf", "1 #{acfData}"
     fs.writeFileSync "#{dualSrcPath}2.acf", "2 #{acfData}"
     fs.writeFileSync "#{dualSrcPath}/Test1.txt", test1Data
+    fs.mkdirpSync dualDstPath
     fs.mkdirpSync failPath
     fs.writeFileSync "#{failPath}.acf", "Nope!"
     fs.mkdirpSync deletePath
