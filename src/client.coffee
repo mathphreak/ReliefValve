@@ -45,6 +45,15 @@ markGameLoading = (game) ->
     .addClass("fa-spin")
     .removeClass("fa-gamepad")
 
+toggleOverlap = (toggledRow) ->
+  thisName = toggledRow.data("name")
+  thisFullPath = toggledRow.children("td:nth-child(2)").text()
+  thisSelected = toggledRow.is(".selected")
+  $("tr td:nth-child(2)").get().filter (child) ->
+    child.innerText.trim() is thisFullPath.trim()
+  .forEach (child) ->
+    $(child).closest("tr").toggleClass("selected", thisSelected)
+
 updateSelected = ->
   hasSelection = $("tr.selected").size() > 0
   if hasSelection
@@ -296,6 +305,7 @@ $ ->
 
   $(document).on "click", "tbody tr", (event) ->
     $(@).closest("tr").toggleClass("selected")
+    toggleOverlap $(event.target).closest("tr")
     updateSelected()
     event.stopImmediatePropagation()
 
