@@ -102,4 +102,4 @@ describe 'moveSteps', ->
         done()
 
   after ->
-    del ['testdata/move_*']
+    del ['testdata/move_*/**']
