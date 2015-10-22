@@ -5,9 +5,9 @@ request = require 'request'
 semver = require 'semver'
 
 isSteamRunning = (searchTarget = "steam") ->
-  listLater = Rx.Observable.fromNodeCallback psList
-  listLater().map (data) ->
-    _.any data, (x) -> _.contains x.name.toLowerCase(), searchTarget
+  Rx.Observable.fromPromise psList()
+    .map (data) ->
+      _.any data, (x) -> _.contains x.name.toLowerCase(), searchTarget
 
 updateMessage = (currentVersion = require('../../package.json').version) ->
   requestLater = Rx.Observable.fromNodeCallback request
