@@ -94,14 +94,12 @@ fullMenu = ->
     ]
 
 ipc.on 'running', (event, arg) ->
-  console.log "Running: #{arg}"
   if arg is yes
     mainWindow?.setProgressBar? 1.1
   else
     mainWindow?.setProgressBar? -1
 
 ipc.on 'showMenu', (event, arg) ->
-  console.log "Menu: #{arg}"
   if arg is yes
     Menu.setApplicationMenu fullMenu()
   else

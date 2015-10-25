@@ -85,7 +85,8 @@ updateSelected = ->
     $("#move").addClass "disabled"
   else
     $("#move").removeClass "disabled"
-  $("#selection option:not(:disabled)").first().prop("selected", true)
+  if $("#selection option:selected").is(":disabled")
+    $("#selection option:not(:disabled)").first().prop("selected", true)
   $("#all-names").text names.join ", "
   $("#all-paths").text paths.join ", "
   if _.isNaN sizes
