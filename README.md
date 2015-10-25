@@ -5,13 +5,13 @@
 [![GitHub issues](https://img.shields.io/github/issues/mathphreak/ReliefValve.svg?style=flat-square)](https://github.com/mathphreak/ReliefValve/issues)
 
 [![Dependencies](https://img.shields.io/david/mathphreak/ReliefValve.svg?style=flat-square)](https://david-dm.org/mathphreak/ReliefValve)
-[![Development Dpendencies](https://img.shields.io/david/dev/mathphreak/ReliefValve.svg?style=flat-square)](https://david-dm.org/mathphreak/ReliefValve#info=devDependencies)
+[![Development Dependencies](https://img.shields.io/david/dev/mathphreak/ReliefValve.svg?style=flat-square)](https://david-dm.org/mathphreak/ReliefValve#info=devDependencies)
 
 Prevents dangerous Steam buildups by letting you juggle games
 between library locations.
 
 # Usage
-ReliefValve now works well on Windows and acceptably on Mac/Linux.
+Relief Valve now works well on Windows and acceptably on Mac/Linux.
 I'd say it's now better than [Steam Mover][]
 in most ways, but it will keep improving.
 
@@ -28,15 +28,15 @@ in most ways, but it will keep improving.
 8. Relaunch Steam. Your games will be in their new locations.
 
 # Stack
-ReliefValve is built on Electron and uses the Noto Sans fonts from Google,
+Relief Valve is built on Electron and uses the Noto Sans fonts from Google,
 Yahoo's pure.css, Font Awesome, Zepto.js, [Vex][], and
 [all this stuff][npm dependencies].
 
 # Design
-ReliefValve is designed to imitate the [Pressure][] skin because it's the best.
+Relief Valve is designed to imitate the [Pressure][] skin because it's the best.
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.10.0/package.json#L6-L40
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.10.1/package.json#L6-L40
 [Pressure]: http://hydra.tf/pressure/
 [Vex]: http://github.hubspot.com/vex/
