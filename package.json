@@ -21,7 +21,7 @@
   "devDependencies": {
     "chai": "~3.4.0",
     "codecov.io": "~0.1.6",
-    "coffee-coverage": "~0.6.3",
+    "coffee-coverage": "~0.7.0",
     "coffee-script": "~1.10.0",
     "electron-prebuilt": "0.34.1",
     "gulp": "~3.9.0",
