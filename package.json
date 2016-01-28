@@ -19,7 +19,7 @@
     "xxhashjs": "~0.1.1"
   },
   "devDependencies": {
-    "chai": "~3.4.0",
+    "chai": "~3.5.0",
     "codecov.io": "~0.1.6",
     "coffee-coverage": "~0.7.0",
     "coffee-script": "~1.10.0",
