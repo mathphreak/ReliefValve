@@ -31,7 +31,7 @@ readAllACFs = (pathObj) ->
       {path: pathObj.path, i: pathObj.i, gameInfo: AppState, acfPath: acfPath}
     .filter ({gameInfo}) ->
       state = parseInt(gameInfo.StateFlags)
-      _.all _.pairs(validStateFlags), ([flag, val]) ->
+      _.every _.toPairs(validStateFlags), ([flag, val]) ->
         ((state & parseInt(flag)) is parseInt(flag)) is val
 
 buildGameObject = ({path, i, gameInfo, acfPath}) ->

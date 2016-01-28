@@ -9,7 +9,7 @@ latestVersion = undefined
 isSteamRunning = (searchTarget = "steam") ->
   Rx.Observable.fromPromise psList()
     .map (data) ->
-      _.any data, (x) -> _.contains x.name.toLowerCase(), searchTarget
+      _.some data, (x) -> _.includes x.name.toLowerCase(), searchTarget
 
 updateMessage = (currentVersion = require('../../package.json').version) ->
   dataStream = Rx.Observable.just [no, {tag_name: latestVersion}]

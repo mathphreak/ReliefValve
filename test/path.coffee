@@ -78,7 +78,7 @@ describe 'pathSteps', ->
           ContentStatsID: 1
       it 'should have only the default library', ->
         expect(result).to.have.length(1)
-        expect(_.pluck(result, 'path')).to.include n(libraryPath)
+        expect(_.map(result, 'path')).to.include n(libraryPath)
       it 'should split the path intelligently', ->
         expect(result[0].abbr+result[0].rest).to.equal(result[0].path)
     context 'when there are folders in distinct places', ->
@@ -91,8 +91,8 @@ describe 'pathSteps', ->
       it 'should start with the default library', ->
         expect(result[0].path).to.equal n(libraryPath)
       it 'should include the extra libraries', ->
-        expect(_.pluck(result, 'path')).to.include n("E:","TestOne")
-        expect(_.pluck(result, 'path')).to.include n("F:","TestTwo")
+        expect(_.map(result, 'path')).to.include n("E:","TestOne")
+        expect(_.map(result, 'path')).to.include n("F:","TestTwo")
         expect(result).to.have.length(3)
     context 'when there are folders in similar places', ->
       result = pathSteps.parseFolderList
@@ -102,7 +102,7 @@ describe 'pathSteps', ->
           '1': n("E:", "Test", "One", "Library")
           '2': n("E:", "Test", "Two", "Library")
       it 'should include everything', ->
-        paths = _.pluck(result, 'path')
+        paths = _.map(result, 'path')
         expect(paths).to.include n(libraryPath)
         expect(paths).to.include n("E:","Test","One","Library")
         expect(paths).to.include n("E:","Test","Two","Library")

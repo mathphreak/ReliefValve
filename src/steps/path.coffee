@@ -31,7 +31,7 @@ readVDF = (target) ->
 parseFolderList = (details) ->
   parsed = details.LibraryFolders
   parsed["0"] = getDefaultSteamLibraryPath()
-  folders = _.pick parsed, (v, k) ->
+  folders = _.pickBy parsed, (v, k) ->
     _.isFinite parseInt k
   paths = []
   _.forOwn folders, (v, k) ->
