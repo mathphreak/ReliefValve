@@ -76,7 +76,7 @@ updateSelected = ->
     .reduce(((a, b) -> a + b), 0)) / 100
   goodIndex = null
   $("#selection option").attr "disabled", (i) ->
-    if _.contains(paths, Paths[i].abbr)
+    if _.includes(paths, Paths[i].abbr)
       yes
     else
       goodIndex ?= i
@@ -263,8 +263,8 @@ combineOverlappingGames = (allGames) ->
       _.each duplicates, (otherGame, idx2) ->
         if idx2 isnt idx
           otherGame.drop = yes
-      game.acfSource = _.pluck duplicates, 'acfSource'
-      game.acfDest = _.pluck duplicates, 'acfDest'
+      game.acfSource = _.map duplicates, 'acfSource'
+      game.acfDest = _.map duplicates, 'acfDest'
       game
     .reject 'drop'
     .value()
