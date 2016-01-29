@@ -17,8 +17,8 @@ npm = require 'npm'
 
 gulp.task "js:vendor", ->
   gulp.src [
-    "./src/vendor/*.js"
-    "./node_modules/gulp-jade/node_modules/jade/runtime.js"
+    "./src/vendor/**/*.js"
+    "./node_modules/jade/runtime.js"
   ]
   .pipe gulp.dest "./out/"
 
