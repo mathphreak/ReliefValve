@@ -1,0 +1,29 @@
+.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+  box-sizing: border-box;
+  position:absolute;
+  background-color: rgba(0, 0, 0, (166 / 255));
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  -webkit-transition:border-color .2s linear;
+  -moz-transition:border-color .2s linear;
+  -o-transition:border-color .2s linear;
+  transition:border-color .2s linear;
+  border: 1px solid rgba(255, 255, 255, (100 / 255));
+  opacity: 1;
+  width: 6px;
+}
+
+.ps-container.ps-in-scrolling.ps-y > .ps-scrollbar-y-rail,
+.ps-container:hover.ps-in-scrolling.ps-y > .ps-scrollbar-y-rail,
+.ps-container:hover > .ps-scrollbar-y-rail:hover {
+  background-color: transparent;
+  opacity: 1;
+}
+
+.ps-container.ps-in-scrolling.ps-y > .ps-scrollbar-y-rail > .ps-scrollbar-y,
+.ps-container:hover.ps-in-scrolling.ps-y > .ps-scrollbar-y-rail > .ps-scrollbar-y,
+.ps-container:hover > .ps-scrollbar-y-rail:hover > .ps-scrollbar-y {
+  background-color: rgba(0, 0, 0, (166 / 255));
+  border: 1px solid rgba(255, 255, 255, 1);
+}

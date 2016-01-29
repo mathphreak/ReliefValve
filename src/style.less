@@ -1,38 +1,10 @@
 @import (inline) "vendor/vex/vex.css";
 @import (inline) "vendor/vex/vex-theme-plain.css";
+@import (inline) "vendor/perfect-scrollbar/perfect-scrollbar.css";
+@import (inline) "vendor/pure/pure-nr.css";
 @import "colors.less";
 @import "elements.less";
-@import "vendor/pure/base";
-@import "vendor/pure/buttons";
-@import "vendor/pure/tables";
-
-@scrollbar-width: 17px;
-.table-scrollable() {
-  display: flex;
-  flex-flow: column;
-
-  thead,
-  tfoot,
-  tbody tr {
-    display: table;
-    table-layout: fixed;
-  }
-
-  thead, tfoot {
-    flex: 0 0 auto;
-    width: ~"calc(100% - @{scrollbar-width})";
-  }
-
-  tbody {
-    display: block;
-    flex: 1 1 auto;
-    overflow-y: scroll;
-
-    tr {
-      width: 100%;
-    }
-  }
-}
+@import "scrollbar.less";
 
 @font-face {
   font-family: 'NotoSans';
@@ -59,6 +31,12 @@
   src: url("../assets/NotoSans-BoldItalic.ttf") format('truetype');
 }
 
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+    /* Set your content font stack here: */
+    font-family: "NotoSans";
+}
+
 body {
   font-family: "NotoSans";
   color: @white;
@@ -75,20 +53,44 @@ html, body {
 #gameList {
   width: 100%;
   height: 100%;
-  .table-scrollable();
+  display: flex;
+  flex-flow: column;
 
-  thead, tfoot {
+  & > div {
+    flex: 0 1 auto;
+  }
+
+  .pure-g > div {
+    box-sizing: border-box;
+  }
+
+  .header {
     color: lighten(@white, 100%);
     .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
   }
 
-  tbody tr:hover {
+  .game:hover {
     background-color: lighten(@darkGray, 10%);
     color: lighten(@white, 100%);
   }
 
-  tbody {
-    td {
+  .cell {
+    border-left: 1px solid @white;
+    border-width: 0 0 0 1px;
+    margin: 0;
+    overflow: visible;
+    padding: 0.5em 1em;
+  }
+
+  .cell:first-child {
+    border-left-width: 0;
+  }
+
+  #games {
+    position: relative;
+    flex: 1 1 auto;
+
+    .cell {
       white-space: nowrap;
       overflow: hidden;
     }
@@ -104,11 +106,11 @@ html, body {
     float: right;
   }
 
-  tbody tr .actions {
+  .game .actions {
     visibility: hidden;
   }
 
-  tr:hover .actions, tr.selected .actions {
+  .game:hover .actions, .game.selected .actions {
     visibility: visible;
   }
 
@@ -119,31 +121,31 @@ html, body {
     text-decoration: none;
   }
 
-  tr .rest {
+  .pure-g .rest {
     color: darken(@white, 50%);
   }
 
-  tr:hover .rest {
+  .pure-g:hover .rest {
     color: @white;
   }
 
-  tr .deselected {
+  .pure-g .deselected {
     display: inline;
   }
 
-  tr .selected {
+  .pure-g .selected {
     display: none;
   }
 
-  tr.selected .deselected {
+  .pure-g.selected .deselected {
     display: none;
   }
 
-  tr.selected .selected {
+  .pure-g.selected .selected {
     display: inline;
   }
 
-  tr td:last-child {
+  .pure-g .cell:last-child {
     text-align: right;
     .actions {
       float: left;
@@ -179,7 +181,7 @@ html, body {
 
   #progress-outer {
     padding: 0px;
-    height: 0px;
+    height: 100%;
   }
 
   .progress {

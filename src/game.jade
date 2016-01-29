@@ -1,13 +1,13 @@
-tr(data-name=game.name)
-  td
+.pure-g.game(data-name=game.name)
+  .cell.pure-u-2-5
     span.name= game.name
     .actions
       a.select(href="#")
         i.fa.fa-fw.fa-square-o.deselected
         i.fa.fa-fw.fa-check-square-o.selected
-  td
+  .cell.pure-u-2-5
     .default
       strong.base= game.pathAbbr
       span.rest= game.rest
-  td
+  .cell.pure-u-1-5
     i.fa.fa-gamepad

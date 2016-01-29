@@ -13,25 +13,24 @@ html
     script(type='text/javascript',src='zepto/zepto_selector.js')
     script(type='text/javascript',src='vex/vex.js')
     script(type='text/javascript',src='vex/vex.dialog.js')
+    script(type='text/javascript',src='perfect-scrollbar/perfect-scrollbar.js')
     title Relief Valve
     script(type='text/javascript',src='client.js')
   body
-    table.pure-table#gameList
-      thead
-        tr
-          th Game
-            .actions
-              a#globalSelect.select(href="#"): i.fa.fa-fw.fa-square-o
-          th Location
-            .actions
-              a#refresh(href="#"): i.fa.fa-fw.fa-refresh
-          th Size
-      tbody
-        tr.loading(data-name="     LOADING")
-          td Loading...
-          td ...your games
-          td 1337 GB
-      tfoot#selection(style="display:none;")
-      tfoot#progress-container(style="display:none;")
-        tr
-          td#progress-outer(colspan=3)
+    #gameList
+      .pure-g.header
+        .cell.pure-u-2-5 Game
+          .actions
+            a#globalSelect.select(href="#"): i.fa.fa-fw.fa-square-o
+        .cell.pure-u-2-5 Location
+          .actions
+            a#refresh(href="#"): i.fa.fa-fw.fa-refresh
+        .cell.pure-u-1-5 Size
+      #games
+        .pure-g.game.loading(data-name="     LOADING")
+          .cell.pure-u-2-5 Loading...
+          .cell.pure-u-2-5 ...your games
+          .cell.pure-u-1-5 1337 GB
+      .pure-g.header#selection(style="display:none;")
+      .pure-g.header#progress-container(style="display:none;")
+        .pure-u-1#progress-outer

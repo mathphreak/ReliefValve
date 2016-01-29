@@ -37,7 +37,7 @@ Paths = []
 shouldVerify = no
 
 markGameLoading = (game) ->
-  $("#gameList tbody tr")
+  $("#games .game")
     .filter -> @dataset.name is game.name
     .children()
     .children("i")
@@ -47,15 +47,15 @@ markGameLoading = (game) ->
 
 toggleOverlap = (toggledRow) ->
   thisName = toggledRow.data("name")
-  thisFullPath = toggledRow.children("td:nth-child(2)").text()
+  thisFullPath = toggledRow.children(".cell:nth-child(2)").text()
   thisSelected = toggledRow.is(".selected")
-  $("tr td:nth-child(2)").get().filter (child) ->
+  $(".game .cell:nth-child(2)").get().filter (child) ->
     child.innerText.trim() is thisFullPath.trim()
   .forEach (child) ->
-    $(child).closest("tr").toggleClass("selected", thisSelected)
+    $(child).closest(".game").toggleClass("selected", thisSelected)
 
 updateSelected = ->
-  hasSelection = $("tr.selected").size() > 0
+  hasSelection = $(".game.selected").size() > 0
   if hasSelection
     $("#globalSelect i")
       .addClass "fa-check-square-o"
@@ -64,13 +64,13 @@ updateSelected = ->
     $("#globalSelect i")
       .removeClass "fa-check-square-o"
       .addClass "fa-square-o"
-  names = $("tr.selected")
+  names = $(".game.selected")
     .get()
     .map (el) -> el.dataset.name
-  paths = $("tr.selected td .base")
+  paths = $(".game.selected .cell .base")
     .get()
     .map (el) -> el.innerText
-  sizes = Math.round($("tr.selected td:last-child")
+  sizes = Math.round($(".game.selected .cell:last-child")
     .get()
     .map (el) -> parseFloat(el.innerText) * 100
     .reduce(((a, b) -> a + b), 0)) / 100
@@ -99,30 +99,32 @@ updateSelected = ->
         .appendTo("#total-size")
   else
     $("#total-size").text("#{sizes} GB")
-  $("tfoot#selection").toggle(hasSelection)
+  $("#selection").toggle(hasSelection)
+  Ps.update $('#gameList #games').get(0)
 
 makeGamesStreamObserver = ->
   seen = no
   Rx.Observer.create (game) ->
     if not seen
       seen = yes
-      $("#gameList tbody tr:not(.loading)").remove()
+      $("#games .game:not(.loading)").remove()
       $("#gameList .loading").show()
     result = Templates.game(game: game, paths: Paths)
-    $("#gameList tbody tr")
+    $("#games .game")
       .filter -> @dataset.name.localeCompare(game.name) < 0
       .last()
       .after(result)
+    Ps.update $('#gameList #games').get(0)
   , off # use default error handling for now
   , ->
     $("#gameList .loading").hide()
 
 makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
   # update Games
-  _.find(Games, "name", name).size = data
+  _.find(Games, name: name).size = data
 
   # update game in table
-  $("#gameList tbody tr")
+  $("#games .game")
     .filter -> @dataset.name is name
     .children()
     .last()
@@ -135,7 +137,7 @@ makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
 
 initializeProgress = (games) ->
   # calculate total size
-  totalSize = _(games).pluck("size").reduce((a,b)->a+b+moveSteps.DUMMY_ACF_SIZE)
+  totalSize = _(games).map("size").reduce((a,b)->a+b+moveSteps.DUMMY_ACF_SIZE)
   $("#progress-outer").data("total", totalSize)
 
   # make sure the progress bar starts at zero
@@ -215,7 +217,7 @@ runProcess = ->
     .do (d) ->
       Paths = d
       footer = Templates.footer(paths: d)
-      $("tfoot#selection").replaceWith(footer)
+      $("#selection").replaceWith(footer)
     .flatMap _.identity
     .flatMap gameSteps.getPathACFs
     .flatMap gameSteps.readAllACFs
@@ -290,32 +292,34 @@ $ ->
 
   runUpdateCheck()
 
+  Ps.initialize $('#gameList #games').get(0), suppressScrollX: yes
+
   Rx.Observable.fromEvent $("#refresh"), 'click'
     .startWith "initial load event"
     .subscribe runProcess
 
   $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->
-    $("tr.selected").removeClass("selected")
+    $(".game.selected").removeClass("selected")
     updateSelected()
     event.stopImmediatePropagation()
 
   $(document).on "click", "#globalSelect i.fa-square-o", (event) ->
-    $("tbody tr:not(.loading)").addClass("selected")
+    $("#games .game:not(.loading)").addClass("selected")
     updateSelected()
     event.stopImmediatePropagation()
 
-  $(document).on "click", "tbody tr", (event) ->
-    $(@).closest("tr").toggleClass("selected")
-    toggleOverlap $(event.target).closest("tr")
+  $(document).on "click", "#games .game", (event) ->
+    $(@).closest(".game").toggleClass("selected")
+    toggleOverlap $(event.target).closest(".game")
     updateSelected()
     event.stopImmediatePropagation()
 
   $(document).on "click", "#move:not(.disabled)", (event) ->
     # get the selected path
-    pathIndex = $("tfoot#selection select")
+    pathIndex = $("#selection select")
       .children()
       .map (i,a) ->
-        i if a.innerHTML is $("tfoot#selection select").val()
+        i if a.innerHTML is $("#selection select").val()
       .get()
       .filter( (x) -> x > -1 )[0]
 
@@ -334,7 +338,7 @@ $ ->
         else
           Rx.Observable.empty()
       .filter (game) ->
-        $("tr[data-name=\"#{game.name}\"]").hasClass("selected")
+        $(".game[data-name=\"#{game.name}\"]").hasClass("selected")
       .toArray()
       .do initializeProgress
       .flatMap (x) -> x
