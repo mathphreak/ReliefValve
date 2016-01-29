@@ -13,6 +13,7 @@ gzip = require 'gulp-gzip'
 _ = require 'lodash'
 os = require 'os'
 child = require 'child_process'
+npm = require 'npm'
 
 gulp.task "js:vendor", ->
   gulp.src [
@@ -26,14 +27,14 @@ gulp.task "js:coffee", ->
   .pipe coffee()
   .pipe gulp.dest "./out/"
 
-gulp.task "js", ["js:vendor", "js:coffee"], ->
+gulp.task "js", ["js:vendor", "js:coffee"]
 
 gulp.task "css:style", ->
   gulp.src "./src/style.less"
   .pipe less()
   .pipe gulp.dest "./out/"
 
-gulp.task "css", ["css:style"], ->
+gulp.task "css", ["css:style"]
 
 gulp.task "html:index", ->
   gulp.src "./src/index.jade"
@@ -47,9 +48,9 @@ gulp.task "html:client-templates", ->
   .pipe concat "templates.js"
   .pipe gulp.dest "./out/"
 
-gulp.task "html", ["html:index", "html:client-templates"], ->
+gulp.task "html", ["html:index", "html:client-templates"]
 
-gulp.task "compile", ["js", "css", "html"], ->
+gulp.task "compile", ["js", "css", "html"]
 
 gulp.task "watch", ->
   gulp.watch "./src/vendor/*.js", ["js:vendor"]
@@ -67,27 +68,36 @@ gulp.task "clean:build", -> del ["build/"]
 
 gulp.task "clean:dev", -> del ["coverage/"]
 
-gulp.task "clean", ["clean:out", "clean:dist", "clean:build", "clean:dev"], ->
+gulp.task "clean", ["clean:out", "clean:dist", "clean:build", "clean:dev"]
 
-gulp.task "default", ["compile", "watch"], ->
+gulp.task "default", ["compile", "watch"]
 
-distSources = _(packageInfo.dependencies)
-  .keys()
-  .map (mod) -> "./node_modules/#{mod}/**/*"
-  .value()
-  .concat [
+gulp.task "dist:src:copy", ["clean:dist", "compile"], ->
+  gulp.src [
     "./assets/**/*"
     "./out/**/*"
     "./package.json"
-  ]
+  ], {base: '.'}
+  .pipe gulp.dest "./dist/src/"
+
+gulp.task "dist:src", ["dist:src:copy"], (cb) ->
+  done = (x...) ->
+    process.chdir('../../')
+    cb x...
+  process.chdir('./dist/src/')
+  npm.load {only: 'prod'}, (err) ->
+    return done(err) if err?
+    npm.commands.install [], (err, data) ->
+      return done(err) if err?
+      done()
 
 outputs = []
 
 makeBuildTask = (platform, arch) ->
   id = "#{platform}-#{arch}"
   outputs.push id
-  gulp.task "dist:#{id}", ["clean:dist", "compile"], ->
-    gulp.src distSources, {base: "."}
+  gulp.task "dist:#{id}", ["dist:src"], ->
+    gulp.src './dist/src/**/*'
     .pipe electron
       version: packageInfo.devDependencies["electron-prebuilt"]
       platform: platform
@@ -122,13 +132,13 @@ makeBuildTask 'linux', 'arm'
 makeBuildTask 'linux', 'ia32'
 makeBuildTask 'linux', 'x64'
 
-gulp.task "dist:all", outputs.map((x) -> "dist:#{x}"), ->
+gulp.task "dist:all", outputs.map((x) -> "dist:#{x}")
 
-gulp.task "build:all", outputs.map((x) -> "build:#{x}"), ->
+gulp.task "build:all", outputs.map((x) -> "build:#{x}")
 
 thisPlatform = os.platform()
 thisArch = os.arch()
 
-gulp.task "dist", ["dist:#{thisPlatform}-#{thisArch}"], ->
+gulp.task "dist", ["dist:#{thisPlatform}-#{thisArch}"]
 
-gulp.task "build", ["build:#{thisPlatform}-#{thisArch}"], ->
+gulp.task "build", ["build:#{thisPlatform}-#{thisArch}"]
