@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.11.0](https://github.com/mathphreak/ReliefValve/tree/v0.11.0) (2016-01-28)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.10.2...v0.11.0)
+
+**Fixed bugs:**
+
+- Table setup is terrible [\#28](https://github.com/mathphreak/ReliefValve/issues/28)
+
 ## [v0.10.2](https://github.com/mathphreak/ReliefValve/tree/v0.10.2) (2016-01-28)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.10.1...v0.10.2)
 
