@@ -1,7 +1,7 @@
 _ = require "lodash"
 Rx = require 'rx'
 filesize = require 'filesize'
-ipc = require 'ipc'
+ipc = require('electron').ipcRenderer
 
 initSteps = require './steps/init'
 pathSteps = require './steps/path'

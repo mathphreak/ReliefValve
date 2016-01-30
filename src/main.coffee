@@ -1,11 +1,11 @@
 # Module to control application life.
-app = require('app')
+app = require('electron').app
 # Module to create native browser window.
-BrowserWindow = require('browser-window')
+BrowserWindow = require('electron').BrowserWindow
 # Module to communicate with browser window.
-ipc = require 'ipc'
+ipc = require('electron').ipcMain
 # Module to control application menu
-Menu = require 'menu'
+Menu = require('electron').Menu
 
 # Keep a global reference of the window object, if you don't, the window will
 # be closed automatically when the javascript object is GCed.
@@ -122,7 +122,7 @@ app.on 'ready', ->
   url = "file://#{__dirname}/index.html"
 
   # and load the index.html of the app.
-  mainWindow.loadUrl(url)
+  mainWindow.loadURL(url)
 
   mainWindow.show()
 
