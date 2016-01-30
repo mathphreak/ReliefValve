@@ -1,15 +1,28 @@
 language: node_js
 node_js:
-- "4.2"
-- "5.1.1"
-- "node"
+- '4.2'
+- '5.1.1'
+- 'node'
 cache:
   directories:
   - node_modules
 after_success:
-- 'cat ./coverage/lcov.info | ./node_modules/.bin/codecov'
+- cat ./coverage/lcov.info | ./node_modules/.bin/codecov
 addons:
   apt:
     packages:
     - time
 sudo: false
+before_deploy: "npm run build-all"
+deploy:
+  edge: true
+  provider: releases
+  api_key:
+    secure: Pdl4HOln+P6fZeucg3QcbEKEG4qX1wvNEGZs0vnqoH2zDiRdiZR+ykRcQf9CVbcS2XFxHUjsecGGyld8Ge6yuXyCGV4ZUxQ2nktyJ77hg1py7URS2GXFzGHtl2KcNUkC9QMVWOLojmHqlQBUVWkyUMhxnXN/NzK95CqcPtXjI/asj+lr3zoii5JoBjokBCVynXRq3sqpWQchZYZW+uAj2KoZ6LUt4SVixA1ExyWiJ6eos80Q7Yjc2itZrqUR3+2FlKrupFYWL5xN4/6LsEtSiSdIaHevhn3YyLbvQAFQeWUSU4EvFRQgEJNmGcqJgSl92gbFsDjn1wq8ZqcOa5vxEY5QKpEXa/nFr2ZDQcfOQhkNFhWKZLG1Iw6WS+CTMWslD7hnWj50T6LS1YlluGkOwomKFavZd89VZZbJf5ElVPowSNtH0Q7TiyfVPcmHAp0hvU0pFrFtMX9YuSogtMyG86QCMi3hyElPvDJjthokEUnqQDH7NyLWk/c25gdQoOtyCR5T692go9/vn5JSg93AZVqeA7WShEVu0nkKbM7lCqL0DGAUoo6Xwzzrrd1Ct+vMWaoK3u7esBIX143OVtwHk4Bk6FCMBnw8Mpo3PRCXs+wKIaaqFyTNf8P/yR+LThiU5zMwfW45zkLcPfgtrX95IEbYhc+aosTEquck8LRSi2U=
+  skip_cleanup: true
+  file:
+    - "build/*"
+  file_glob: true
+  on:
+    tags: true
+    node: '5.1.1'
