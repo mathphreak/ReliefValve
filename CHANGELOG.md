@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.12.0](https://github.com/mathphreak/ReliefValve/tree/v0.12.0) (2016-01-30)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.10.1...v0.12.0)
+
+**Implemented enhancements:**
+
+- Sort in Steam order, not alphabetical order [\#37](https://github.com/mathphreak/ReliefValve/issues/37)
+
 ## [v0.11.1](https://github.com/mathphreak/ReliefValve/tree/v0.11.1) (2016-01-30)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.11.0...v0.11.1)
 
