@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.11.1](https://github.com/mathphreak/ReliefValve/tree/v0.11.1) (2016-01-30)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.11.0...v0.11.1)
+
+**Fixed bugs:**
+
+- Crash on exit on Windows
+
 ## [v0.11.0](https://github.com/mathphreak/ReliefValve/tree/v0.11.0) (2016-01-28)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.10.2...v0.11.0)
 

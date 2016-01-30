@@ -4,9 +4,6 @@
 [![GitHub Latest Release](https://img.shields.io/github/release/mathphreak/ReliefValve.svg?style=flat-square)][latest release]
 [![GitHub issues](https://img.shields.io/github/issues/mathphreak/ReliefValve.svg?style=flat-square)](https://github.com/mathphreak/ReliefValve/issues)
 
-[![Dependencies](https://img.shields.io/david/mathphreak/ReliefValve.svg?style=flat-square)](https://david-dm.org/mathphreak/ReliefValve)
-[![Development Dependencies](https://img.shields.io/david/dev/mathphreak/ReliefValve.svg?style=flat-square)](https://david-dm.org/mathphreak/ReliefValve#info=devDependencies)
-
 Prevents dangerous Steam buildups by letting you juggle games
 between library locations.
 
@@ -37,6 +34,6 @@ Relief Valve is designed to imitate the [Pressure][] skin because it's the best.
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.11.0/package.json#L6-L41
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.11.1/package.json#L6-L41
 [Pressure]: http://hydra.tf/pressure/
 [Vex]: http://github.hubspot.com/vex/

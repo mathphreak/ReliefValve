@@ -1,6 +1,6 @@
 {
   "name": "relief-valve",
-  "version": "0.11.1-testing-automatic-builds",
+  "version": "0.11.1",
   "description": "Juggle installed Steam games between locations.",
   "main": "out/main.js",
   "dependencies": {
