@@ -1,19 +1,12 @@
 gulp = require "gulp"
-coffee = require 'gulp-coffee'
-less = require 'gulp-less'
-jade = require 'gulp-jade'
-namespace = require 'gulp-jade-namespace'
-concat = require 'gulp-concat'
-electron = require 'gulp-atom-electron'
 del = require 'del'
 packageInfo = require './package.json'
-zip = require 'gulp-zip'
-tar = require 'gulp-tar'
-gzip = require 'gulp-gzip'
 _ = require 'lodash'
 os = require 'os'
 child = require 'child_process'
 npm = require 'npm'
+
+$ = require('gulp-load-plugins')()
 
 gulp.task "js:vendor", ->
   gulp.src [
@@ -24,28 +17,28 @@ gulp.task "js:vendor", ->
 
 gulp.task "js:coffee", ->
   gulp.src "./src/**/*.coffee", base: "./src"
-  .pipe coffee()
+  .pipe $.coffee()
   .pipe gulp.dest "./out/"
 
 gulp.task "js", ["js:vendor", "js:coffee"]
 
 gulp.task "css:style", ->
   gulp.src "./src/style.less"
-  .pipe less()
+  .pipe $.less()
   .pipe gulp.dest "./out/"
 
 gulp.task "css", ["css:style"]
 
 gulp.task "html:index", ->
   gulp.src "./src/index.jade"
-  .pipe jade()
+  .pipe $.jade()
   .pipe gulp.dest "./out/"
 
 gulp.task "html:client-templates", ->
   gulp.src ["./src/*.jade", "!./src/index.jade"]
-  .pipe jade(client: yes)
-  .pipe namespace()
-  .pipe concat "templates.js"
+  .pipe $.jade(client: yes)
+  .pipe $.jadeNamespace()
+  .pipe $.concat "templates.js"
   .pipe gulp.dest "./out/"
 
 gulp.task "html", ["html:index", "html:client-templates"]
@@ -98,23 +91,12 @@ makeBuildTask = (platform, arch) ->
   outputs.push id
   gulp.task "dist:#{id}", ["dist:src"], ->
     gulp.src './dist/src/**/*'
-    .pipe electron
+    .pipe $.atomElectron
       version: packageInfo.devDependencies["electron-prebuilt"]
       platform: platform
       arch: arch
-    .pipe gulp.dest "./dist/#{id}/Relief Valve v#{packageInfo.version}/"
-  gulp.task "fix:#{id}", ["dist:#{id}"], ->
-    path = "./dist/#{id}/Relief Valve
-      v#{packageInfo.version}/relief-valve.app/Contents/Frameworks"
-    if platform is 'darwin' and os.platform() isnt 'win32'
-      # fix things that don't download properly
-      frameworks = ['Electron Framework', 'Mantle', 'ReactiveCocoa', 'Squirrel']
-      fixFramework = (framework) ->
-        fPath = "#{path}/#{framework}.framework"
-        child.execSync "ln -s A Current", cwd: "#{fPath}/Versions"
-        child.execSync "ln -s Versions/Current/* .", cwd: fPath
-      frameworks.forEach fixFramework
-  gulp.task "build:#{id}", ["clean:build", "fix:#{id}"], ->
+    .pipe $.symdest "./dist/#{id}/Relief Valve v#{packageInfo.version}/"
+  gulp.task "build:#{id}", ["clean:build", "dist:#{id}"], ->
     if platform is 'darwin'
       child.execSync "mkdir -p ../../build", cwd: "./dist/#{id}"
       child.execSync "tar czf
@@ -122,7 +104,7 @@ makeBuildTask = (platform, arch) ->
         *", cwd: "./dist/#{id}"
     else
       gulp.src "./dist/#{id}/**/*", base: "./dist/#{id}"
-      .pipe zip "Relief-Valve-v#{packageInfo.version}-#{id}.zip"
+      .pipe $.zip "Relief-Valve-v#{packageInfo.version}-#{id}.zip"
       .pipe gulp.dest "./build/"
 
 makeBuildTask 'win32', 'x64'
