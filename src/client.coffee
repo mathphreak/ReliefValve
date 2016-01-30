@@ -2,6 +2,7 @@ _ = require "lodash"
 Rx = require 'rx'
 filesize = require 'filesize'
 ipc = require('electron').ipcRenderer
+compareIgnoringArticles = require 'compare-ignoring-articles'
 
 initSteps = require './steps/init'
 pathSteps = require './steps/path'
@@ -109,7 +110,7 @@ makeGamesStreamObserver = ->
       $("#gameList .loading").show()
     result = Templates.game(game: game, paths: Paths)
     $("#games .game")
-      .filter -> @dataset.name.localeCompare(game.name) < 0
+      .filter -> compareIgnoringArticles(@dataset.name, game.name, false) < 0
       .last()
       .after(result)
     Ps.update $('#gameList #games').get(0)
