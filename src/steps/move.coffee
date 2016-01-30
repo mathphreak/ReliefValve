@@ -1,6 +1,5 @@
 Rx = require 'rx'
 fs = require 'fs.extra'
-verify = require '../util/verify'
 del = require 'del'
 pathMod = require 'path'
 child = require 'child_process'
@@ -88,15 +87,6 @@ moveGame = (data) ->
   copyACFs.merge Rx.Observable.create (observer) ->
     observers.push observer
 
-verifyFile = (data) ->
-  verify(data.src, data.dst).map (x) ->
-    if x
-      # verified properly
-      return data
-    else
-      # not verified
-      return x
-
 deleteOriginal = (data) ->
   Rx.Observable.fromPromise del [data.source].concat(data.acfSource), force: yes
 
@@ -104,5 +94,4 @@ module.exports =
   DUMMY_ACF_SIZE: DUMMY_ACF_SIZE
   makeBuilder: makeBuilder
   moveGame: moveGame
-  verifyFile: verifyFile
   deleteOriginal: deleteOriginal

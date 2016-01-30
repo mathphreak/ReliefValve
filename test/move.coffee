@@ -95,24 +95,6 @@ describe 'moveSteps', ->
         newContents = fs.readFileSync "#{destPath}/Test1.txt", opt
         expect(newContents).to.equal(test1Data)
 
-  describe '#verifyFile', ->
-    context 'when the files are different', ->
-      obj =
-        src: "#{sourcePath}/Test3.txt"
-        dst: "#{sourcePath}/NotTest3.txt"
-      it 'should detect that they are different', (done) ->
-        moveSteps.verifyFile(obj).subscribe (x) ->
-          expect(x).to.be.false
-        , (->), done
-    context 'when the files are identical', ->
-      obj =
-        src: "#{sourcePath}/Test3.txt"
-        dst: "#{sourcePath}/Test3Again.txt"
-      it 'should detect that they are identical', (done) ->
-        moveSteps.verifyFile(obj).subscribe (x) ->
-          expect(x).to.equal(obj)
-        , (->), done
-
   describe '#deleteOriginal', ->
     it 'should delete the source', (done) ->
       moveSteps.deleteOriginal

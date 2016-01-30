@@ -15,8 +15,7 @@
     "rx": "~4.0.0",
     "semver": "~5.1.0",
     "vdf": "~0.0.2",
-    "walk": "~2.3.9",
-    "xxhashjs": "~0.1.1"
+    "walk": "~2.3.9"
   },
   "devDependencies": {
     "chai": "~3.5.0",

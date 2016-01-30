@@ -34,8 +34,6 @@ folderListPath = "#{libraryPath}/steamapps/libraryfolders.vdf"
 Games = []
 Paths = []
 
-shouldVerify = no
-
 markGameLoading = (game) ->
   $("#games .game")
     .filter -> @dataset.name is game.name
@@ -165,9 +163,6 @@ makeCopyProgressObserver = -> Rx.Observer.create (x) ->
   addProgress x
 , ((x) -> console.log "Error while moving: #{x}")
 
-makeVerifyProgressObserver = -> Rx.Observer.create (x) ->
-  $(".progress[data-id='#{x.id}']").addClass("verified")
-
 makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
   ((e)->throw e), (x) ->
     setTimeout ->
@@ -276,12 +271,6 @@ ipc.on 'menuItem', (item) ->
     when 'about'
       vex.dialog.alert "<p>You are running Relief Valve
         v#{require('../package.json').version}</p>"
-    when 'verifyToggle'
-      vex.dialog.confirm
-        message: "<p>Verifying copied files is currently
-          broken, and Steam can already verify installed games.</p>
-          <p>Enable anyways?</p>"
-        callback: (x) -> shouldVerify = x
 
 $ ->
   initSteps.isSteamRunning()
@@ -326,7 +315,6 @@ $ ->
     destination = Paths[pathIndex].path
 
     copyProgressObserver = makeCopyProgressObserver()
-    verifyProgressObserver = makeVerifyProgressObserver()
     deleteProgressObserver = makeDeleteProgressObserver()
 
     initSteps.isSteamRunning()
@@ -347,18 +335,10 @@ $ ->
       .map combineOverlappingGames
       .flatMap (x) -> x
       .flatMap (x) ->
-        if shouldVerify
-          moveSteps.moveGame(x)
-            .do copyProgressObserver
-            .flatMap moveSteps.verifyFile
-            .do verifyProgressObserver
-            .last()
-            .map -> x
-        else
-          moveSteps.moveGame(x)
-            .do copyProgressObserver
-            .last()
-            .map -> x
+        moveSteps.moveGame(x)
+          .do copyProgressObserver
+          .last()
+          .map -> x
       .flatMap (data) ->
         moveSteps.deleteOriginal(data)
           .map -> data
