@@ -147,7 +147,8 @@ initializeProgress = (games) ->
   totalSize = _(games)
     .map("sizeData")
     .map(sizeKey)
-    .reduce((a,b) -> a + b + acfSize)
+    .map (x) -> x + acfSize
+    .reduce((a,b) -> a + b)
   totalSize *= moveSteps.DUMMY_SIZE unless process.platform is 'win32'
   $("#progress-outer").data("total", totalSize)
 
