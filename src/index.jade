@@ -20,6 +20,13 @@ html
     #gameList
       .pure-g.header
         .cell.pure-u-2-5 Game
+          .search
+            form
+              span.prefix
+                i.fa.fa-search
+              input(type='search',placeholder='Search',required=true)
+              span.suffix
+                i.fa.fa-close#clearSearch
           .actions
             a#globalSelect.select(href="#"): i.fa.fa-fw.fa-square-o
         .cell.pure-u-2-5 Location

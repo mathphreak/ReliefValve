@@ -67,6 +67,10 @@ html, body {
   .header {
     color: lighten(@white, 100%);
     .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
+
+    .cell {
+      font-size: 10pt;
+    }
   }
 
   .game:hover {
@@ -197,4 +201,47 @@ html, body {
   .gradient(darken(@gray, 30%), darken(@gray, 30%), darken(@gray, 15%));
   color: darken(white, 30%);
   cursor: not-allowed;
+}
+
+.search {
+  display: inline-block;
+  margin-left: 1em;
+  position: relative;
+
+  color: lighten(@lightGray, 20%);
+
+  .prefix {
+    position: absolute;
+    left: 4px;
+    top: 1px;
+  }
+
+  .suffix {
+    display: none;
+    position: absolute;
+    right: 4px;
+    top: 1px;
+  }
+
+  input {
+    border-radius: 10px;
+    border: 1px solid @darkGray;
+
+    color: @darkGray;
+
+    font-size: 9pt;
+
+    padding-left: 1.5em;
+
+    width: 15em;
+
+    &:focus, &:valid {
+      outline: none;
+      border: 1px solid @blue;
+    }
+  }
+
+  input:valid + .suffix {
+    display: inline;
+  }
 }

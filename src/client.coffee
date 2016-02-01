@@ -273,6 +273,12 @@ ipc.on 'menuItem', (item) ->
       vex.dialog.alert "<p>You are running Relief Valve
         v#{require('../package.json').version}</p>"
 
+updateSearch = ->
+  query = $(".search input").val()
+  $(".game:not(.loading)").each (i, x) ->
+    name = x.dataset.name
+    $(x).toggle _.includes(name.toLocaleLowerCase(), query.toLocaleLowerCase())
+
 $ ->
   initSteps.isSteamRunning()
     .flatMap runningConfirm "Quit"
@@ -287,6 +293,13 @@ $ ->
   Rx.Observable.fromEvent $("#refresh"), 'click'
     .startWith "initial load event"
     .subscribe runProcess
+
+  $(document).on "click", "#clearSearch", (event) ->
+    $(".search input").val("").focus()
+    updateSearch()
+
+  $(document).on "input", ".search input", (event) ->
+    updateSearch()
 
   $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->
     $(".game.selected").removeClass("selected")
