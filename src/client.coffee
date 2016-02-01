@@ -139,11 +139,16 @@ initializeProgress = (games) ->
     'size'
   else
     'nodes'
+  acfSize = if process.platform is 'win32'
+    moveSteps.DUMMY_SIZE
+  else
+    1
   # calculate total size
   totalSize = _(games)
     .map("sizeData")
     .map(sizeKey)
-    .reduce((a,b)->a+b+moveSteps.DUMMY_SIZE)
+    .reduce((a,b) -> a + b + acfSize)
+  totalSize *= moveSteps.DUMMY_SIZE unless process.platform is 'win32'
   $("#progress-outer").data("total", totalSize)
 
   # make sure the progress bar starts at zero
