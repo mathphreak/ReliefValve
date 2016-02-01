@@ -26,7 +26,8 @@ describe 'sizeSteps', ->
       sizeSteps.loadGameSize({name:"A Game",fullPath:gamePath})
         .subscribe ({name, data}) ->
           expect(name).to.equal("A Game")
-          expect(data).to.equal(totalSize)
+          expect(data.nodes).to.equal(1 + 1 + 4)
+          expect(data.size).to.equal(totalSize)
           done()
 
   after ->

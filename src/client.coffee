@@ -120,14 +120,14 @@ makeGamesStreamObserver = ->
 
 makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
   # update Games
-  _.find(Games, name: name).size = data
+  _.find(Games, name: name).sizeData = data
 
   # update game in table
   $("#games .game")
     .filter -> @dataset.name is name
     .children()
     .last()
-    .text filesize(data, exponent: 3)
+    .text filesize(data.size, exponent: 3)
 
   # update the footer (recalculate total size of all selected)
   updateSelected()
@@ -135,8 +135,15 @@ makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
 , off
 
 initializeProgress = (games) ->
+  sizeKey = if process.platform is 'win32'
+    'size'
+  else
+    'nodes'
   # calculate total size
-  totalSize = _(games).map("size").reduce((a,b)->a+b+moveSteps.DUMMY_ACF_SIZE)
+  totalSize = _(games)
+    .map("sizeData")
+    .map(sizeKey)
+    .reduce((a,b)->a+b+moveSteps.DUMMY_SIZE)
   $("#progress-outer").data("total", totalSize)
 
   # make sure the progress bar starts at zero
