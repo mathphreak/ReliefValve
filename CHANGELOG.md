@@ -1,7 +1,14 @@
 # Change Log
 
+## [v0.13.0](https://github.com/mathphreak/ReliefValve/tree/v0.13.0) (2016-01-30)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.12.0...v0.13.0)
+
+**Implemented enhancements:**
+
+- Search for games [\#2](https://github.com/mathphreak/ReliefValve/issues/2)
+
 ## [v0.12.0](https://github.com/mathphreak/ReliefValve/tree/v0.12.0) (2016-01-30)
-[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.10.1...v0.12.0)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.11.1...v0.12.0)
 
 **Implemented enhancements:**
 
