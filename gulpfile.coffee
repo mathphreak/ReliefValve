@@ -78,7 +78,7 @@ gulp.task "dist:src", ["dist:src:copy"], (cb) ->
     process.chdir('../../')
     cb x...
   process.chdir('./dist/src/')
-  npm.load {only: 'prod'}, (err) ->
+  npm.load {production: yes, progress: false}, (err) ->
     return done(err) if err?
     npm.commands.install [], (err, data) ->
       return done(err) if err?
@@ -95,6 +95,7 @@ makeBuildTask = (platform, arch) ->
       version: packageInfo.devDependencies["electron-prebuilt"]
       platform: platform
       arch: arch
+      quiet: yes
     .pipe $.symdest "./dist/#{id}/Relief Valve v#{packageInfo.version}/"
   gulp.task "build:#{id}", ["clean:build", "dist:#{id}"], ->
     if platform is 'darwin'
