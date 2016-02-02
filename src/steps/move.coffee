@@ -5,7 +5,7 @@ pathMod = require 'path'
 child = require 'child_process'
 _ = require 'lodash'
 
-DUMMY_ACF_SIZE = 1337
+DUMMY_SIZE = 1337
 
 makeBuilder = (destination) -> (game) ->
   acfName = pathMod.basename game.acfPath
@@ -56,7 +56,7 @@ moveGame = (data) ->
           id: Math.random()
           src: pathMod.normalize pieces[1]
           dst: pathMod.normalize pieces[2]
-          size: DUMMY_ACF_SIZE
+          size: DUMMY_SIZE
         observers.forEach (observer) ->
           observer.onNext fileData
   dataBuffer = new Buffer(0)
@@ -83,7 +83,7 @@ moveGame = (data) ->
         id: Math.random()
         src: src
         dst: dst
-        size: DUMMY_ACF_SIZE
+        size: DUMMY_SIZE
   copyACFs.merge Rx.Observable.create (observer) ->
     observers.push observer
 
@@ -91,7 +91,7 @@ deleteOriginal = (data) ->
   Rx.Observable.fromPromise del [data.source].concat(data.acfSource), force: yes
 
 module.exports =
-  DUMMY_ACF_SIZE: DUMMY_ACF_SIZE
+  DUMMY_SIZE: DUMMY_SIZE
   makeBuilder: makeBuilder
   moveGame: moveGame
   deleteOriginal: deleteOriginal
