@@ -12,6 +12,7 @@ addons:
   apt:
     packages:
     - time
+    - wine
 sudo: false
 before_deploy: "npm run build-all"
 deploy:
