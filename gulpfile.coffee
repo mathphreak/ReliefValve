@@ -95,6 +95,8 @@ makeBuildTask = (platform, arch) ->
       version: packageInfo.devDependencies["electron-prebuilt"]
       platform: platform
       arch: arch
+      winIcon: "./icon/ReliefValve.ico"
+      darwinIcon: "./icon/ReliefValve.icns"
       quiet: yes
     .pipe $.symdest "./dist/#{id}/Relief Valve v#{packageInfo.version}/"
   gulp.task "build:#{id}", ["clean:build", "dist:#{id}"], ->
