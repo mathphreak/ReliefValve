@@ -11,78 +11,6 @@ Menu = require('electron').Menu
 # be closed automatically when the javascript object is GCed.
 mainWindow = null
 
-noMenu = ->
-  if process.platform is 'darwin'
-    Menu.buildFromTemplate [
-      {
-        label: 'Relief Valve'
-        submenu: [
-          {
-            label: 'About Relief Valve'
-            selector: 'orderFrontStandardAboutPanel:'
-          }
-        ]
-      }
-    ]
-  else
-    null
-
-fullMenu = ->
-  if process.platform is 'darwin'
-    Menu.buildFromTemplate [
-      {
-        label: 'Relief Valve'
-        submenu: [
-          {
-            label: 'About Relief Valve'
-            selector: 'orderFrontStandardAboutPanel:'
-          }
-        ]
-      }
-      {
-        label: 'Tools'
-        submenu: [
-          {
-            label: 'Reload'
-            accelerator: 'Cmd+R'
-            click: -> mainWindow.reload()
-          }
-          {
-            label: 'Toggle DevTools'
-            accelerator: 'Alt+Cmd+I'
-            click: -> mainWindow.toggleDevTools()
-          }
-        ]
-      }
-    ]
-  else
-    Menu.buildFromTemplate [
-      {
-        label: 'Relief Valve'
-        submenu: [
-          {
-            label: 'About Relief Valve'
-            click: -> mainWindow.webContents.send 'menuItem', 'about'
-          }
-        ]
-      }
-      {
-        label: 'Tools'
-        submenu: [
-          {
-            label: 'Reload'
-            accelerator: 'Ctrl+R'
-            click: -> mainWindow.reload()
-          }
-          {
-            label: 'Toggle DevTools'
-            accelerator: 'Shift+Ctrl+I'
-            click: -> mainWindow.toggleDevTools()
-          }
-        ]
-      }
-    ]
-
 ipc.on 'running', (event, arg) ->
   if arg is yes
     mainWindow?.setProgressBar? 1.1
@@ -90,15 +18,68 @@ ipc.on 'running', (event, arg) ->
     mainWindow?.setProgressBar? -1
 
 ipc.on 'showMenu', (event, arg) ->
-  if arg is yes
-    Menu.setApplicationMenu fullMenu()
-  else
-    Menu.setApplicationMenu noMenu()
+  buildMenu arg
 
 # Quit when all windows are closed.
 app.on 'window-all-closed', ->
   if process.platform isnt 'darwin'
     app.quit()
+
+# Build menus
+buildMenu = (includeDevTools) ->
+  # Get some helpers
+  parentMenu = (label, role, submenu...) ->
+    {label, role, submenu}
+  miniItem = (label, accelerator, role) ->
+    unless role?
+      role = accelerator
+      accelerator = undefined
+    {label, accelerator, role}
+  fancyItem = (label, accelerator, click) ->
+    unless click?
+      click = accelerator
+      accelerator = undefined
+    {label, accelerator, click}
+  sep = -> {type: 'separator'}
+
+  template = [
+    parentMenu 'View', undefined,
+      fancyItem 'Reload', 'CmdOrCtrl+R', (item, focusedWindow) ->
+        focusedWindow?.reload()
+    parentMenu 'Window', 'window',
+      miniItem 'Minimize', 'CmdOrCtrl+M', 'minimize'
+      miniItem 'Close', 'CmdOrCtrl+W', 'close'
+    parentMenu 'Help', 'help',
+      fancyItem 'Relief Valve Website', ->
+        require('electron').shell.openExternal 'http://code.mathphreak.me/ReliefValve'
+  ]
+
+  if includeDevTools
+    devToolsAccelerator = if process.platform == 'darwin'
+      'Alt+Command+I'
+    else
+      'Ctrl+Shift+I'
+    template[0].submenu.push fancyItem 'Toggle Developer Tools', devToolsAccelerator, (item, focusedWindow) ->
+      focusedWindow?.toggleDevTools()
+
+  if process.platform == 'darwin'
+    template.unshift parentMenu name, undefined,
+      miniItem 'About Relief Valve', 'about'
+      sep()
+      miniItem 'Hide Relief Valve', 'Command+H', 'hide'
+      miniItem 'Hide Others', 'Command+Alt+H', 'hideothers'
+      miniItem 'Show All', 'unhide'
+      sep()
+      fancyItem 'Quit', 'Command+Q', -> app.quit()
+    # Window menu.
+    template[2].submenu.push sep(), miniItem 'Bring All to Front', 'front'
+  else
+    # Help menu
+    template[2].submenu.push fancyItem 'About Relief Valve', ->
+      mainWindow.webContents.send 'menuItem', 'about'
+
+  menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu menu
 
 # This method will be called when Electron has done everything
 # initialization and ready for creating browser windows.
@@ -106,8 +87,8 @@ app.on 'ready', ->
   # Create the browser window.
   mainWindow = new BrowserWindow width: 800, height: 600, show: false
 
-  # Don't use a menu bar.
-  Menu.setApplicationMenu noMenu()
+  # By default, don't show dev tools in the menu
+  buildMenu(false)
 
   url = "file://#{__dirname}/index.html"
 

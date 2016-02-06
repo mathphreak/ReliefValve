@@ -280,7 +280,7 @@ combineOverlappingGames = (allGames) ->
     .reject 'drop'
     .value()
 
-ipc.on 'menuItem', (item) ->
+ipc.on 'menuItem', (event, item) ->
   switch item
     when 'about'
       vex.dialog.alert "<p>You are running Relief Valve
