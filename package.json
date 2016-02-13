@@ -45,7 +45,8 @@
     "start": "gulp compile && electron .",
     "watch": "gulp compile watch",
     "exec": "electron .",
-    "build-all": "mocha && gulp build:all"
+    "build-all": "mocha && gulp build:all",
+    "gulp": "gulp"
   },
   "repository": {
     "type": "git",

@@ -63,7 +63,7 @@ buildMenu = (includeDevTools) ->
       focusedWindow?.toggleDevTools()
 
   if process.platform == 'darwin'
-    template.unshift parentMenu name, undefined,
+    template.unshift parentMenu 'Relief Valve', undefined,
       miniItem 'About Relief Valve', 'about'
       sep()
       miniItem 'Hide Relief Valve', 'Command+H', 'hide'
