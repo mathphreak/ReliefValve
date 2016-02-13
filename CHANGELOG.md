@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.14.0](https://github.com/mathphreak/ReliefValve/tree/v0.13.0) (2016-01-30)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.13.0...v0.14.0)
+
+**Fixed bugs:**
+
+- Progress bar is lies on Mac/Linux [\#26](https://github.com/mathphreak/ReliefValve/issues/26)
+
 ## [v0.13.0](https://github.com/mathphreak/ReliefValve/tree/v0.13.0) (2016-01-30)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.12.0...v0.13.0)
 
