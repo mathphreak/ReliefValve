@@ -162,6 +162,12 @@ initializeProgress = (games) ->
 resetProgress = ->
   $("#progress-outer").html("")
 
+updateSystemProgress = _.throttle ->
+  currentProgress = $(".progress").map((i, x) -> $(x).width()).reduce (a,b) -> a+b
+  totalProgress = $("#progress-outer").width()
+  ipc.send 'progress', currentProgress/totalProgress
+, 100
+
 addProgress = (x) ->
   el = $('<div class="progress">&nbsp;</div>')
   el.appendTo("#progress-outer")
@@ -170,7 +176,10 @@ addProgress = (x) ->
   total = parseInt($("#progress-outer").data("total"))
   percent = x.size / total * 100
   el.width 0
-  setTimeout (-> el.width("#{percent}%")), 1
+  setTimeout ->
+    el.width("#{percent}%")
+    updateSystemProgress()
+  , 1
   yes
 
 makeCopyProgressObserver = -> Rx.Observer.create (x) ->
@@ -180,7 +189,7 @@ makeCopyProgressObserver = -> Rx.Observer.create (x) ->
 makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
   ((e)->throw e), (x) ->
     setTimeout ->
-      ipc.send 'running', no
+      ipc.send 'progress', no
       $("#progress-container").height("0%")
       $(".progress").height(0)
       runProcess()
@@ -348,7 +357,7 @@ $ ->
       .flatMap runningConfirm "Cancel"
       .flatMap (go) ->
         if go
-          ipc.send 'running', yes
+          ipc.send 'progress', 0
           Rx.Observable.from Games
         else
           Rx.Observable.empty()

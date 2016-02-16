@@ -6,14 +6,15 @@ BrowserWindow = require('electron').BrowserWindow
 ipc = require('electron').ipcMain
 # Module to control application menu
 Menu = require('electron').Menu
+_ = require 'lodash'
 
 # Keep a global reference of the window object, if you don't, the window will
 # be closed automatically when the javascript object is GCed.
 mainWindow = null
 
-ipc.on 'running', (event, arg) ->
-  if arg is yes
-    mainWindow?.setProgressBar? 1.1
+ipc.on 'progress', (event, arg) ->
+  if _.isNumber arg
+    mainWindow?.setProgressBar? _.clamp arg, 0.01, 1
   else
     mainWindow?.setProgressBar? -1
 
