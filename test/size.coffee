@@ -9,7 +9,7 @@ gamePath = 'testdata/size_library/steamapps/common/TestGame'
 totalSize = 0
 
 makeFile = (path, mbSize) ->
-  fileSize = mbSize*1024*1024
+  fileSize = mbSize * 1024 * 1024
   totalSize += fileSize
   fs.writeFileSync path, new Buffer fileSize
 
@@ -23,7 +23,7 @@ describe 'sizeSteps', ->
 
   describe '#loadGameSize', ->
     it 'should read sizes properly', (done) ->
-      sizeSteps.loadGameSize({name:'A Game',fullPath:gamePath})
+      sizeSteps.loadGameSize({name:'A Game', fullPath:gamePath})
         .subscribe ({name, data}) ->
           expect(name).to.equal('A Game')
           expect(data.nodes).to.equal(1 + 1 + 4)

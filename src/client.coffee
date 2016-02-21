@@ -148,7 +148,7 @@ initializeProgress = (games) ->
     .map('sizeData')
     .map(sizeKey)
     .map (x) -> x + acfSize
-    .reduce((a,b) -> a + b)
+    .reduce((a, b) -> a + b)
   totalSize *= moveSteps.DUMMY_SIZE unless process.platform is 'win32'
   $('#progress-outer').data('total', totalSize)
 
@@ -165,9 +165,9 @@ resetProgress = ->
 updateSystemProgress = _.throttle ->
   currentProgress = $('.progress')
     .map (i, x) -> $(x).width()
-    .reduce (a,b) -> a+b
+    .reduce (a, b) -> a + b
   totalProgress = $('#progress-outer').width()
-  ipc.send 'progress', currentProgress/totalProgress
+  ipc.send 'progress', currentProgress / totalProgress
 , 100
 
 addProgress = (x) ->
@@ -188,8 +188,8 @@ makeCopyProgressObserver = -> Rx.Observer.create (x) ->
   addProgress x
 , ((x) -> console.log "Error while moving: #{x}")
 
-makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log 'Done!'),
-  ((e)->throw e), (x) ->
+makeDeleteProgressObserver = -> Rx.Observer.create ((x) -> console.log 'Done!'),
+  ((e) -> throw e), (x) ->
     setTimeout ->
       ipc.send 'progress', no
       $('#progress-container').height('0%')
@@ -345,7 +345,7 @@ $ ->
     # get the selected path
     pathIndex = $('#selection select')
       .children()
-      .map (i,a) ->
+      .map (i, a) ->
         i if a.innerHTML is $('#selection select').val()
       .get()
       .filter( (x) -> x > -1 )[0]

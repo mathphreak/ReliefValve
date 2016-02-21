@@ -66,10 +66,10 @@ moveGame = (data) ->
     nextNewlineIndex = dataBuffer.indexOf('\n')
     while nextNewlineIndex > -1
       lastNewlineIndex = nextNewlineIndex
-      nextNewlineIndex = dataBuffer.indexOf('\n', lastNewlineIndex+1)
+      nextNewlineIndex = dataBuffer.indexOf('\n', lastNewlineIndex + 1)
     if lastNewlineIndex > -1
       lines = dataBuffer.slice(0, lastNewlineIndex).toString().trim().split '\n'
-      dataBuffer = dataBuffer.slice lastNewlineIndex+1
+      dataBuffer = dataBuffer.slice lastNewlineIndex + 1
       for line in lines
         processLine line
   gameCopyProcess.stdout.on 'error', (err) ->

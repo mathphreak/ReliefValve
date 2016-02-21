@@ -1,6 +1,6 @@
 {
   "arrow_spacing": {
-    "level": "ignore"
+    "level": "warn"
   },
   "braces_spacing": {
     "level": "ignore",
@@ -21,8 +21,8 @@
     }
   },
   "cyclomatic_complexity": {
-    "level": "ignore",
-    "value": 10
+    "level": "warn",
+    "value": 36
   },
   "duplicate_key": {
     "level": "error"
@@ -68,7 +68,7 @@
     "level": "ignore"
   },
   "no_empty_param_list": {
-    "level": "ignore"
+    "level": "warn"
   },
   "no_implicit_braces": {
     "level": "ignore",
@@ -124,10 +124,10 @@
     "doubleNotLevel": "ignore"
   },
   "space_operators": {
-    "level": "ignore"
+    "level": "warn"
   },
   "spacing_after_comma": {
-    "level": "ignore"
+    "level": "warn"
   },
   "transform_messes_up_line_numbers": {
     "level": "warn"
