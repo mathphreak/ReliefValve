@@ -12,7 +12,7 @@ makeBuilder = (destination) -> (game) ->
   source: game.fullPath
   destination: pathMod.join destination, game.rel
   acfSource: game.acfPath
-  acfDest: pathMod.join destination, "steamapps", acfName
+  acfDest: pathMod.join destination, 'steamapps', acfName
   gameInfo: game
 
 moveGame = (data) ->
@@ -22,16 +22,16 @@ moveGame = (data) ->
   gameCopyProcess = {}
   if process.platform is 'win32'
     ### !pragma coverage-skip-block ###
-    gameCopyProcess = child.spawn "robocopy.exe", [
+    gameCopyProcess = child.spawn 'robocopy.exe', [
       data.source
       data.destination
-      "/e" # recurse into empty subdirectories
-      "/bytes" # print raw byte size
-      "/np" # no progress
-      "/njh" # no job header
-      "/njs" # no job summary
-      "/ndl" # don't print directories separately
-      "/nc" # don't tell us it's a new file; we don't care
+      '/e' # recurse into empty subdirectories
+      '/bytes' # print raw byte size
+      '/np' # no progress
+      '/njh' # no job header
+      '/njs' # no job summary
+      '/ndl' # don't print directories separately
+      '/nc' # don't tell us it's a new file; we don't care
     ]
     processLine = (line) ->
       pieces = line.split /\t+/
@@ -44,13 +44,13 @@ moveGame = (data) ->
         observers.forEach (observer) ->
           observer.onNext fileData
   else
-    gameCopyProcess = child.spawn "cp", [
-      "-Rvp"
+    gameCopyProcess = child.spawn 'cp', [
+      '-Rvp'
       pathMod.resolve data.source
-      pathMod.resolve data.destination, ".."
+      pathMod.resolve data.destination, '..'
     ]
     processLine = (line) ->
-      if line.trim() isnt ""
+      if line.trim() isnt ''
         pieces = /^[‘`]?(.*?)[’']? -> [‘`]?(.*?)[’']?$/.exec line
         fileData =
           id: Math.random()
@@ -63,12 +63,12 @@ moveGame = (data) ->
   gameCopyProcess.stdout.on 'data', (newData) ->
     dataBuffer = Buffer.concat [dataBuffer, newData]
     lastNewlineIndex = -1
-    nextNewlineIndex = dataBuffer.indexOf("\n")
+    nextNewlineIndex = dataBuffer.indexOf('\n')
     while nextNewlineIndex > -1
       lastNewlineIndex = nextNewlineIndex
-      nextNewlineIndex = dataBuffer.indexOf("\n", lastNewlineIndex+1)
+      nextNewlineIndex = dataBuffer.indexOf('\n', lastNewlineIndex+1)
     if lastNewlineIndex > -1
-      lines = dataBuffer.slice(0, lastNewlineIndex).toString().trim().split "\n"
+      lines = dataBuffer.slice(0, lastNewlineIndex).toString().trim().split '\n'
       dataBuffer = dataBuffer.slice lastNewlineIndex+1
       for line in lines
         processLine line

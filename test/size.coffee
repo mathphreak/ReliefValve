@@ -4,7 +4,7 @@ del = require 'del'
 
 sizeSteps = require '../src/steps/size'
 
-gamePath = "testdata/size_library/steamapps/common/TestGame"
+gamePath = 'testdata/size_library/steamapps/common/TestGame'
 
 totalSize = 0
 
@@ -23,9 +23,9 @@ describe 'sizeSteps', ->
 
   describe '#loadGameSize', ->
     it 'should read sizes properly', (done) ->
-      sizeSteps.loadGameSize({name:"A Game",fullPath:gamePath})
+      sizeSteps.loadGameSize({name:'A Game',fullPath:gamePath})
         .subscribe ({name, data}) ->
-          expect(name).to.equal("A Game")
+          expect(name).to.equal('A Game')
           expect(data.nodes).to.equal(1 + 1 + 4)
           expect(data.size).to.equal(totalSize)
           done()

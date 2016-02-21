@@ -6,6 +6,8 @@ BrowserWindow = require('electron').BrowserWindow
 ipc = require('electron').ipcMain
 # Module to control application menu
 Menu = require('electron').Menu
+# Module that can open URLs
+shell = require('electron').shell
 _ = require 'lodash'
 
 # Keep a global reference of the window object, if you don't, the window will
@@ -52,7 +54,7 @@ buildMenu = (includeDevTools) ->
       miniItem 'Close', 'CmdOrCtrl+W', 'close'
     parentMenu 'Help', 'help',
       fancyItem 'Relief Valve Website', ->
-        require('electron').shell.openExternal 'http://code.mathphreak.me/ReliefValve'
+        shell.openExternal 'http://code.mathphreak.me/ReliefValve'
   ]
 
   if includeDevTools
@@ -60,8 +62,11 @@ buildMenu = (includeDevTools) ->
       'Alt+Command+I'
     else
       'Ctrl+Shift+I'
-    template[0].submenu.push fancyItem 'Toggle Developer Tools', devToolsAccelerator, (item, focusedWindow) ->
+    template[0].submenu.push fancyItem(
+      'Toggle Developer Tools',
+      devToolsAccelerator, (item, focusedWindow) ->
       focusedWindow?.toggleDevTools()
+    )
 
   if process.platform == 'darwin'
     template.unshift parentMenu 'Relief Valve', undefined,

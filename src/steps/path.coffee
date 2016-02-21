@@ -2,7 +2,7 @@ fs = require 'fs'
 iconv = require 'iconv-lite'
 Rx = require 'rx'
 vdf = require 'vdf'
-_ = require "lodash"
+_ = require 'lodash'
 pathMod = require 'path'
 os = require 'os'
 
@@ -12,15 +12,15 @@ getDefaultSteamLibraryPath = ->
     when 'win32'
       switch os.arch()
         when 'x64'
-          "C:\\Program Files (x86)\\Steam"
+          'C:\\Program Files (x86)\\Steam'
         when 'ia32'
-          "C:\\Program Files\\Steam"
+          'C:\\Program Files\\Steam'
     when 'darwin'
       "#{process.env.HOME}/Library/Application Support/Steam"
     when 'linux'
       "#{process.env.HOME}/.local/share/Steam"
     else
-      throw Error "Unsupported OS"
+      throw Error 'Unsupported OS'
 
 readVDF = (target) ->
   readFile = Rx.Observable.fromNodeCallback fs.readFile
@@ -30,12 +30,12 @@ readVDF = (target) ->
 
 parseFolderList = (details) ->
   parsed = details.LibraryFolders
-  parsed["0"] = getDefaultSteamLibraryPath()
+  parsed['0'] = getDefaultSteamLibraryPath()
   folders = _.pickBy parsed, (v, k) ->
     _.isFinite parseInt k
   paths = []
   _.forOwn folders, (v, k) ->
-    paths[k] = pathMod.normalize v.replace(/\\\\/g, "\\")
+    paths[k] = pathMod.normalize v.replace(/\\\\/g, '\\')
 
   result = []
 

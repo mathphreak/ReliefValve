@@ -2,7 +2,7 @@ Rx = require 'rx'
 glob = require 'glob'
 pathMod = require 'path'
 fs = require 'fs'
-_ = require "lodash"
+_ = require 'lodash'
 vdf = require 'vdf'
 
 validStateFlags =
@@ -16,8 +16,8 @@ readACF = (target) ->
 
 getPathACFs = (pathDetails, i) ->
   globBetter = Rx.Observable.fromNodeCallback glob
-  steamappsPath = pathMod.join(pathDetails.path, "steamapps")
-  globBetter("appmanifest_*.acf", cwd: steamappsPath)
+  steamappsPath = pathMod.join(pathDetails.path, 'steamapps')
+  globBetter('appmanifest_*.acf', cwd: steamappsPath)
     .map (matches) ->
       paths = _.map matches, (x) ->
         pathMod.join(steamappsPath, x)
@@ -37,14 +37,14 @@ readAllACFs = (pathObj) ->
 buildGameObject = ({path, i, gameInfo, acfPath}) ->
   fullPath = pathMod.join(
     path.path,
-    "steamapps",
-    "common",
+    'steamapps',
+    'common',
     gameInfo.installdir
   )
   pathAbbr: path.abbr
   fullPath: fullPath
-  rest: fullPath.replace(path.abbr, "")
-  rel: fullPath.replace(path.path, "")
+  rest: fullPath.replace(path.abbr, '')
+  rel: fullPath.replace(path.path, '')
   name: gameInfo.name
   pathIndex: i
   acfPath: acfPath

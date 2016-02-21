@@ -6,7 +6,7 @@ semver = require 'semver'
 
 latestVersion = undefined
 
-isSteamRunning = (searchTarget = "steam") ->
+isSteamRunning = (searchTarget = 'steam') ->
   Rx.Observable.fromPromise psList()
     .map (data) ->
       _.some data, (x) -> _.includes x.name.toLowerCase(), searchTarget

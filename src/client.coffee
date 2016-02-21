@@ -1,4 +1,4 @@
-_ = require "lodash"
+_ = require 'lodash'
 Rx = require 'rx'
 filesize = require 'filesize'
 ipc = require('electron').ipcRenderer
@@ -36,69 +36,69 @@ Games = []
 Paths = []
 
 markGameLoading = (game) ->
-  $("#games .game")
+  $('#games .game')
     .filter -> @dataset.name is game.name
     .children()
-    .children("i")
-    .addClass("fa-circle-o-notch")
-    .addClass("fa-spin")
-    .removeClass("fa-gamepad")
+    .children('i')
+    .addClass('fa-circle-o-notch')
+    .addClass('fa-spin')
+    .removeClass('fa-gamepad')
 
 toggleOverlap = (toggledRow) ->
-  thisName = toggledRow.data("name")
-  thisFullPath = toggledRow.children(".cell:nth-child(2)").text()
-  thisSelected = toggledRow.is(".selected")
-  $(".game .cell:nth-child(2)").get().filter (child) ->
+  thisName = toggledRow.data('name')
+  thisFullPath = toggledRow.children('.cell:nth-child(2)').text()
+  thisSelected = toggledRow.is('.selected')
+  $('.game .cell:nth-child(2)').get().filter (child) ->
     child.innerText.trim() is thisFullPath.trim()
   .forEach (child) ->
-    $(child).closest(".game").toggleClass("selected", thisSelected)
+    $(child).closest('.game').toggleClass('selected', thisSelected)
 
 updateSelected = ->
-  hasSelection = $(".game.selected").size() > 0
+  hasSelection = $('.game.selected').size() > 0
   if hasSelection
-    $("#globalSelect i")
-      .addClass "fa-check-square-o"
-      .removeClass "fa-square-o"
+    $('#globalSelect i')
+      .addClass 'fa-check-square-o'
+      .removeClass 'fa-square-o'
   else
-    $("#globalSelect i")
-      .removeClass "fa-check-square-o"
-      .addClass "fa-square-o"
-  names = $(".game.selected")
+    $('#globalSelect i')
+      .removeClass 'fa-check-square-o'
+      .addClass 'fa-square-o'
+  names = $('.game.selected')
     .get()
     .map (el) -> el.dataset.name
-  paths = $(".game.selected .cell .base")
+  paths = $('.game.selected .cell .base')
     .get()
     .map (el) -> el.innerText
-  sizes = Math.round($(".game.selected .cell:last-child")
+  sizes = Math.round($('.game.selected .cell:last-child')
     .get()
     .map (el) -> parseFloat(el.innerText) * 100
     .reduce(((a, b) -> a + b), 0)) / 100
   goodIndex = null
-  $("#selection option").attr "disabled", (i) ->
+  $('#selection option').attr 'disabled', (i) ->
     if _.includes(paths, Paths[i].abbr)
       yes
     else
       goodIndex ?= i
       null
   if goodIndex is null
-    $("#move").addClass "disabled"
+    $('#move').addClass 'disabled'
   else
-    $("#move").removeClass "disabled"
-  if $("#selection option:selected").is(":disabled")
-    $("#selection option:not(:disabled)").first().prop("selected", true)
-  $("#all-names").text names.join ", "
-  $("#all-paths").text paths.join ", "
+    $('#move').removeClass 'disabled'
+  if $('#selection option:selected').is(':disabled')
+    $('#selection option:not(:disabled)').first().prop('selected', true)
+  $('#all-names').text names.join ', '
+  $('#all-paths').text paths.join ', '
   if _.isNaN sizes
-    if $("#total-size").text() isnt ""
-      $("#total-size").html("")
-      $("<i></i>")
-        .addClass("fa")
-        .addClass("fa-circle-o-notch")
-        .addClass("fa-spin")
-        .appendTo("#total-size")
+    if $('#total-size').text() isnt '
+      $('#total-size').html(')
+      $('<i></i>')
+        .addClass('fa')
+        .addClass('fa-circle-o-notch')
+        .addClass('fa-spin')
+        .appendTo('#total-size')
   else
-    $("#total-size").text("#{sizes} GB")
-  $("#selection").toggle(hasSelection)
+    $('#total-size').text("#{sizes} GB")
+  $('#selection').toggle(hasSelection)
   Ps.update $('#gameList #games').get(0)
 
 makeGamesStreamObserver = ->
@@ -106,24 +106,24 @@ makeGamesStreamObserver = ->
   Rx.Observer.create (game) ->
     if not seen
       seen = yes
-      $("#games .game:not(.loading)").remove()
-      $("#gameList .loading").show()
+      $('#games .game:not(.loading)').remove()
+      $('#gameList .loading').show()
     result = Templates.game(game: game, paths: Paths)
-    $("#games .game")
+    $('#games .game')
       .filter -> compareIgnoringArticles(@dataset.name, game.name, false) < 0
       .last()
       .after(result)
     Ps.update $('#gameList #games').get(0)
   , off # use default error handling for now
   , ->
-    $("#gameList .loading").hide()
+    $('#gameList .loading').hide()
 
 makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
   # update Games
   _.find(Games, name: name).sizeData = data
 
   # update game in table
-  $("#games .game")
+  $('#games .game')
     .filter -> @dataset.name is name
     .children()
     .last()
@@ -145,35 +145,37 @@ initializeProgress = (games) ->
     1
   # calculate total size
   totalSize = _(games)
-    .map("sizeData")
+    .map('sizeData')
     .map(sizeKey)
     .map (x) -> x + acfSize
     .reduce((a,b) -> a + b)
   totalSize *= moveSteps.DUMMY_SIZE unless process.platform is 'win32'
-  $("#progress-outer").data("total", totalSize)
+  $('#progress-outer').data('total', totalSize)
 
   # make sure the progress bar starts at zero
   resetProgress()
 
   # show the progress bar
-  $("#progress-container").show()
-  $("#progress-container").height("2rem")
+  $('#progress-container').show()
+  $('#progress-container').height('2rem')
 
 resetProgress = ->
-  $("#progress-outer").html("")
+  $('#progress-outer').html('')
 
 updateSystemProgress = _.throttle ->
-  currentProgress = $(".progress").map((i, x) -> $(x).width()).reduce (a,b) -> a+b
-  totalProgress = $("#progress-outer").width()
+  currentProgress = $('.progress')
+    .map (i, x) -> $(x).width()
+    .reduce (a,b) -> a+b
+  totalProgress = $('#progress-outer').width()
   ipc.send 'progress', currentProgress/totalProgress
 , 100
 
 addProgress = (x) ->
   el = $('<div class="progress">&nbsp;</div>')
-  el.appendTo("#progress-outer")
-  el.data("size", x.size)
-  el.data("id", x.id)
-  total = parseInt($("#progress-outer").data("total"))
+  el.appendTo('#progress-outer')
+  el.data('size', x.size)
+  el.data('id', x.id)
+  total = parseInt($('#progress-outer').data('total'))
   percent = x.size / total * 100
   el.width 0
   setTimeout ->
@@ -186,12 +188,12 @@ makeCopyProgressObserver = -> Rx.Observer.create (x) ->
   addProgress x
 , ((x) -> console.log "Error while moving: #{x}")
 
-makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log "Done!"),
+makeDeleteProgressObserver = -> Rx.Observer.create ((x)->console.log 'Done!'),
   ((e)->throw e), (x) ->
     setTimeout ->
       ipc.send 'progress', no
-      $("#progress-container").height("0%")
-      $(".progress").height(0)
+      $('#progress-container').height('0%')
+      $('.progress').height(0)
       runProcess()
     , 400
 
@@ -205,7 +207,7 @@ runningConfirm = (cancelText) -> (running) ->
     vex.dialog.confirm
       message: message
       buttons: [
-        vexSubmitButton "Continue"
+        vexSubmitButton 'Continue'
         vexCancelButton cancelText
       ]
       callback: (x) ->
@@ -225,7 +227,7 @@ runUpdateCheck = ->
       vex.dialog.confirm
         message: "<p>#{message}.</p>
           <p>Press OK to download the update or Cancel to not do that.</p>"
-        callback: (x) -> require("shell").openExternal url if x
+        callback: (x) -> require('shell').openExternal url if x
 
 runProcess = ->
   Rx.Observable.just folderListPath
@@ -235,7 +237,7 @@ runProcess = ->
     .do (d) ->
       Paths = d
       footer = Templates.footer(paths: d)
-      $("#selection").replaceWith(footer)
+      $('#selection').replaceWith(footer)
     .flatMap _.identity
     .flatMap gameSteps.getPathACFs
     .flatMap gameSteps.readAllACFs
@@ -296,14 +298,14 @@ ipc.on 'menuItem', (event, item) ->
         v#{require('../package.json').version}</p>"
 
 updateSearch = ->
-  query = $(".search input").val()
-  $(".game:not(.loading)").each (i, x) ->
+  query = $('.search input').val()
+  $('.game:not(.loading)').each (i, x) ->
     name = x.dataset.name
     $(x).toggle _.includes(name.toLocaleLowerCase(), query.toLocaleLowerCase())
 
 $ ->
   initSteps.isSteamRunning()
-    .flatMap runningConfirm "Quit"
+    .flatMap runningConfirm 'Quit'
     .subscribe makeSteamRunningObserver()
 
   watchForKonamiCode()
@@ -312,39 +314,39 @@ $ ->
 
   Ps.initialize $('#gameList #games').get(0), suppressScrollX: yes
 
-  Rx.Observable.fromEvent $("#refresh"), 'click'
-    .startWith "initial load event"
+  Rx.Observable.fromEvent $('#refresh'), 'click'
+    .startWith 'initial load event'
     .subscribe runProcess
 
-  $(document).on "click", "#clearSearch", (event) ->
-    $(".search input").val("").focus()
+  $(document).on 'click', '#clearSearch', (event) ->
+    $('.search input').val('').focus()
     updateSearch()
 
-  $(document).on "input", ".search input", (event) ->
+  $(document).on 'input', '.search input', (event) ->
     updateSearch()
 
-  $(document).on "click", "#globalSelect i.fa-check-square-o", (event) ->
-    $(".game.selected").removeClass("selected")
+  $(document).on 'click', '#globalSelect i.fa-check-square-o', (event) ->
+    $('.game.selected').removeClass('selected')
     updateSelected()
     event.stopImmediatePropagation()
 
-  $(document).on "click", "#globalSelect i.fa-square-o", (event) ->
-    $("#games .game:not(.loading)").addClass("selected")
+  $(document).on 'click', '#globalSelect i.fa-square-o', (event) ->
+    $('#games .game:not(.loading)').addClass('selected')
     updateSelected()
     event.stopImmediatePropagation()
 
-  $(document).on "click", "#games .game", (event) ->
-    $(@).closest(".game").toggleClass("selected")
-    toggleOverlap $(event.target).closest(".game")
+  $(document).on 'click', '#games .game', (event) ->
+    $(@).closest('.game').toggleClass('selected')
+    toggleOverlap $(event.target).closest('.game')
     updateSelected()
     event.stopImmediatePropagation()
 
-  $(document).on "click", "#move:not(.disabled)", (event) ->
+  $(document).on 'click', '#move:not(.disabled)', (event) ->
     # get the selected path
-    pathIndex = $("#selection select")
+    pathIndex = $('#selection select')
       .children()
       .map (i,a) ->
-        i if a.innerHTML is $("#selection select").val()
+        i if a.innerHTML is $('#selection select').val()
       .get()
       .filter( (x) -> x > -1 )[0]
 
@@ -354,7 +356,7 @@ $ ->
     deleteProgressObserver = makeDeleteProgressObserver()
 
     initSteps.isSteamRunning()
-      .flatMap runningConfirm "Cancel"
+      .flatMap runningConfirm 'Cancel'
       .flatMap (go) ->
         if go
           ipc.send 'progress', 0
@@ -362,7 +364,7 @@ $ ->
         else
           Rx.Observable.empty()
       .filter (game) ->
-        $(".game[data-name=\"#{game.name}\"]").hasClass("selected")
+        $(".game[data-name=\"#{game.name}\"]").hasClass('selected')
       .toArray()
       .do initializeProgress
       .flatMap (x) -> x

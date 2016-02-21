@@ -6,12 +6,12 @@ pathMod = require 'path'
 
 moveSteps = require '../src/steps/move'
 
-sourcePath = "testdata/move_src/Test"
-destPath = "testdata/move_dst/Test"
-dualSrcPath = "testdata/move_dsrc/Test"
-dualDstPath = "testdata/move_ddst/Test"
-failPath = "testdata/move_fail/Test"
-deletePath = "testdata/move_delete/Test"
+sourcePath = 'testdata/move_src/Test'
+destPath = 'testdata/move_dst/Test'
+dualSrcPath = 'testdata/move_dsrc/Test'
+dualDstPath = 'testdata/move_ddst/Test'
+failPath = 'testdata/move_fail/Test'
+deletePath = 'testdata/move_delete/Test'
 
 acfData = lipsum()
 test1Data = lipsum()
@@ -39,7 +39,7 @@ describe 'moveSteps', ->
     fs.writeFileSync "#{dualSrcPath}/Test1.txt", test1Data
     fs.mkdirpSync dualDstPath
     fs.mkdirpSync failPath
-    fs.writeFileSync "#{failPath}.acf", "Nope!"
+    fs.writeFileSync "#{failPath}.acf", 'Nope!'
     fs.mkdirpSync deletePath
     fs.writeFileSync "#{deletePath}.acf", acfData
     fs.writeFileSync "#{deletePath}/Test1.txt", test1Data
