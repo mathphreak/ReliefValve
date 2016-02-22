@@ -4,7 +4,7 @@ iconSteps = require '../src/steps/icon'
 
 describe 'iconSteps', ->
   describe '#getIconURL', ->
-    @timeout 10000
+    @timeout 30000
     it 'should get the icon URL', (done) ->
       iconSteps.getIconURL(730)
         .subscribe (url) ->
