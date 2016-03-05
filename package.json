@@ -26,7 +26,7 @@
     "coffee-coverage": "~1.0.1",
     "coffee-script": "~1.10.0",
     "coffeelint": "~1.14.2",
-    "electron-prebuilt": "0.36.7",
+    "electron-prebuilt": "0.36.10",
     "gulp": "~3.9.0",
     "gulp-atom-electron": "github:mathphreak/gulp-atom-electron",
     "gulp-coffee": "~2.3.1",
