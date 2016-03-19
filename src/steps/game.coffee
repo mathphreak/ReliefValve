@@ -48,6 +48,7 @@ buildGameObject = ({path, i, gameInfo, acfPath}) ->
   name: gameInfo.name
   pathIndex: i
   acfPath: acfPath
+  appID: gameInfo.appID
 
 module.exports =
   getPathACFs: getPathACFs

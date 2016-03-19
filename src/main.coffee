@@ -64,8 +64,9 @@ buildMenu = (includeDevTools) ->
       'Ctrl+Shift+I'
     template[0].submenu.push fancyItem(
       'Toggle Developer Tools',
-      devToolsAccelerator, (item, focusedWindow) ->
-      focusedWindow?.toggleDevTools()
+      devToolsAccelerator,
+      (item, focusedWindow) ->
+        focusedWindow?.toggleDevTools()
     )
 
   if process.platform == 'darwin'
