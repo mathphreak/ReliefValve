@@ -9,7 +9,6 @@ pathSteps = require './steps/path'
 gameSteps = require './steps/game'
 sizeSteps = require './steps/size'
 moveSteps = require './steps/move'
-iconSteps = require './steps/icon'
 
 # enable long stack traces so that RxJS errors are less terrible to debug
 Rx.config.longStackSupport = yes
@@ -115,9 +114,6 @@ makeGamesStreamObserver = ->
       .last()
       .after(result)
     Ps.update $('#gameList #games').get(0)
-    iconSteps.getIconURL(game.appID)
-      .subscribe (url) ->
-        $(".game[data-name=\"#{game.name}\"] .icon img").attr('src', url)
   , off # use default error handling for now
   , ->
     $('#gameList .loading').hide()
