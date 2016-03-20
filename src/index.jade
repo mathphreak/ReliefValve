@@ -17,17 +17,28 @@ html
     title Relief Valve
     script(type='text/javascript',src='client.js')
   body
+    #toolbar.pure-g.header
+      .cell.pure-u-1
+        .search
+          form
+            span.prefix
+              i.fa.fa-search
+            input(type='search',placeholder='Search',required=true)
+            span.suffix
+              i.fa.fa-close#clearSearch
+        span#magic
+          span.user
+            i.fa.fa-user
+            select
+              option mathphreak
+              option Boijangle
+          span.category
+            i.fa.fa-folder
+            select
+              option favorite
+              option other category
+          a.select(href="#"): i.fa.fa-fw.fa-square-o
     #gameList
-      #toolbar.pure-g.header
-        .cell.pure-u-1
-          a.full-button#magic(href="#magic"): i.fa.fa-fw.fa-magic
-          .search
-            form
-              span.prefix
-                i.fa.fa-search
-              input(type='search',placeholder='Search',required=true)
-              span.suffix
-                i.fa.fa-close#clearSearch
       .pure-g.header
         .cell.pure-u-2-5 Game
           .actions

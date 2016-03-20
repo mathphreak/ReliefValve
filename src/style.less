@@ -50,6 +50,52 @@ html, body {
   overflow: hidden;
 }
 
+.header {
+  color: lighten(@white, 100%);
+  .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
+
+  .cell {
+    font-size: 10pt;
+  }
+}
+
+a {
+  //padding: 0.25em;
+  //.gradient(@gray, @gray, lighten(@gray, 15%));
+  color: inherit;
+  text-decoration: none;
+}
+
+/*
+#toolbar a {
+  .gradient(@gray, @gray, lighten(@gray, 15%));
+  padding: 0.25em;
+}
+*/
+
+select {
+  width: auto;
+  .gradient(@gray, @gray, lighten(@gray, 15%));
+  color: @white;
+  border: none;
+  font: inherit;
+}
+
+option {
+  background-color: @darkGray;
+  color: @white;
+  font: inherit;
+
+  &:disabled {
+    color: darken(@white, 30%);
+  }
+}
+
+.cell {
+  margin: 0;
+  padding: 0.5em 1em;
+}
+
 #gameList {
   width: 100%;
   height: 100%;
@@ -64,15 +110,6 @@ html, body {
     box-sizing: border-box;
   }
 
-  .header {
-    color: lighten(@white, 100%);
-    .gradient(@darkGray, darken(@darkGray, 10%), lighten(@darkGray, 10%));
-
-    .cell {
-      font-size: 10pt;
-    }
-  }
-
   .game:hover {
     background-color: lighten(@darkGray, 10%);
     color: lighten(@white, 100%);
@@ -81,9 +118,7 @@ html, body {
   .cell {
     border-left: 1px solid @white;
     border-width: 0 0 0 1px;
-    margin: 0;
     overflow: visible;
-    padding: 0.5em 1em;
   }
 
   .cell:first-child {
@@ -116,13 +151,6 @@ html, body {
 
   .game:hover .actions, .game.selected .actions {
     visibility: visible;
-  }
-
-  a {
-    //padding: 0.25em;
-    //.gradient(@gray, @gray, lighten(@gray, 15%));
-    color: inherit;
-    text-decoration: none;
   }
 
   .pure-g .rest {
@@ -160,24 +188,6 @@ html, body {
     }
   }
 
-  select {
-    width: auto;
-    .gradient(@gray, @gray, lighten(@gray, 15%));
-    color: @white;
-    border: none;
-    font: inherit;
-  }
-
-  option {
-    background-color: @darkGray;
-    color: @white;
-    font: inherit;
-
-    &:disabled {
-      color: darken(@white, 30%);
-    }
-  }
-
   #progress-container {
     height: 2rem;
     transition: height 400ms;
@@ -205,7 +215,7 @@ html, body {
 
 .search {
   display: inline-block;
-  margin-left: 1em;
+  margin-right: 1em;
   position: relative;
 
   color: lighten(@lightGray, 20%);
@@ -244,6 +254,11 @@ html, body {
   input:valid + .suffix {
     display: inline;
   }
+}
+
+#magic {
+  border-radius: 10px;
+  border: 1px solid @darkGray;
 }
 
 .libs span {

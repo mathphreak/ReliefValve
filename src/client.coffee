@@ -36,6 +36,7 @@ folderListPath = "#{libraryPath}/steamapps/libraryfolders.vdf"
 
 Games = []
 Paths = []
+Categories = {}
 
 markGameLoading = (game) ->
   $('#games .game')
@@ -83,6 +84,7 @@ updateSelected = ->
     updateCheckbox $(".libs span:nth-child(#{i + 1}) i"),
       $('.game.selected').filter(gameHasAbbr(path.abbr)).size(),
       $('#games .game:not(.loading)').filter(gameHasAbbr(path.abbr)).size()
+  updateCategorySelection()
   names = $('.game.selected')
     .get()
     .map (el) -> el.dataset.name
@@ -249,6 +251,50 @@ runUpdateCheck = ->
           <p>Press OK to download the update or Cancel to not do that.</p>"
         callback: (x) -> require('shell').openExternal url if x
 
+updateCategorySelection = ->
+  try
+    appIDs = Categories[$('.user select').val()][$('.category select').val()]
+    matchesAppID = -> appIDs.indexOf(@dataset.appid) > -1
+    updateCheckbox $('#magic a i'),
+      $('.game.selected').filter(matchesAppID).size(),
+      $('#games .game:not(.loading)').filter(matchesAppID).size()
+
+updateCategorySelect = ->
+  $('.category select').html('')
+  categories = _.keys(Categories[$('.user select').val()]).sort()
+  # Move favorites to front if they're at the back
+  if categories.indexOf('favorite') > 0
+    categories = ['favorite'].concat _.without categories, 'favorite'
+  for category in categories
+    $("<option>#{category}</option>").appendTo('.category select')
+  updateCategorySelection()
+
+fetchCategories = ->
+  $('.user select').html('')
+  catSteps.getAccountIDs(libraryPath)
+    .map (ids) -> _.without ids, 'anonymous'
+    .flatMap (ids) ->
+      if ids.length is 1
+        $('.user').hide()
+        Rx.Observable.just [[ids[0], "[U:1:#{ids[0]}]"]]
+      else
+        $('.user').show()
+        Rx.Observable.fromNodeCallback(storage.get)('STEAM_API_KEY')
+          .flatMap (key) ->
+            if _.isEmpty key
+              Rx.Observable.just ids.map (id) -> [id, "[U:1:#{id}]"]
+            else
+              catSteps.getUsernames(ids, key)
+                .map (x) -> _.toPairs x
+    .flatMap (x) -> x
+    .subscribe ([userID, userDisplay]) ->
+      $("<option value=\"#{userID}\">#{userDisplay}</option>")
+        .appendTo('.user select')
+      catSteps.getCategories(libraryPath, userID)
+        .subscribe (categories) ->
+          Categories[userID] = categories
+          updateCategorySelect()
+
 runProcess = ->
   Rx.Observable.just folderListPath
     .flatMap pathSteps.readVDF
@@ -340,6 +386,8 @@ $ ->
     .startWith 'initial load event'
     .subscribe runProcess
 
+  fetchCategories()
+
   $(document).on 'click', '#clearSearch', (event) ->
     $('.search input').val('').focus()
     updateSearch()
@@ -418,39 +466,15 @@ $ ->
           .map -> data
       .subscribe deleteProgressObserver
 
-  $(document).on 'click', '#magic', (event) ->
-    $('#magic i')
-      .removeClass('fa-magic')
-      .addClass('fa-circle-o-notch')
-      .addClass('fa-spin')
-    catSteps.getAccountIDs(libraryPath)
-      .map (ids) -> _.without ids, 'anonymous'
-      .flatMap (ids) ->
-        if ids.length is 1
-          Rx.Observable.just ids[0]
-        else
-          # Hoo boy.
-          Rx.Observable.fromNodeCallback(storage.get)('STEAM_API_KEY')
-            .flatMap (key) ->
-              if _.isEmpty key
-                Rx.Observable.just ids[0]
-              else
-                catSteps.getUsernames(ids, key)
-                  .flatMap (x) -> _.toPairs x
-                  .filter (x) -> x[1] is 'mathphreak'
-                  .map (x) -> x[0]
-      .flatMap (userID) ->
-        catSteps.getCategories(libraryPath, userID)
-      .flatMap (categories) ->
-        Rx.Observable.just categories.favorite
-      .subscribe (targetAppIDs) ->
-        for appID in targetAppIDs
-          # Ignore uninstalled favorites
-          if $(".game[data-appID=\"#{appID}\"]").size() > 0
-            $(".game[data-appID=\"#{appID}\"]").addClass('selected')
-            toggleOverlap $(".game[data-appID=\"#{appID}\"]")
-            updateSelected()
-        $('#magic i')
-          .removeClass('fa-circle-o-notch')
-          .removeClass('fa-spin')
-          .addClass('fa-magic')
+  $(document).on 'change', '.user select', updateCategorySelect
+
+  $(document).on 'click', '#magic a.select i', (event) ->
+    appIDs = Categories[$('.user select').val()][$('.category select').val()]
+    selected = $('#magic a.select i').is('.fa-square-o')
+    for appID in appIDs
+      # Ignore uninstalled favorites
+      if $(".game[data-appID=\"#{appID}\"]").size() > 0
+        $(".game[data-appID=\"#{appID}\"]").toggleClass 'selected', selected
+        toggleOverlap $(".game[data-appID=\"#{appID}\"]")
+        updateSelected()
+    event.preventDefault()
