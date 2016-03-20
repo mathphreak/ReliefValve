@@ -3,6 +3,7 @@ Rx = require 'rx'
 filesize = require 'filesize'
 ipc = require('electron').ipcRenderer
 compareIgnoringArticles = require 'compare-ignoring-articles'
+storage = require 'electron-json-storage'
 
 initSteps = require './steps/init'
 pathSteps = require './steps/path'
@@ -429,10 +430,15 @@ $ ->
           Rx.Observable.just ids[0]
         else
           # Hoo boy.
-          catSteps.getUsernames(ids, require('../test/dev_secret_config.json').STEAM_API_KEY)
-            .flatMap (x) -> _.toPairs x
-            .filter (x) -> x[1] is 'mathphreak'
-            .map (x) -> x[0]
+          Rx.Observable.fromNodeCallback(storage.get)('STEAM_API_KEY')
+            .flatMap (key) ->
+              if _.isEmpty key
+                Rx.Observable.just ids[0]
+              else
+                catSteps.getUsernames(ids, key)
+                  .flatMap (x) -> _.toPairs x
+                  .filter (x) -> x[1] is 'mathphreak'
+                  .map (x) -> x[0]
       .flatMap (userID) ->
         catSteps.getCategories(libraryPath, userID)
       .flatMap (categories) ->

@@ -30,6 +30,7 @@ getCategories = (rootLibPath, acctID) ->
   readFile(sharedconfigPath, 'utf8')
     .map vdf.parse
     .map (sharedconfig) ->
+      sharedconfig.UserLocalConfigStore ?= sharedconfig.UserRoamingConfigStore
       _(sharedconfig.UserLocalConfigStore.Software.Valve.Steam.apps)
         .mapValues ({tags}) -> _.values(tags)
         .toPairs()
