@@ -16,6 +16,8 @@
     "request": "~2.69.0",
     "rx": "~4.1.0",
     "semver": "~5.1.0",
+    "steam-userinfo": "~1.1.5",
+    "steamid-interop": "~1.0.3",
     "vdf": "~0.0.2",
     "walk": "~2.3.9"
   },

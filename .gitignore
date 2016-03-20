@@ -33,3 +33,4 @@ dist/
 
 # test data
 testdata/
+test/dev_secret_config.json
