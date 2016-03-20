@@ -6,6 +6,7 @@ BrowserWindow = require('electron').BrowserWindow
 ipc = require('electron').ipcMain
 # Module to control application menu
 Menu = require('electron').Menu
+MenuItem = require('electron').MenuItem
 # Module that can open URLs
 shell = require('electron').shell
 _ = require 'lodash'
@@ -32,60 +33,51 @@ app.on 'window-all-closed', ->
 buildMenu = (includeDevTools) ->
   # Get some helpers
   parentMenu = (label, role, submenu...) ->
-    {label, role, submenu}
+    realsub = new Menu()
+    realsub.append(x) for x in _.compact submenu
+    new MenuItem {label, role, submenu: realsub}
   miniItem = (label, accelerator, role) ->
-    unless role?
-      role = accelerator
-      accelerator = undefined
-    {label, accelerator, role}
+    new MenuItem {label, accelerator, role}
   fancyItem = (label, accelerator, click) ->
-    unless click?
-      click = accelerator
-      accelerator = undefined
-    {label, accelerator, click}
-  sep = -> {type: 'separator'}
+    new MenuItem {label, accelerator, click}
+  sep = -> new MenuItem {type: 'separator'}
 
-  template = [
-    parentMenu 'View', undefined,
-      fancyItem 'Reload', 'CmdOrCtrl+R', (item, focusedWindow) ->
-        focusedWindow?.reload()
-    parentMenu 'Window', 'window',
-      miniItem 'Minimize', 'CmdOrCtrl+M', 'minimize'
-      miniItem 'Close', 'CmdOrCtrl+W', 'close'
-    parentMenu 'Help', 'help',
-      fancyItem 'Relief Valve Website', ->
-        shell.openExternal 'http://code.mathphreak.me/ReliefValve'
-  ]
+  menu = new Menu()
 
-  if includeDevTools
-    devToolsAccelerator = if process.platform == 'darwin'
-      'Alt+Command+I'
-    else
-      'Ctrl+Shift+I'
-    template[0].submenu.push fancyItem(
-      'Toggle Developer Tools',
-      devToolsAccelerator,
-      (item, focusedWindow) ->
-        focusedWindow?.toggleDevTools()
-    )
-
-  if process.platform == 'darwin'
-    template.unshift parentMenu 'Relief Valve', undefined,
-      miniItem 'About Relief Valve', 'about'
+  if process.platform is 'darwin'
+    menu.append parentMenu 'Relief Valve', undefined,
+      miniItem 'About Relief Valve', undefined, 'about'
       sep()
       miniItem 'Hide Relief Valve', 'Command+H', 'hide'
       miniItem 'Hide Others', 'Command+Alt+H', 'hideothers'
-      miniItem 'Show All', 'unhide'
+      miniItem 'Show All', undefined, 'unhide'
       sep()
       fancyItem 'Quit', 'Command+Q', -> app.quit()
-    # Window menu.
-    template[2].submenu.push sep(), miniItem 'Bring All to Front', 'front'
-  else
-    # Help menu
-    template[2].submenu.push fancyItem 'About Relief Valve', ->
-      mainWindow.webContents.send 'menuItem', 'about'
 
-  menu = Menu.buildFromTemplate(template)
+  menu.append parentMenu 'View', undefined,
+      fancyItem 'Reload', 'CmdOrCtrl+R', (item, focusedWindow) ->
+        focusedWindow?.reload()
+      if includeDevTools
+        fancyItem 'Toggle Developer Tools',
+          if process.platform == 'darwin'
+            'Alt+Command+I'
+          else
+            'Ctrl+Shift+I'
+          , (item, focusedWindow) ->
+            focusedWindow?.toggleDevTools()
+  menu.append parentMenu 'Window', 'window',
+      miniItem 'Minimize', 'CmdOrCtrl+M', 'minimize'
+      miniItem 'Close', 'CmdOrCtrl+W', 'close'
+      if process.platform is 'darwin'
+        sep()
+        miniItem 'Bring All to Front', undefined, 'front'
+  menu.append parentMenu 'Help', 'help',
+      fancyItem 'Relief Valve Website', undefined, ->
+        shell.openExternal 'http://code.mathphreak.me/ReliefValve'
+      if process.platform isnt 'darwin'
+        fancyItem 'About Relief Valve', undefined, ->
+          mainWindow.webContents.send 'menuItem', 'about'
+
   Menu.setApplicationMenu menu
 
 # This method will be called when Electron has done everything
