@@ -54,16 +54,34 @@ toggleOverlap = (toggledRow) ->
   .forEach (child) ->
     $(child).closest('.game').toggleClass('selected', thisSelected)
 
-updateSelected = ->
-  hasSelection = $('.game.selected').size() > 0
-  if hasSelection
-    $('#globalSelect i')
+updateCheckbox = (el, val, max) ->
+  if val is max
+    el
       .addClass 'fa-check-square-o'
+      .removeClass 'fa-square'
+      .removeClass 'fa-square-o'
+  else if val > 0
+    el
+      .removeClass 'fa-check-square-o'
+      .addClass 'fa-square'
       .removeClass 'fa-square-o'
   else
-    $('#globalSelect i')
+    el
       .removeClass 'fa-check-square-o'
+      .removeClass 'fa-square'
       .addClass 'fa-square-o'
+
+gameHasAbbr = (abbr) -> ->
+  $(@).find('.base').text() is abbr
+
+updateSelected = ->
+  hasSelection = $('.game.selected').size() > 0
+  updateCheckbox $('#globalSelect i'), $('.game.selected').size(),
+    $('#games .game:not(.loading)').size()
+  for path, i in Paths
+    updateCheckbox $(".libs span:nth-child(#{i + 1}) i"),
+      $('.game.selected').filter(gameHasAbbr(path.abbr)).size(),
+      $('#games .game:not(.loading)').filter(gameHasAbbr(path.abbr)).size()
   names = $('.game.selected')
     .get()
     .map (el) -> el.dataset.name
@@ -239,6 +257,8 @@ runProcess = ->
       Paths = d
       footer = Templates.footer(paths: d)
       $('#selection').replaceWith(footer)
+      libs = Templates.libs(paths: d)
+      $('.libs').replaceWith(libs)
     .flatMap _.identity
     .flatMap gameSteps.getPathACFs
     .flatMap gameSteps.readAllACFs
@@ -326,13 +346,27 @@ $ ->
   $(document).on 'input', '.search input', (event) ->
     updateSearch()
 
-  $(document).on 'click', '#globalSelect i.fa-check-square-o', (event) ->
+  $(document).on 'click', '#globalSelect i:not(.fa-square-o)', (event) ->
     $('.game.selected').removeClass('selected')
     updateSelected()
     event.stopImmediatePropagation()
 
   $(document).on 'click', '#globalSelect i.fa-square-o', (event) ->
     $('#games .game:not(.loading)').addClass('selected')
+    updateSelected()
+    event.stopImmediatePropagation()
+
+  $(document).on 'click', '.libs span i:not(.fa-square-o)', (event) ->
+    path = $(@).closest('.libs > span').text()
+    $('.game.selected').filter(gameHasAbbr(path)).removeClass('selected')
+    updateSelected()
+    event.stopImmediatePropagation()
+
+  $(document).on 'click', '.libs span i.fa-square-o', (event) ->
+    path = $(@).closest('.libs > span').text()
+    $('#games .game:not(.loading)')
+      .filter(gameHasAbbr(path))
+      .addClass('selected')
     updateSelected()
     event.stopImmediatePropagation()
 
