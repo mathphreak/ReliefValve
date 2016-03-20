@@ -423,6 +423,7 @@ $ ->
       .addClass('fa-circle-o-notch')
       .addClass('fa-spin')
     catSteps.getAccountIDs(libraryPath)
+      .map (ids) -> _.without ids, 'anonymous'
       .flatMap (ids) ->
         if ids.length is 1
           Rx.Observable.just ids[0]
