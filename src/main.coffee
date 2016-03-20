@@ -24,10 +24,9 @@ ipc.on 'progress', (event, arg) ->
 ipc.on 'showMenu', (event, arg) ->
   buildMenu arg
 
-# Quit when all windows are closed.
+# Quit when all windows are closed. Even on OS X.
 app.on 'window-all-closed', ->
-  if process.platform isnt 'darwin'
-    app.quit()
+  app.quit()
 
 # Build menus
 buildMenu = (includeDevTools) ->
