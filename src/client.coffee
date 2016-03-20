@@ -296,6 +296,7 @@ fetchCategories = ->
           updateCategorySelect()
 
 runProcess = ->
+  fetchCategories()
   Rx.Observable.just folderListPath
     .flatMap pathSteps.readVDF
     .flatMap pathSteps.parseFolderList
@@ -386,8 +387,6 @@ $ ->
     .startWith 'initial load event'
     .subscribe runProcess
 
-  fetchCategories()
-
   $(document).on 'click', '#clearSearch', (event) ->
     $('.search input').val('').focus()
     updateSearch()
@@ -467,6 +466,8 @@ $ ->
       .subscribe deleteProgressObserver
 
   $(document).on 'change', '.user select', updateCategorySelect
+
+  $(document).on 'change', '.category select', updateCategorySelection
 
   $(document).on 'click', '#magic a.select i', (event) ->
     appIDs = Categories[$('.user select').val()][$('.category select').val()]
