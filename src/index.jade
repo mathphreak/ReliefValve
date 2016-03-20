@@ -18,8 +18,9 @@ html
     script(type='text/javascript',src='client.js')
   body
     #gameList
-      .pure-g.header
-        .cell.pure-u-2-5 Game
+      #toolbar.pure-g.header
+        .cell.pure-u-1
+          a#magic(href="#magic"): i.fa.fa-fw.fa-magic
           .search
             form
               span.prefix
@@ -27,6 +28,8 @@ html
               input(type='search',placeholder='Search',required=true)
               span.suffix
                 i.fa.fa-close#clearSearch
+      .pure-g.header
+        .cell.pure-u-2-5 Game
           .actions
             a#globalSelect.select(href="#"): i.fa.fa-fw.fa-square-o
         .cell.pure-u-2-5 Location

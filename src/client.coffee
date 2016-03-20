@@ -9,6 +9,7 @@ pathSteps = require './steps/path'
 gameSteps = require './steps/game'
 sizeSteps = require './steps/size'
 moveSteps = require './steps/move'
+catSteps = require './steps/category'
 
 # enable long stack traces so that RxJS errors are less terrible to debug
 Rx.config.longStackSupport = yes
@@ -89,8 +90,8 @@ updateSelected = ->
   $('#all-names').text names.join ', '
   $('#all-paths').text paths.join ', '
   if _.isNaN sizes
-    if $('#total-size').text() isnt '
-      $('#total-size').html(')
+    if $('#total-size').text() isnt ''
+      $('#total-size').html('')
       $('<i></i>')
         .addClass('fa')
         .addClass('fa-circle-o-notch')
@@ -381,3 +382,34 @@ $ ->
         moveSteps.deleteOriginal(data)
           .map -> data
       .subscribe deleteProgressObserver
+
+  $(document).on 'click', '#magic', (event) ->
+    $('#magic i')
+      .removeClass('fa-magic')
+      .addClass('fa-circle-o-notch')
+      .addClass('fa-spin')
+    catSteps.getAccountIDs(libraryPath)
+      .flatMap (ids) ->
+        if ids.length is 1
+          Rx.Observable.just ids[0]
+        else
+          # Hoo boy.
+          catSteps.getUsernames(ids, require('../test/dev_secret_config.json').STEAM_API_KEY)
+            .flatMap (x) -> _.toPairs x
+            .filter (x) -> x[1] is 'mathphreak'
+            .map (x) -> x[0]
+      .flatMap (userID) ->
+        catSteps.getCategories(libraryPath, userID)
+      .flatMap (categories) ->
+        Rx.Observable.just categories.favorite
+      .subscribe (targetAppIDs) ->
+        for appID in targetAppIDs
+          # Ignore uninstalled favorites
+          if $(".game[data-appID=\"#{appID}\"]").size() > 0
+            $(".game[data-appID=\"#{appID}\"]").addClass('selected')
+            toggleOverlap $(".game[data-appID=\"#{appID}\"]")
+            updateSelected()
+        $('#magic i')
+          .removeClass('fa-circle-o-notch')
+          .removeClass('fa-spin')
+          .addClass('fa-magic')
