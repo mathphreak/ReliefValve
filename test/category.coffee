@@ -1,7 +1,6 @@
 expect = require('chai').expect
 fs = require 'fs.extra'
 del = require 'del'
-temp = require('temp').track()
 pathMod = require 'path'
 
 catSteps = require '../src/steps/category'
