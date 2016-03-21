@@ -1,13 +1,29 @@
 # Change Log
 
-## [v0.14.0](https://github.com/mathphreak/ReliefValve/tree/v0.13.0) (2016-01-30)
+## [v0.15.0](https://github.com/mathphreak/ReliefValve/tree/v0.15.0)
+
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.14.0...v0.15.0)
+
+**Implemented enhancements:**
+
+- Add preferences UI [\#116](https://github.com/mathphreak/ReliefValve/issues/116)
+- Automatically partition by favorites or other game categories in Steam [\#115](https://github.com/mathphreak/ReliefValve/issues/115)
+- Create branding [\#17](https://github.com/mathphreak/ReliefValve/issues/17)
+- Display game icons [\#8](https://github.com/mathphreak/ReliefValve/issues/8)
+- Select all in location [\#1](https://github.com/mathphreak/ReliefValve/issues/1)
+
+**Fixed bugs:**
+
+- Clicking on background of Steam running warning quits [\#85](https://github.com/mathphreak/ReliefValve/issues/85)
+
+## [v0.14.0](https://github.com/mathphreak/ReliefValve/tree/v0.14.0) (2016-02-13)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.13.0...v0.14.0)
 
 **Fixed bugs:**
 
 - Progress bar is lies on Mac/Linux [\#26](https://github.com/mathphreak/ReliefValve/issues/26)
 
-## [v0.13.0](https://github.com/mathphreak/ReliefValve/tree/v0.13.0) (2016-01-30)
+## [v0.13.0](https://github.com/mathphreak/ReliefValve/tree/v0.13.0) (2016-02-01)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.12.0...v0.13.0)
 
 **Implemented enhancements:**

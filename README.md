@@ -8,9 +8,8 @@ Prevents dangerous Steam buildups by letting you juggle games
 between library locations.
 
 # Usage
-Relief Valve now works well on Windows and acceptably on Mac/Linux.
-I'd say it's now better than [Steam Mover][]
-in most ways, but it will keep improving.
+Relief Valve works on Windows, Mac, and Linux.
+I'd say it's now better than [Steam Mover][].
 
 0. Make sure Steam already knows about your existing libraries.
 1. Exit Steam (this is important).
@@ -18,10 +17,10 @@ in most ways, but it will keep improving.
 3. Wait for Relief Valve to populate all your Steam games.
 4. Check the box next to one or more games.
 5. Select a destination at the bottom of the window.
+   Relief Valve will not let you move a game to the place where it already is.
 6. Click "Move".
 7. Wait for your selected games to finish moving.
    A progress bar should appear below the footer you just clicked inside.
-   It will animate and look cool.
 8. Relaunch Steam. Your games will be in their new locations.
 
 # Stack
@@ -34,6 +33,6 @@ Relief Valve is designed to imitate the [Pressure][] skin because it's the best.
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.14.0/package.json#L7-L42
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.15.0/package.json#L7-L46
 [Pressure]: http://hydra.tf/pressure/
 [Vex]: http://github.hubspot.com/vex/
