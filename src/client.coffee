@@ -391,10 +391,6 @@ updateSearch = ->
     $(x).toggle _.includes(name.toLocaleLowerCase(), query.toLocaleLowerCase())
 
 $ ->
-  initSteps.isSteamRunning()
-    .flatMap runningConfirm 'Quit'
-    .subscribe makeSteamRunningObserver()
-
   watchForKonamiCode()
 
   runUpdateCheck()
