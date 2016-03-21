@@ -30,14 +30,16 @@ html
           span.user
             i.fa.fa-user
             select
-              option mathphreak
-              option Boijangle
+              option Loading...
           span.category
             i.fa.fa-folder
             select
-              option favorite
-              option other category
+              option Loading...
           a.select(href="#"): i.fa.fa-fw.fa-square-o
+        span.actions
+          a#settings-link.full-button(href="#")
+            i.fa.fa-gear
+            |  Settings
     #gameList
       .pure-g.header
         .cell.pure-u-2-5 Game
@@ -56,3 +58,14 @@ html
       .pure-g.header#selection(style="display:none;")
       .pure-g.header#progress-container(style="display:none;")
         .pure-u-1#progress-outer
+    #settings-wrapper(style="display:none;")
+      #settings
+        h1 Settings
+        form.pure-form.pure-form-aligned
+          fieldset
+            .pure-control-group
+              label(for="steamAPIkey")
+                a.full-button(href="https://steamcommunity.com/dev/apikey", target="_blank") Steam API key (optional)
+              input#steamAPIkey(type="text",size=40)
+            .pure-controls
+              button(type='submit') Save

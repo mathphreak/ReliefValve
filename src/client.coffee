@@ -269,6 +269,19 @@ updateCategorySelect = ->
     $("<option>#{category}</option>").appendTo('.category select')
   updateCategorySelection()
 
+saveSelection = ->
+  storage.set 'selectedUser', $('.user select').val()
+  storage.set 'selectedCategory', $('.category select').val()
+
+loadSelection = ->
+  storage.get 'selectedUser', (err, data) ->
+    unless _.isEmpty data
+      $('.user select').val(data)
+      updateCategorySelect()
+      storage.get 'selectedCategory', (err, data) ->
+        unless _.isEmpty data
+          $('.category select').val(data)
+
 fetchCategories = ->
   $('.user select').html('')
   catSteps.getAccountIDs(libraryPath)
@@ -282,18 +295,23 @@ fetchCategories = ->
         Rx.Observable.fromNodeCallback(storage.get)('STEAM_API_KEY')
           .flatMap (key) ->
             if _.isEmpty key
+              $('.user select').attr('title',
+                'Check Settings to see usernames here')
               Rx.Observable.just ids.map (id) -> [id, "[U:1:#{id}]"]
             else
+              $('.user select').attr('title', '')
               catSteps.getUsernames(ids, key)
                 .map (x) -> _.toPairs x
     .flatMap (x) -> x
-    .subscribe ([userID, userDisplay]) ->
+    .flatMap ([userID, userDisplay]) ->
       $("<option value=\"#{userID}\">#{userDisplay}</option>")
         .appendTo('.user select')
       catSteps.getCategories(libraryPath, userID)
-        .subscribe (categories) ->
+        .do (categories) ->
           Categories[userID] = categories
           updateCategorySelect()
+    .subscribe (->), (->), ->
+      loadSelection()
 
 runProcess = ->
   fetchCategories()
@@ -394,27 +412,18 @@ $ ->
   $(document).on 'input', '.search input', (event) ->
     updateSearch()
 
-  $(document).on 'click', '#globalSelect i:not(.fa-square-o)', (event) ->
-    $('.game.selected').removeClass('selected')
+  $(document).on 'click', '#globalSelect i', (event) ->
+    selected = $('#globalSelect i').is('.fa-square-o')
+    $('#games .game:not(.loading)').toggleClass('selected', selected)
     updateSelected()
     event.stopImmediatePropagation()
 
-  $(document).on 'click', '#globalSelect i.fa-square-o', (event) ->
-    $('#games .game:not(.loading)').addClass('selected')
-    updateSelected()
-    event.stopImmediatePropagation()
-
-  $(document).on 'click', '.libs span i:not(.fa-square-o)', (event) ->
+  $(document).on 'click', '.libs span i', (event) ->
     path = $(@).closest('.libs > span').text()
-    $('.game.selected').filter(gameHasAbbr(path)).removeClass('selected')
-    updateSelected()
-    event.stopImmediatePropagation()
-
-  $(document).on 'click', '.libs span i.fa-square-o', (event) ->
-    path = $(@).closest('.libs > span').text()
+    selected = $(@).closest('.libs > span i').is('.fa-square-o')
     $('#games .game:not(.loading)')
       .filter(gameHasAbbr(path))
-      .addClass('selected')
+      .toggleClass('selected', selected)
     updateSelected()
     event.stopImmediatePropagation()
 
@@ -423,6 +432,27 @@ $ ->
     toggleOverlap $(event.target).closest('.game')
     updateSelected()
     event.stopImmediatePropagation()
+
+  $(document).on 'click', '#settings-link', (event) ->
+    $('#settings-wrapper').show()
+    storage.get 'STEAM_API_KEY', (err, key) ->
+      unless _.isEmpty key
+        $('#steamAPIkey').val(key)
+    event.stopImmediatePropagation()
+
+  $(document).on 'submit', '#settings form', (event) ->
+    $('#settings-wrapper').hide()
+    storage.get 'STEAM_API_KEY', (err, data) ->
+      if data isnt $('#steamAPIkey').val()
+        storage.set 'STEAM_API_KEY', $('#steamAPIkey').val(), (err) ->
+          fetchCategories()
+    event.stopImmediatePropagation()
+    event.preventDefault()
+
+  $(document).on 'click', 'a[target="_blank"]', (event) ->
+    alert 'If it asks for a domain name, just put random garbage'
+    require('electron').shell.openExternal(@href)
+    event.preventDefault()
 
   $(document).on 'click', '#move:not(.disabled)', (event) ->
     # get the selected path
@@ -465,9 +495,13 @@ $ ->
           .map -> data
       .subscribe deleteProgressObserver
 
-  $(document).on 'change', '.user select', updateCategorySelect
+  $(document).on 'change', '.user select', ->
+    updateCategorySelect()
+    saveSelection()
 
-  $(document).on 'change', '.category select', updateCategorySelection
+  $(document).on 'change', '.category select', ->
+    updateCategorySelection()
+    saveSelection()
 
   $(document).on 'click', '#magic a.select i', (event) ->
     appIDs = Categories[$('.user select').val()][$('.category select').val()]
@@ -477,5 +511,5 @@ $ ->
       if $(".game[data-appID=\"#{appID}\"]").size() > 0
         $(".game[data-appID=\"#{appID}\"]").toggleClass 'selected', selected
         toggleOverlap $(".game[data-appID=\"#{appID}\"]")
-        updateSelected()
-    event.preventDefault()
+    updateSelected()
+    event.stopImmediatePropagation()
