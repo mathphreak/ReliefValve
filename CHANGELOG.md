@@ -8,8 +8,6 @@
 
 - Add preferences UI [\#116](https://github.com/mathphreak/ReliefValve/issues/116)
 - Automatically partition by favorites or other game categories in Steam [\#115](https://github.com/mathphreak/ReliefValve/issues/115)
-- Create branding [\#17](https://github.com/mathphreak/ReliefValve/issues/17)
-- Display game icons [\#8](https://github.com/mathphreak/ReliefValve/issues/8)
 - Select all in location [\#1](https://github.com/mathphreak/ReliefValve/issues/1)
 
 **Fixed bugs:**
