@@ -20,13 +20,14 @@ Relief Valve is (to my knowledge) the first application that works with Steam's 
 
 Relief Valve currently has no installer.
 You can [download][latest release], extract, and run Relief Valve directly on Windows, Mac, or Linux.
+
 Alternatively, Relief Valve is available [on itch.io][itch], and you can use the itch native app to install and launch Relief Valve.
 
 # Basic Usage
 
 0. Make sure Steam already knows about your existing libraries.
    You may find steps 1 through 4 of [this guide][library guide] helpful.
-1. Download the [latest release of Relief Valve][], extract it, and run `relief-valve`.
+1. Download the [latest release of Relief Valve][latest release], extract it, and run `relief-valve`.
 2. Wait for Relief Valve to populate all your Steam games.
 3. Check the box next to one or more games.
 4. Make sure the proper destination is selected.
