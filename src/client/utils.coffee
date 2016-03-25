@@ -52,9 +52,14 @@ checkPromptConfig = ->
       href="http://code.mathphreak.me/ReliefValve/configure.html">get help</a>
       configuring Steam properly.'
 
+addContextMenu = ->
+  context = require 'electron-contextmenu-middleware'
+  context.use require 'electron-input-menu'
+  context.activate()
+
 ready = ->
   watchForKonamiCode()
-
+  addContextMenu()
   runUpdateCheck()
 
   clGames.on 'pathsLoaded', checkPromptConfig
