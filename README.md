@@ -26,7 +26,7 @@ Alternatively, Relief Valve is available [on itch.io][itch], and you can use the
 # Basic Usage
 
 0. Make sure Steam already knows about your existing libraries.
-   You may find steps 1 through 4 of [this guide][library guide] helpful.
+   You may find [this guide][library guide] helpful.
 1. Download the [latest release of Relief Valve][latest release], extract it, and run `relief-valve`.
 2. Wait for Relief Valve to populate all your Steam games.
 3. Check the box next to one or more games.
@@ -74,7 +74,7 @@ I'm not sure yet how I feel about Pressure².
 [Steam Mover]: http://www.traynier.com/software/steammover
 [SteamTool]: http://www.stefanjones.ca/steam/
 [itch]: https://mathphreak.itch.io/reliefvalve
-[library guide]: http://www.mameau.com/fix-new-steam-library-folder-must-be-empty/#steam-gui
+[library guide]: http://code.mathphreak.me/ReliefValve/configure.html
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
 [npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v0.15.0/package.json#L7-L46
 [Pressure]: http://hydra.tf/pressure/

@@ -1,11 +1,11 @@
 global.Games = []
 global.Paths = []
 
-clGames = require './client/games'
-clMove = require './client/move'
-clUtils = require './client/utils'
+global.clGames = require './client/games'
+global.clMove = require './client/move'
+global.clUtils = require './client/utils'
 
 $ ->
-  clGames.ready()
-  clMove.ready()
-  clUtils.ready()
+  clGames.emit 'ready'
+  clMove.emit 'ready'
+  clUtils.emit 'ready'

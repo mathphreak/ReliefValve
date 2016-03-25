@@ -63,7 +63,11 @@ html, body {
   }
 }
 
-a {
+a[target="_blank"] {
+  color: @blue;
+}
+
+a:not([target="_blank"]) {
   //padding: 0.25em;
   //.gradient(@gray, @gray, lighten(@gray, 15%));
   color: inherit;

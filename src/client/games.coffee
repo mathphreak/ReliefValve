@@ -1,3 +1,4 @@
+EventEmitter = require 'events'
 _ = require 'lodash'
 Rx = require 'rx'
 filesize = require 'filesize'
@@ -194,6 +195,7 @@ runProcess = ->
       $('#selection').replaceWith(footer)
       libs = Templates.libs(paths: d)
       $('.libs').replaceWith(libs)
+      clGames.emit 'pathsLoaded'
     .flatMap _.identity
     .flatMap gameSteps.getPathACFs
     .flatMap gameSteps.readAllACFs
@@ -281,8 +283,10 @@ ready = ->
     updateSelected()
     event.stopImmediatePropagation()
 
-module.exports = {
-  ready
-  fetchCategories
-  refresh: runProcess
-}
+clGames = new EventEmitter
+
+clGames.on 'ready', ready
+clGames.on 'fetchCategories', fetchCategories
+clGames.on 'refresh', runProcess
+
+module.exports = clGames

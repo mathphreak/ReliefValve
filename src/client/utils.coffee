@@ -1,10 +1,10 @@
+EventEmitter = require 'events'
 _ = require 'lodash'
 Rx = require 'rx'
 ipc = require('electron').ipcRenderer
 storage = require 'electron-json-storage'
 
 initSteps = require '../steps/init'
-{fetchCategories} = require('./games')
 
 runUpdateCheck = ->
   initSteps.updateMessage()
@@ -44,10 +44,20 @@ ipc.on 'menuItem', (event, item) ->
       vex.dialog.alert "<p>You are running Relief Valve
         v#{require('../package.json').version}</p>"
 
+checkPromptConfig = ->
+  if global.Paths.length is 1
+    vex.dialog.alert 'You only have one Steam library configured, so Relief
+      Valve can\'t do much yet; if you want, you can
+      <a class="full-button" target="_blank"
+      href="http://code.mathphreak.me/ReliefValve/configure.html">get help</a>
+      configuring Steam properly.'
+
 ready = ->
   watchForKonamiCode()
 
   runUpdateCheck()
+
+  clGames.on 'pathsLoaded', checkPromptConfig
 
   $(document).on 'click', '#settings-link', (event) ->
     $('#settings-wrapper').show()
@@ -61,13 +71,18 @@ ready = ->
     storage.get 'STEAM_API_KEY', (err, key) ->
       if key isnt $('#steamAPIkey').val()
         storage.set 'STEAM_API_KEY', $('#steamAPIkey').val(), (err) ->
-          fetchCategories()
+          clGames.emit 'fetchCategories'
     event.stopImmediatePropagation()
     event.preventDefault()
 
   $(document).on 'click', 'a[target="_blank"]', (event) ->
-    alert 'If it asks for a domain name, just put random garbage'
+    unless _.isEmpty @title
+      alert @title
     require('electron').shell.openExternal(@href)
     event.preventDefault()
 
-module.exports = {ready}
+clUtils = new EventEmitter
+
+clUtils.on 'ready', ready
+
+module.exports = clUtils

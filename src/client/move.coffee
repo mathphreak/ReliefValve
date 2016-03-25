@@ -1,11 +1,10 @@
+EventEmitter = require 'events'
 _ = require 'lodash'
 Rx = require 'rx'
 ipc = require('electron').ipcRenderer
 
 initSteps = require '../steps/init'
 moveSteps = require '../steps/move'
-
-{refresh} = require './games'
 
 vex.defaultOptions.className = 'vex-theme-plain'
 
@@ -98,7 +97,7 @@ makeDeleteProgressObserver = -> Rx.Observer.create ((x) -> console.log 'Done!'),
       $('#progress-container').height('0%')
       $('.progress').height(0)
       setTimeout ->
-        refresh()
+        clGames.emit 'refresh'
       , 400
     , 400
 
@@ -164,4 +163,8 @@ ready = ->
           .map -> gameData
       .subscribe deleteProgressObserver
 
-module.exports = {ready}
+clMove = new EventEmitter
+
+clMove.on 'ready', ready
+
+module.exports = clMove

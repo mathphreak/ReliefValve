@@ -65,7 +65,9 @@ html
           fieldset
             .pure-control-group
               label(for="steamAPIkey")
-                a.full-button(href="https://steamcommunity.com/dev/apikey", target="_blank") Steam API key (optional)
+                | Steam API key
+                br
+                a.full-button(href="https://steamcommunity.com/dev/apikey", target="_blank", title="If this asks you for a domain name, just put random nonsense") (get one here)
               input#steamAPIkey(type="text",size=40,placeholder='ex. 0123456789ABCDEFGHIJKLMNOPQRSTUV')
             .pure-controls
               button(type='submit') Save
