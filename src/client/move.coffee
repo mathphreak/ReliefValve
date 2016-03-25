@@ -123,6 +123,16 @@ runningConfirm = (cancelText) -> (running) ->
 
 ready = ->
   $(document).on 'click', '#move:not(.disabled)', (event) ->
+    # This will be undone when we call refresh in clGames
+    $('#move')
+      .addClass 'disabled'
+      .addClass 'inProgress'
+      .html((i, data) -> data.replace 'Move ', 'Moving... ')
+    $('#move i')
+      .removeClass('fa-arrow-right')
+      .addClass('fa-circle-o-notch')
+      .addClass('fa-spin')
+
     # get the selected path
     pathIndex = $('#selection select')
       .children()

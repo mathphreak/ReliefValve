@@ -83,7 +83,7 @@ updateSelected = ->
   if goodIndex is null
     $('#move').addClass 'disabled'
   else
-    $('#move').removeClass 'disabled'
+    $('#move:not(.inProgress)').removeClass 'disabled'
   if $('#selection option:selected').is(':disabled')
     $('#selection option:not(:disabled)').first().prop('selected', true)
   $('#all-names').text names.join ', '
