@@ -14,6 +14,7 @@ coffeeCoverage.register({
       '/.git',
       '/gulpfile.coffee',
       '/' + path.normalize('src/client.coffee'),
+      '/' + path.normalize('src/client'),
       '/' + path.normalize('src/main.coffee')
     ],
     coverageVar: coverageVar,
