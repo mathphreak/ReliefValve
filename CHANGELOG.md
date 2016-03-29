@@ -1,7 +1,13 @@
 # Change Log
 
-## [v0.15.0](https://github.com/mathphreak/ReliefValve/tree/v0.15.0)
+## [v0.16](https://github.com/mathphreak/ReliefValve/tree/v0.16.0)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.15.0...v0.16.0)
 
+**Implemented enhancements:**
+
+- Prompt user to configure Steam libraries if none are configured
+
+## [v0.15.0](https://github.com/mathphreak/ReliefValve/tree/v0.15.0)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.14.0...v0.15.0)
 
 **Implemented enhancements:**
