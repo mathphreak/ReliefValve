@@ -1,6 +1,6 @@
 # Change Log
 
-## [v0.16](https://github.com/mathphreak/ReliefValve/tree/v0.16.0)
+## [v0.16.0](https://github.com/mathphreak/ReliefValve/tree/v0.16.0)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.15.0...v0.16.0)
 
 **Implemented enhancements:**
