@@ -42,7 +42,7 @@ ipc.on 'menuItem', (event, item) ->
   switch item
     when 'about'
       vex.dialog.alert "<p>You are running Relief Valve
-        v#{require('../package.json').version}</p>"
+        v#{require('../../package.json').version}</p>"
 
 checkPromptConfig = ->
   if global.Paths.length is 1
