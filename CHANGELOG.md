@@ -1,13 +1,21 @@
 # Change Log
 
-## [v0.16.0](https://github.com/mathphreak/ReliefValve/tree/v0.16.0)
+## [v0.16.1](https://github.com/mathphreak/ReliefValve/tree/v0.16.1) (2016-03-29)
+
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.16.0...v0.16.1)
+
+**Fixed bugs:**
+
+- About dialog doesn't appear [\#119](https://github.com/mathphreak/ReliefValve/issues/119)
+
+## [v0.16.0](https://github.com/mathphreak/ReliefValve/tree/v0.16.0) (2016-03-29)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.15.0...v0.16.0)
 
 **Implemented enhancements:**
 
 - Prompt user to configure Steam libraries if none are configured
 
-## [v0.15.0](https://github.com/mathphreak/ReliefValve/tree/v0.15.0)
+## [v0.15.0](https://github.com/mathphreak/ReliefValve/tree/v0.15.0) (2016-03-21)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.14.0...v0.15.0)
 
 **Implemented enhancements:**
