@@ -88,7 +88,12 @@ moveGame = (data) ->
     observers.push observer
 
 deleteOriginal = (data) ->
-  Rx.Observable.fromPromise del [data.source].concat(data.acfSource), force: yes
+  sources = [data.source].concat(data.acfSource)
+  # If data.source is a symlink, delete both the link and its target
+  realSource = fs.realpathSync data.source
+  if realSource isnt data.source
+    sources = sources.concat realSource
+  Rx.Observable.fromPromise del sources, force: yes
 
 module.exports =
   DUMMY_SIZE: DUMMY_SIZE
