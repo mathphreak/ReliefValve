@@ -1,7 +1,13 @@
 # Change Log
 
-## [v0.16.1](https://github.com/mathphreak/ReliefValve/tree/v0.16.1) (2016-03-29)
+## [v1.0.0](https://github.com/mathphreak/ReliefValve/tree/v1.0.0) (2016-04-05)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.16.1...v1.0.0)
 
+**Implemented enhancements:**
+
+- Handle Windows junction points slightly better [\#117](https://github.com/mathphreak/ReliefValve/issues/117)
+
+## [v0.16.1](https://github.com/mathphreak/ReliefValve/tree/v0.16.1) (2016-03-29)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.16.0...v0.16.1)
 
 **Fixed bugs:**
