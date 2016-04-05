@@ -24,6 +24,12 @@ ipc.on 'progress', (event, arg) ->
 ipc.on 'showMenu', (event, arg) ->
   buildMenu arg
 
+ipc.on 'isSteamRunning', (event) ->
+  # For some reason, ps-list doesn't work in the renderer.
+  # So we call isSteamRunning here instead.
+  require('./steps/init').isSteamRunning()
+    .subscribe (x) -> event.sender.send 'isSteamRunning', x
+
 # Quit when all windows are closed. Even on OS X.
 app.on 'window-all-closed', ->
   app.quit()

@@ -14,6 +14,11 @@ runUpdateCheck = ->
           <p>Press OK to download the update or Cancel to not do that.</p>"
         callback: (x) -> require('shell').openExternal url if x
 
+handleError = (e) ->
+  # TODO be useful
+  console.error e
+  alert e
+
 watchForKonamiCode = ->
   codes = [
     38 # up
@@ -89,5 +94,6 @@ ready = ->
 clUtils = new EventEmitter
 
 clUtils.on 'ready', ready
+clUtils.on 'error', handleError
 
 module.exports = clUtils

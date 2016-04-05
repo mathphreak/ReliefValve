@@ -114,7 +114,7 @@ makeGamesStreamObserver = ->
       .last()
       .after(result)
     Ps.update $('#gameList #games').get(0)
-  , off # use default error handling for now
+  , ((x) -> clUtils.emit 'error', x)
   , ->
     $('#gameList .loading').hide()
 
@@ -131,7 +131,7 @@ makeSizesStreamObserver = -> Rx.Observer.create ({name, data}) ->
 
   # update the footer (recalculate total size of all selected)
   updateSelected()
-, off
+, ((x) -> clUtils.emit 'error', x)
 , off
 
 updateCategorySelection = ->
@@ -180,7 +180,7 @@ fetchCategories = ->
         .do (categories) ->
           Categories[userID] = categories
           updateCategorySelect()
-    .subscribe (->), (->), ->
+    .subscribe (->), ((x) -> clUtils.emit 'error', x), ->
       loadSelection()
 
 runProcess = ->

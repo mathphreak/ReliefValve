@@ -88,10 +88,10 @@ combineOverlappingGames = (allGames) ->
 
 makeCopyProgressObserver = -> Rx.Observer.create (x) ->
   addProgress x
-, ((x) -> console.log "Error while moving: #{x}")
+, ((x) -> clUtils.emit 'error', x)
 
-makeDeleteProgressObserver = -> Rx.Observer.create ((x) -> console.log 'Done!'),
-  ((e) -> throw e), (x) ->
+makeDeleteProgressObserver = -> Rx.Observer.create off,
+  ((e) -> clUtils.emit 'error', e), (x) ->
     setTimeout ->
       ipc.send 'progress', no
       $('#progress-container').height('0%')
@@ -121,6 +121,14 @@ runningConfirm = (cancelText) -> (running) ->
     result = Rx.Observable.just(yes)
   return result
 
+checkRunning = ->
+  result = new Rx.Subject()
+  ipc.once 'isSteamRunning', (evt, x) ->
+    result.onNext x
+    result.onCompleted()
+  ipc.send 'isSteamRunning'
+  return result
+
 ready = ->
   $(document).on 'click', '#move:not(.disabled)', (event) ->
     # This will be undone when we call refresh in clGames
@@ -146,7 +154,7 @@ ready = ->
     copyProgressObserver = makeCopyProgressObserver()
     deleteProgressObserver = makeDeleteProgressObserver()
 
-    initSteps.isSteamRunning()
+    checkRunning()
       .flatMap runningConfirm 'Cancel'
       .flatMap (go) ->
         if go

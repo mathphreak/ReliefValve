@@ -2,6 +2,7 @@ language: node_js
 node_js:
 - '4.2'
 - '5.1.1'
+- '5.10.0'
 - 'node'
 after_success:
 - cat ./coverage/lcov.info | ./node_modules/.bin/codecov
@@ -23,4 +24,4 @@ deploy:
   file_glob: true
   on:
     tags: true
-    node: '5.1.1'
+    node: '5.10.0'
