@@ -1781,7 +1781,7 @@
 		border: 0;
 		position: relative;
 	}
-
+/*
 		.image:before {
 			background: url("images/overlay.png");
 			content: '';
@@ -1791,7 +1791,7 @@
 			top: 0;
 			width: 100%;
 		}
-
+*/
 		.image.fit {
 			display: block;
 		}
@@ -3226,4 +3226,9 @@ ol.instructions li {
 	max-height: 15em;
 	vertical-align: text-top;
 	float: right;
+}
+
+.image.featured video {
+	display: block;
+	width: 100%;
 }
