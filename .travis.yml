@@ -11,6 +11,7 @@ addons:
     packages:
     - time
     - wine
+cache: apt
 sudo: false
 before_deploy: "npm run build-all"
 deploy:
