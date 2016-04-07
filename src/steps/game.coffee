@@ -29,10 +29,13 @@ readAllACFs = (pathObj) ->
       readACF(path).map (obj) -> {acfPath: path, data: obj}
     .map ({acfPath, data: {AppState}}) ->
       {path: pathObj.path, i: pathObj.i, gameInfo: AppState, acfPath: acfPath}
-    .filter ({gameInfo}) ->
-      state = parseInt(gameInfo.StateFlags)
-      _.every _.toPairs(validStateFlags), ([flag, val]) ->
-        ((state & parseInt(flag)) is parseInt(flag)) is val
+    .filter ({gameInfo, acfPath}) ->
+      try
+        state = parseInt(gameInfo.StateFlags)
+        _.every _.toPairs(validStateFlags), ([flag, val]) ->
+          ((state & parseInt(flag)) is parseInt(flag)) is val
+      catch
+        throw new Error "Failed to parse #{acfPath}"
 
 buildGameObject = ({path, i, gameInfo, acfPath}) ->
   fullPath = pathMod.join(

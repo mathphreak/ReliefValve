@@ -28,6 +28,14 @@ describe 'gameSteps', ->
         "StateFlags"		"1026"
       }
       '''
+    fs.writeFileSync 'testdata/library2/steamapps/appmanifest_42.acf',
+      '''
+      "AppStat"
+      {
+        "appID"		"42"
+        "name"		"A Corrupted appmanifest"
+      }
+      '''
 
   describe '#getPathACFs', ->
     context 'when there are no games', ->
@@ -42,9 +50,10 @@ describe 'gameSteps', ->
       it 'should find the games', (done) ->
         gameSteps.getPathACFs(fullLibPathData, 0)
           .subscribe ({apps}) ->
-            expect(apps).to.have.length(2)
+            expect(apps).to.have.length(3)
             expect(apps[0]).to.contain('appmanifest_1337.acf')
-            expect(apps[1]).to.contain('appmanifest_9001.acf')
+            expect(apps[1]).to.contain('appmanifest_42.acf')
+            expect(apps[2]).to.contain('appmanifest_9001.acf')
             done()
 
   describe '#readAllACFs', ->
@@ -77,6 +86,23 @@ describe 'gameSteps', ->
           .subscribe (games) ->
             expect(games).to.have.length(0)
             done()
+    context 'when there is a game with a broken appmanifest', ->
+      desiredACFPath = 'testdata/library2/steamapps/appmanifest_42.acf'
+      input =
+        path: {path: 'testdata/library2'}
+        i: 0
+        apps: [desiredACFPath]
+      it 'should throw a meaningful error', (done) ->
+        gameSteps.readAllACFs(input)
+          .toArray()
+          .subscribe (data) ->
+            expect(data).to.not.be.ok
+            expect(false).to.equal(true)
+            done()
+          , (err) ->
+            expect(err.message).to.equal("Failed to parse #{desiredACFPath}")
+            done()
+          , done
 
   after ->
     del ['testdata/library*']
