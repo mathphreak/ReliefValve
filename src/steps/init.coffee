@@ -28,7 +28,9 @@ updateMessage = (currentVersion = require('../../package.json').version) ->
     if data.kind is 'N'
       [metadata, latestRelease] = data.value
       latestVersion = latestRelease.tag_name
-      if latestVersion? and semver.lt currentVersion, latestVersion
+      assets = latestRelease.assets
+      outdated = latestVersion? and semver.lt currentVersion, latestVersion
+      if outdated and assets.length > 0
         Rx.Observable.just [
           "An update to Relief Valve #{latestVersion} is
           available (you're running #{currentVersion})"

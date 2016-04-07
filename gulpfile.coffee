@@ -98,6 +98,7 @@ makeBuildTask = (platform, arch) ->
       winIcon: './icon/ReliefValve.ico'
       darwinIcon: './icon/ReliefValve.icns'
       quiet: yes
+      token: process.env['GITHUB_API_TOKEN']
     .pipe $.symdest "./dist/#{id}/Relief Valve v#{packageInfo.version}/"
   gulp.task "build:#{id}", ['clean:build', "dist:#{id}"], ->
     if platform is 'darwin'
