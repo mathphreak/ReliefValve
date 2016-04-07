@@ -23,10 +23,10 @@ describe 'initSteps', ->
         .subscribe (x) ->
           expect(x).to.be.an 'array'
           expect(x).to.have.length(2)
-          done()
+        , off, done
     it 'should not give a message when the current version is new', (done) ->
       initSteps.updateMessage('9001.0.0')
         .toArray()
         .subscribe (x) ->
           expect(x).to.be.empty
-          done()
+        , off, done

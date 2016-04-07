@@ -3,6 +3,7 @@ psList = require 'ps-list'
 _ = require 'lodash'
 request = require 'request'
 semver = require 'semver'
+packageInfo = require '../../package.json'
 
 latestVersion = undefined
 
@@ -11,7 +12,7 @@ isSteamRunning = (searchTarget = 'steam') ->
     .map (data) ->
       _.some data, (x) -> _.includes x.name.toLowerCase(), searchTarget
 
-updateMessage = (currentVersion = require('../../package.json').version) ->
+updateMessage = (currentVersion = packageInfo.version, waitForAssets = yes) ->
   dataStream = Rx.Observable.just [no, {tag_name: latestVersion}]
   unless latestVersion?
     requestLater = Rx.Observable.fromNodeCallback request
