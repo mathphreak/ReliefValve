@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.0.1](https://github.com/mathphreak/ReliefValve/tree/v1.0.1) (2016-04-07)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v1.0.0...v1.0.1)
+
+**Implemented enhancements:**
+
+- Improve error message if appmanifest file is invalid
+
 ## [v1.0.0](https://github.com/mathphreak/ReliefValve/tree/v1.0.0) (2016-04-05)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.16.1...v1.0.0)
 
