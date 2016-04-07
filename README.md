@@ -76,7 +76,7 @@ I'm not sure yet how I feel about Pressure².
 [itch]: https://mathphreak.itch.io/reliefvalve
 [library guide]: http://code.mathphreak.me/ReliefValve/configure.html
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v1.0.1/package.json#L7-L48
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v1.0.2/package.json#L7-L48
 [Pressure]: http://hydra.tf/pressure/
 [Vex]: http://github.hubspot.com/vex/
 [issues]: https://github.com/mathphreak/ReliefValve/issues
