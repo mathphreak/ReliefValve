@@ -145,6 +145,9 @@ updateCategorySelection = ->
 updateCategorySelect = ->
   $('.category select').html('')
   categories = _.keys(Categories[$('.user select').val()]).sort()
+  categories = categories.filter (cat) ->
+    Categories[$('.user select').val()][cat].some (appID) ->
+      _.some global.Games, appID: appID
   # Move favorites to front if they're at the back
   if categories.indexOf('favorite') > 0
     categories = ['favorite'].concat _.without categories, 'favorite'
