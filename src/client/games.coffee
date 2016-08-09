@@ -206,6 +206,7 @@ runProcess = ->
     .toArray()
     .do (d) ->
       global.Games = d
+      updateCategorySelect()
     .flatMap _.identity
     .do makeGamesStreamObserver()
     .observeOn Rx.Scheduler.currentThread
