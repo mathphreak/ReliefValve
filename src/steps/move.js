@@ -21,6 +21,20 @@ export function makeBuilder(destination) {
 }
 
 export function moveGame(data) {
+  try {
+    fs.accessSync(data.destination);
+    throw new Error('Destination directory already exists!');
+  } catch (err) {
+    // good, the destination doesn't exist
+  }
+  [].concat(data.acfDest).forEach(file => {
+    try {
+      fs.accessSync(file);
+      throw new Error('Destination ACF already exists!');
+    } catch (err) {
+      // good
+    }
+  });
   const copyFile = Rx.Observable.fromNodeCallback(fs.copy);
   const observers = [];
   let processLine = () => {};
