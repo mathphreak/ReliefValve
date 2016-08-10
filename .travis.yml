@@ -8,13 +8,17 @@ addons:
   apt:
     packages:
       - moreutils
-      - wine
-cache: apt
-sudo: false
+sudo: required
+dist: trusty
 before_deploy:
+  - "sudo dpkg --add-architecture i386"
+  - "sudo add-apt-repository -y ppa:wine/wine-builds"
+  - "sudo apt-get -qq update"
+  - "sudo apt-get install -y --install-recommends winehq-staging"
+  - wine --version
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
+  - "sleep 3" # give xvfb some time to start
   - "export WINEDLLOVERRIDES=\"mscoree,mshtml=\""
   - "echo Configuring Wine... | ts"
   - "wine cmd /C \"echo > wine_ready\" &"
