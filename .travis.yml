@@ -9,13 +9,14 @@ addons:
     packages:
     - time
     - wine
-before_script:
+cache: apt
+sudo: false
+before_deploy:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
-cache: apt
-sudo: false
-before_deploy: "npm run build"
+  - "export WINEDLLOVERRIDES=\"mscoree,mshtml=\""
+  - "npm run build"
 deploy:
   edge: true
   provider: releases
