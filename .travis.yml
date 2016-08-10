@@ -11,7 +11,7 @@ addons:
     - wine
 cache: apt
 sudo: false
-before_deploy: "npm run build-all"
+before_deploy: "npm run build"
 deploy:
   edge: true
   provider: releases
