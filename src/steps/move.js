@@ -71,7 +71,7 @@ export function moveGame(data) {
     ]);
     processLine = line => {
       if (line.trim() !== '') {
-        const pieces = /^[‘`]?(.*?)[’']? => [‘`]?(.*?)[’']?$/.exec(line);
+        const pieces = /^[‘`]?(.*?)[’']? [=\-]> [‘`]?(.*?)[’']?$/.exec(line);
         const fileData = {
           id: Math.random(),
           src: pathMod.normalize(pieces[1]),
