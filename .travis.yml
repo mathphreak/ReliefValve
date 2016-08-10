@@ -4,7 +4,7 @@ node_js:
 addons:
   apt:
     packages:
-      - wine1.6
+      - wine
       - moreutils
 sudo: false
 dist: trusty
