@@ -1,5 +1,11 @@
 {
   "presets": ["electron"],
+  "only": [
+    "src/*.js",
+    "src/util/*.js",
+    "src/steps/*.js",
+    "src/client/*.js"
+  ],
   "env": {
     "test": {
       "plugins": ["istanbul"]

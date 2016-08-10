@@ -110,12 +110,13 @@ function ready() {
         callback: () => shell.openExternal(this.href)
       });
     }
-    shell.openExternal(this.href);
     event.preventDefault();
   });
 }
 
-export const clUtils = new EventEmitter();
+const clUtils = new EventEmitter();
 
 clUtils.on('ready', ready);
 clUtils.on('error', handleError);
+
+export default clUtils;

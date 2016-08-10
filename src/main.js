@@ -1,6 +1,7 @@
 // Import the Electron stuff
 import {app, BrowserWindow, ipcMain as ipc, Menu, MenuItem, shell} from 'electron';
 import _ from 'lodash';
+import * as initSteps from './steps/init';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -22,7 +23,7 @@ ipc.on('showMenu', (event, arg) => buildMenu(arg));
 ipc.on('isSteamRunning', event => {
   // For some reason, ps-list doesn't work in the renderer.
   // So we call isSteamRunning here instead.
-  require('./steps/init').isSteamRunning()
+  initSteps.isSteamRunning()
     .subscribe(x => event.sender.send('isSteamRunning', x));
 });
 
@@ -49,32 +50,32 @@ function buildMenu(includeDevTools) {
 
   if (isDarwin) {
     menu.append(parentMenu('Relief Valve', undefined,
-      [miniItem('About Relief Valve', undefined, 'about'),
+      miniItem('About Relief Valve', undefined, 'about'),
       sep(),
       miniItem('Hide Relief Valve', 'Command+H', 'hide'),
       miniItem('Hide Others', 'Command+Alt+H', 'hideothers'),
       miniItem('Show All', undefined, 'unhide'),
       sep(),
-      fancyItem('Quit', 'Command+Q', () => app.quit())]
+      fancyItem('Quit', 'Command+Q', () => app.quit())
     ));
   }
 
-  menu.append(parentMenu('View', undefined, [
+  menu.append(parentMenu('View', undefined,
     fancyItem('Reload', 'CmdOrCtrl+R', (item, focusedWindow) => focusedWindow && focusedWindow.reload()),
     includeDevTools && (
       fancyItem('Toggle Developer Tools', isDarwin ? 'Alt+Command+I' : 'Ctrl+Shift+I', (item, focusedWindow) => focusedWindow && focusedWindow.toggleDevTools())
     )
-  ]));
-  menu.append(parentMenu('Window', 'window', [
+  ));
+  menu.append(parentMenu('Window', 'window',
     miniItem('Minimize', 'CmdOrCtrl+M', 'minimize'),
     miniItem('Close', 'CmdOrCtrl+W', 'close'),
     isDarwin && sep(),
-    isDarwin && miniItem('Bring All to Front', undefined, 'front')]
+    isDarwin && miniItem('Bring All to Front', undefined, 'front')
   ));
-  menu.append(parentMenu('Help', 'help', [
+  menu.append(parentMenu('Help', 'help',
     fancyItem('Relief Valve Website', undefined, () => shell.openExternal('http://code.mathphreak.me/ReliefValve')),
     !isDarwin && fancyItem('About Relief Valve', undefined, () => mainWindow.webContents.send('menuItem', 'about'))
-  ]));
+  ));
 
   Menu.setApplicationMenu(menu);
 }
@@ -86,7 +87,7 @@ app.on('ready', () => {
   mainWindow = new BrowserWindow({width: 800, height: 600, show: false});
 
   // By default, don't show dev tools in the menu
-  buildMenu(false);
+  buildMenu(Boolean(process.env.RV_SHOW_DEV_TOOLS));
 
   const url = `file://${__dirname}/index.html`;
 

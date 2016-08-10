@@ -1,4 +1,4 @@
-/* globals $:false, Ps:false, Templates:false, clUtils:false, document:false */
+/* globals $:false, Ps:false, clUtils:false, document:false */
 
 import EventEmitter from 'events';
 import _ from 'lodash';
@@ -6,6 +6,7 @@ import Rx from 'rx';
 import filesize from 'filesize';
 import compareIgnoringArticles from 'compare-ignoring-articles';
 import storage from 'electron-json-storage';
+import Templates from '../templates';
 
 import * as pathSteps from '../steps/path';
 import * as gameSteps from '../steps/game';
@@ -18,7 +19,7 @@ const libraryPath = pathSteps.getDefaultSteamLibraryPath();
 
 const folderListPath = `${libraryPath}/steamapps/libraryfolders.vdf`;
 
-export const clGames = new EventEmitter();
+const clGames = new EventEmitter();
 
 function updateCheckbox(el, val, max) {
   if (val === max) {
@@ -136,7 +137,7 @@ function makeGamesStreamObserver() {
       .after(result);
     Ps.update($('#gameList #games').get(0));
   }
-  Rx.Observer.create(gotGame, x => clUtils.emit('error', x), () => $('#gameList .loading').hide());
+  return Rx.Observer.create(gotGame, x => clUtils.emit('error', x), () => $('#gameList .loading').hide());
 }
 
 function makeSizesStreamObserver() {
@@ -347,3 +348,5 @@ function ready() {
 clGames.on('ready', ready);
 clGames.on('fetchCategories', fetchCategories);
 clGames.on('refresh', runProcess);
+
+export default clGames;

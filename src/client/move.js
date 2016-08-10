@@ -139,6 +139,7 @@ function runningConfirm(cancelText) {
 function checkRunning() {
   const result = new Rx.Subject();
   ipc.once('isSteamRunning', (evt, x) => {
+    console.log('isSteamRunning:', x);
     result.onNext(x);
     result.onCompleted();
   });
@@ -159,13 +160,10 @@ function ready() {
       .addClass('fa-spin');
 
     // get the selected path
-    const pathIndex = $('#selection select')
-      .children()
-      .map((i, a) => (a.innerHTML === $('#selection select').val()) && i)
-      .get()
-      .filter(x => x > -1)[0];
+    const selectedAbbr = $('#selection select').val();
+    const path = _.find(global.Paths, {abbr: selectedAbbr});
 
-    const destination = global.Paths[pathIndex].path;
+    const destination = path.path;
 
     const copyProgressObserver = makeCopyProgressObserver();
     const deleteProgressObserver = makeDeleteProgressObserver();
@@ -200,6 +198,8 @@ function ready() {
   });
 }
 
-export const clMove = new EventEmitter();
+const clMove = new EventEmitter();
 
 clMove.on('ready', ready);
+
+export default clMove;
