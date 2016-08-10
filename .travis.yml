@@ -4,11 +4,10 @@ node_js:
 addons:
   apt:
     packages:
-      - wine
+      - wine1.6
       - moreutils
 cache: apt
 sudo: false
-install: ""
 script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -19,3 +18,4 @@ script:
   - "COUNTER=20"
   - "until [ $COUNTER -eq 0 ] || [ -f wine_ready ]; do echo Waiting... | ts; sleep 60; let COUNTER-=1; done"
   - "[ -f wine_ready ]"
+  - "./node_modules/.bin/electron-packager . relief-valve --platform=win32 --arch=x64"
