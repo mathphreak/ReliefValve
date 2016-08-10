@@ -6,8 +6,8 @@ addons:
     packages:
       - wine1.6
       - moreutils
-cache: apt
 sudo: false
+dist: trusty
 script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
