@@ -73,7 +73,7 @@ function buildMenu(includeDevTools) {
     isDarwin && miniItem('Bring All to Front', undefined, 'front')
   ));
   menu.append(parentMenu('Help', 'help',
-    fancyItem('Relief Valve Website', undefined, () => shell.openExternal('http://code.mathphreak.me/ReliefValve')),
+    fancyItem('Relief Valve Website', undefined, () => shell.openExternal('http://www.matthorn.tech/ReliefValve')),
     !isDarwin && fancyItem('About Relief Valve', undefined, () => mainWindow.webContents.send('menuItem', 'about'))
   ));
 

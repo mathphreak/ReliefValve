@@ -74,7 +74,7 @@ I'm not sure yet how I feel about Pressure².
 [Steam Mover]: http://www.traynier.com/software/steammover
 [SteamTool]: http://www.stefanjones.ca/steam/
 [itch]: https://mathphreak.itch.io/reliefvalve
-[library guide]: http://code.mathphreak.me/ReliefValve/configure.html
+[library guide]: http://www.matthorn.tech/ReliefValve/configure.html
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
 [npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v1.0.2/package.json#L7-L48
 [Pressure]: http://hydra.tf/pressure/

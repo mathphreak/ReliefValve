@@ -60,7 +60,7 @@ function checkPromptConfig() {
     vex.dialog.alert(`You only have one Steam library configured, so Relief
       Valve can't do much yet; if you want, you can
       <a class="full-button" target="_blank"
-      href="http://code.mathphreak.me/ReliefValve/configure.html">get help</a>
+      href="http://www.matthorn.tech/ReliefValve/configure.html">get help</a>
       configuring Steam properly.`);
   }
 }

@@ -74,7 +74,7 @@
   "bugs": {
     "url": "https://github.com/mathphreak/ReliefValve/issues"
   },
-  "homepage": "https://code.mathphreak.me/ReliefValve",
+  "homepage": "https://www.matthorn.tech/ReliefValve",
   "xo": {
     "space": true,
     "esnext": true,
