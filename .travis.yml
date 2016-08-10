@@ -1,32 +1,17 @@
 language: node_js
 node_js:
   - '6.3.0'
-  - 'node'
-after_success:
-  - cat ./coverage/lcov.info | ./node_modules/.bin/codecov
 addons:
   apt:
     packages:
-    - time
     - wine
 cache: apt
 sudo: false
+install: ""
 script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - "export WINEDLLOVERRIDES=\"mscoree,mshtml=\""
-  - "WINEDEBUG=+all wine cmd /C echo Wine is working" # +all is probably a really bad idea
-  - "npm run build"
-deploy:
-  edge: true
-  provider: releases
-  api_key:
-    secure: Pdl4HOln+P6fZeucg3QcbEKEG4qX1wvNEGZs0vnqoH2zDiRdiZR+ykRcQf9CVbcS2XFxHUjsecGGyld8Ge6yuXyCGV4ZUxQ2nktyJ77hg1py7URS2GXFzGHtl2KcNUkC9QMVWOLojmHqlQBUVWkyUMhxnXN/NzK95CqcPtXjI/asj+lr3zoii5JoBjokBCVynXRq3sqpWQchZYZW+uAj2KoZ6LUt4SVixA1ExyWiJ6eos80Q7Yjc2itZrqUR3+2FlKrupFYWL5xN4/6LsEtSiSdIaHevhn3YyLbvQAFQeWUSU4EvFRQgEJNmGcqJgSl92gbFsDjn1wq8ZqcOa5vxEY5QKpEXa/nFr2ZDQcfOQhkNFhWKZLG1Iw6WS+CTMWslD7hnWj50T6LS1YlluGkOwomKFavZd89VZZbJf5ElVPowSNtH0Q7TiyfVPcmHAp0hvU0pFrFtMX9YuSogtMyG86QCMi3hyElPvDJjthokEUnqQDH7NyLWk/c25gdQoOtyCR5T692go9/vn5JSg93AZVqeA7WShEVu0nkKbM7lCqL0DGAUoo6Xwzzrrd1Ct+vMWaoK3u7esBIX143OVtwHk4Bk6FCMBnw8Mpo3PRCXs+wKIaaqFyTNf8P/yR+LThiU5zMwfW45zkLcPfgtrX95IEbYhc+aosTEquck8LRSi2U=
-  skip_cleanup: true
-  file:
-    - "build/*"
-  file_glob: true
-  on:
-    tags: true
-    node: '6.3.0'
+  - "timeout 3s WINEDEBUG=+all wine cmd /C echo Wine is working > fail.log 2>&1"
+  - "tail -n 20 fail.log"
