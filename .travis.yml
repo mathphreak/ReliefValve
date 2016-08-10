@@ -7,8 +7,8 @@ after_success:
 addons:
   apt:
     packages:
-    - time
-    - wine
+      - moreutils
+      - wine
 cache: apt
 sudo: false
 before_deploy:
@@ -16,7 +16,11 @@ before_deploy:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - "export WINEDLLOVERRIDES=\"mscoree,mshtml=\""
-  - "npm run build"
+  - "echo Configuring Wine... | ts"
+  - "wine cmd /C \"echo > wine_ready\" &"
+  - "COUNTER=20"
+  - "until [ $COUNTER -eq 0 ] || [ -f wine_ready ]; do echo Waiting... | ts; sleep 60; let COUNTER-=1; done"
+  - "[ -f wine_ready ] && npm run build"
 deploy:
   edge: true
   provider: releases
