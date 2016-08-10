@@ -13,5 +13,5 @@ script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - "export WINEDLLOVERRIDES=\"mscoree,mshtml=\""
-  - "WINEDEBUG=+all timeout 3s wine cmd /C echo Wine is working 2>fail.log"
-  - "tail -n 20 fail.log"
+  - "WINEDEBUG=+all timeout 1m wine cmd /C echo Wine is working 2>fail.log"
+  - "tail -n 100 fail.log"
