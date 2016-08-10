@@ -5,7 +5,7 @@ addons:
   apt:
     packages:
       - wine
-      - imagemagick
+      - moreutils
 cache: apt
 sudo: false
 install: ""
@@ -14,9 +14,8 @@ script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - "export WINEDLLOVERRIDES=\"mscoree,mshtml=\""
-  - "WINEDEBUG=+timestamp,+all timeout 5m wine cmd /C echo Wine is working 2>fail.log &"
-  - "sleep 240" # give Wine some time to do its thing
-  - "import -display $DISPLAY -window root image.png" # get a screenshot
-  - cat image.png | base64 > image.txt
-  - "curl -X POST -H \"Content-Type: multipart/form-data\" -F \"data=@image.txt\" http://requestb.in/1lsdjwv1"
-  - "tail -n 100 fail.log"
+  - "echo Configuring Wine... | ts"
+  - "wine cmd /C \"echo > wine_ready\" &"
+  - "COUNTER=20"
+  - "until [ $COUNTER -eq 0 ] || [ -f wine_ready ]; do echo Waiting... | ts; sleep 60; let COUNTER-=1; done"
+  - "[ -f wine_ready ]"
