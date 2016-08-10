@@ -23,12 +23,17 @@ shell.cd('..');
 shell.mkdir('build');
 
 systems.forEach(id => {
-  const format = id === 'darwin-x64' ? 'tar' : 'zip';
-  const extension = id === 'darwin-x64' ? 'tar.gz' : 'zip';
-  const archive = archiver.create(format);
-  const out = fs.createWriteStream(`build/Relief-Valve-v${version}-${id}.${extension}`);
-  archive.on('end', () => console.log(`Built for ${id}`));
-  archive.directory(`dist/${id}/`, '/');
-  archive.finalize();
-  archive.pipe(out);
+  if (id === 'darwin-x64') {
+    shell.pushd('dist/darwin-x64');
+    shell.exec(`tar czf ../../build/Relief-Valve-v${version}-${id}.tar.gz *`);
+    console.log(`Built for ${id}`);
+    shell.popd();
+  } else {
+    const archive = archiver.create('zip');
+    const out = fs.createWriteStream(`build/Relief-Valve-v${version}-${id}.zip`);
+    archive.on('end', () => console.log(`Built for ${id}`));
+    archive.directory(`dist/${id}/`, '/');
+    archive.finalize();
+    archive.pipe(out);
+  }
 });
