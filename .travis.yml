@@ -11,11 +11,12 @@ addons:
     - wine
 cache: apt
 sudo: false
-before_deploy:
+script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
   - "export WINEDLLOVERRIDES=\"mscoree,mshtml=\""
+  - "WINEDEBUG=+all wine cmd /C echo Wine is working" # +all is probably a really bad idea
   - "npm run build"
 deploy:
   edge: true
