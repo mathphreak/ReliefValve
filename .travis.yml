@@ -6,11 +6,9 @@ after_success:
   - cat ./coverage/lcov.info | ./node_modules/.bin/codecov
 addons:
   apt:
-    sources:
-      - sourceline: 'ppa:wine/wine-builds'
     packages:
       - moreutils
-      - winehq-staging
+      - wine
 cache: apt
 sudo: false
 before_deploy:
