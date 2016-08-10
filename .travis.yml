@@ -6,7 +6,7 @@ addons:
     packages:
       - wine
       - moreutils
-sudo: false
+sudo: required
 dist: trusty
 script:
   - "export DISPLAY=:99.0"
