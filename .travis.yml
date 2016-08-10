@@ -17,5 +17,6 @@ script:
   - "WINEDEBUG=+timestamp,+all timeout 1m wine cmd /C echo Wine is working 2>fail.log &"
   - "sleep 30" # give Wine some time to do its thing
   - "import -display $DISPLAY -window root image.png" # get a screenshot
-  - "curl -X POST -H \"Content-Type: multipart/form-data\" -F \"data=@image.png\" http://requestb.in/1lsdjwv1"
+  - cat image.png | base64 > image.txt
+  - "curl -X POST -H \"Content-Type: multipart/form-data\" -F \"data=@image.txt\" http://requestb.in/1lsdjwv1"
   - "tail -n 100 fail.log"
