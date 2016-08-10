@@ -1,12 +1,14 @@
 # Change Log
 
-## [v1.0.2](https://github.com/mathphreak/ReliefValve/tree/v1.0.2) (2016-04-07)
-[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v1.0.0...v1.0.2)
+## [v1.1.0](https://github.com/mathphreak/ReliefValve/tree/v1.1.0) (2016-08-10)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v1.0.0...v1.1.0)
 
 **Implemented enhancements:**
 
 - Improve error message if appmanifest file is invalid
-- Don't prompt for update until files exist
+- Handle changes to Steam file format slightly better
+- Only show categories that have games installed [\#127](https://github.com/mathphreak/ReliefValve/issues/127)
+- Move links from `code.mathphreak.me` to `www.matthorn.tech`
 
 ## [v1.0.0](https://github.com/mathphreak/ReliefValve/tree/v1.0.0) (2016-04-05)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v0.16.1...v1.0.0)

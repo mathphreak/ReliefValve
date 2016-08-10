@@ -1,7 +1,7 @@
 {
   "name": "relief-valve",
   "productName": "Relief Valve",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Juggle installed Steam games between locations.",
   "main": "out/main.js",
   "dependencies": {
