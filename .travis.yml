@@ -2,7 +2,7 @@ language: node_js
 node_js: '6.3.0'
 sudo: required
 dist: trusty
-before-install:
+before_install:
   - sudo dpkg --add-architecture i386
   - sudo -E apt-get -yq update &>> ~/apt-get-update.log
   - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install wine
