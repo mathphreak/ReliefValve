@@ -3,9 +3,9 @@ node_js: '6.3.0'
 addons:
   apt:
     packages:
-      - wine
-      - wine1.6
-      - wine1.6-i386
+      # - wine
+      # - wine1.6
+      # - wine1.6-i386
 sudo: required
 dist: trusty
-script: "wine --version"
+script: "sudo dpkg --print-foreign-architectures"
