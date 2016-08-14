@@ -67,17 +67,16 @@ Yahoo's pure.css, Font Awesome, Zepto.js, [Vex][], and
 
 # Design
 
-Relief Valve is designed to imitate the [Pressure][] skin because it's the best.
-
-I'm not sure yet how I feel about Pressure².
+Relief Valve is designed to imitate the [Pressure][] skin. Eventually I might change it to [Pressure²][].
 
 [Steam Mover]: http://www.traynier.com/software/steammover
 [SteamTool]: http://www.stefanjones.ca/steam/
 [itch]: https://mathphreak.itch.io/reliefvalve
 [library guide]: http://www.matthorn.tech/ReliefValve/configure.html
 [latest release]: https://github.com/mathphreak/ReliefValve/releases/latest
-[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v1.1.0/package.json#L7-L49
-[Pressure]: http://hydra.tf/pressure/
+[npm dependencies]: https://github.com/mathphreak/ReliefValve/blob/v1.2.0/package.json#L7-L50
+[Pressure]: https://github.com/DirtDiglett/Pressure-for-Steam
+[Pressure²]: http://www.pressureforsteam.com/
 [Vex]: http://github.hubspot.com/vex/
 [issues]: https://github.com/mathphreak/ReliefValve/issues
 [CONTRIBUTING.md]: https://github.com/mathphreak/ReliefValve/blob/master/CONTRIBUTING.md

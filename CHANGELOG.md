@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.2.0](https://github.com/mathphreak/ReliefValve/tree/v1.2.0) (2016-08-14)
+[Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v1.1.0...v1.2.0)
+
+**Implemented enhancements:**
+
+- Dismiss warning about Steam being open if Steam quits [\#30](https://github.com/mathphreak/ReliefValve/issues/30)
+
 ## [v1.1.0](https://github.com/mathphreak/ReliefValve/tree/v1.1.0) (2016-08-10)
 [Full Changelog](https://github.com/mathphreak/ReliefValve/compare/v1.0.0...v1.1.0)
 
