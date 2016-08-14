@@ -30,7 +30,7 @@ function vexCancelButton(text) {
   };
 }
 
-const resetProgress = () => $('#progress-outer').html('');
+const resetProgress = () => $('.progress').width(0).height('100%');
 
 function initializeProgress(games) {
   const sizeKey = process.platform === 'win32' ? 'size' : 'nodes';
@@ -55,25 +55,16 @@ function initializeProgress(games) {
 }
 
 const updateSystemProgress = _.throttle(() => {
-  const currentProgress = $('.progress')
-    .map((i, x) => $(x).width())
-    .reduce((a, b) => a + b);
+  const currentProgress = $('.progress').width();
   const totalProgress = $('#progress-outer').width();
   ipc.send('progress', currentProgress / totalProgress);
 }, 100);
 
 function addProgress(x) {
-  const el = $('<div class="progress">&nbsp;</div>');
-  el.appendTo('#progress-outer');
-  el.data('size', x.size);
-  el.data('id', x.id);
   const total = parseInt($('#progress-outer').data('total'), 10);
-  const percent = x.size / total * 100;
-  el.width(0);
-  setTimeout(() => {
-    el.width(`${percent}%`);
-    updateSystemProgress();
-  }, 1);
+  const percent = x / total * 100;
+  $('.progress').width(`${percent}%`);
+  updateSystemProgress();
   return true;
 }
 
@@ -187,6 +178,7 @@ function ready() {
       .flatMap(x => x)
       .flatMap(x =>
         moveSteps.moveGame(x)
+          .scan((acc, nextSize) => acc + nextSize, 0)
           .do(copyProgressObserver)
           .last()
           .map(() => x)

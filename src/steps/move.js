@@ -54,13 +54,8 @@ export function moveGame(data) {
     processLine = line => {
       const pieces = line.split(/\t+/);
       if (pieces.length === 2) {
-        const fileData = {
-          id: Math.random(),
-          src: pathMod.normalize(pieces[1]),
-          dst: pathMod.normalize(pieces[1].replace(data.source, data.destination)),
-          size: parseInt(pieces[0], 10)
-        };
-        observers.forEach(observer => observer.onNext(fileData));
+        const fileSize = parseInt(pieces[0], 10);
+        observers.forEach(observer => observer.onNext(fileSize));
       }
     };
   } else {
@@ -71,14 +66,8 @@ export function moveGame(data) {
     ]);
     processLine = line => {
       if (line.trim() !== '') {
-        const pieces = /^[‘`]?(.*?)[’']? [=\-]> [‘`]?(.*?)[’']?$/.exec(line);
-        const fileData = {
-          id: Math.random(),
-          src: pathMod.normalize(pieces[1]),
-          dst: pathMod.normalize(pieces[2]),
-          size: DUMMY_SIZE
-        };
-        observers.forEach(observer => observer.onNext(fileData));
+        const fileSize = DUMMY_SIZE;
+        observers.forEach(observer => observer.onNext(fileSize));
       }
     };
   }
@@ -103,12 +92,7 @@ export function moveGame(data) {
   gameCopyProcess.stdout.on('end', () => observers.forEach(observer => observer.onCompleted()));
   const acfPairs = _.zip([].concat(data.acfSource), [].concat(data.acfDest));
   const copyACFs = Rx.Observable.fromArray(acfPairs)
-    .flatMap(([src, dst]) => copyFile(src, dst).map(() => ({
-      id: Math.random(),
-      src,
-      dst,
-      size: DUMMY_SIZE
-    })));
+    .flatMap(([src, dst]) => copyFile(src, dst).map(() => DUMMY_SIZE));
   return copyACFs.merge(Rx.Observable.create(observer => observers.push(observer)));
 }
 
