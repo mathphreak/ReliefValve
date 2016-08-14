@@ -1,6 +1,7 @@
 // Import the Electron stuff
 import {app, BrowserWindow, ipcMain as ipc, Menu, MenuItem, shell} from 'electron';
 import _ from 'lodash';
+import Rx from 'rx';
 import * as initSteps from './steps/init';
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -20,11 +21,23 @@ ipc.on('progress', (event, arg) => {
 
 ipc.on('showMenu', (event, arg) => buildMenu(arg));
 
-ipc.on('isSteamRunning', event => {
-  // For some reason, ps-list doesn't work in the renderer.
-  // So we call isSteamRunning here instead.
-  initSteps.isSteamRunning()
-    .subscribe(x => event.sender.send('isSteamRunning', x));
+let isrSubscription;
+ipc.on('isSteamRunning', (event, subscribe) => {
+  if (subscribe) {
+    // For some reason, ps-list doesn't work in the renderer.
+    // So we call isSteamRunning here instead.
+    initSteps.isSteamRunning()
+      .subscribe(running => {
+        event.sender.send('isSteamRunning', running);
+        if (running) {
+          isrSubscription = Rx.Observable.interval(2000)
+            .flatMap(() => initSteps.isSteamRunning())
+            .subscribe(r => event.sender.send('isSteamRunning', r));
+        }
+      });
+  } else {
+    isrSubscription.dispose();
+  }
 });
 
 // Quit when all windows are closed. Even on OS X.

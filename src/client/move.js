@@ -96,45 +96,59 @@ function makeDeleteProgressObserver() {
       ipc.send('progress', false);
       $('#progress-container').height('0%');
       $('.progress').height(0);
-      setTimeout(() => clGames.emit('refresh'), 400);
+      setTimeout(() => {
+        $('.progress').width(0);
+        clGames.emit('refresh');
+      }, 400);
     }, 400)
   );
 }
 
-function runningConfirm(cancelText) {
-  return function (running) {
-    let result = new Rx.Subject();
+function checkRunningAndConfirm(cancelText) {
+  const result = new Rx.Subject();
+  function done(r) {
+    result.onNext(r);
+    result.onCompleted();
+  }
+  ipc.send('isSteamRunning', true);
+  ipc.once('isSteamRunning', (evt, running) => {
+    let skipDialog = false;
+    function handleNewISRResult(evt, stillRunning) {
+      if (!stillRunning) {
+        // Don't continue to ask for updates
+        ipc.send('isSteamRunning', false);
+        ipc.removeListener('isSteamRunning', handleNewISRResult);
+
+        // Close the dialog
+        skipDialog = true;
+        vex.closeAll();
+
+        // Return that Steam is not actually running
+        done(!stillRunning);
+      }
+    }
     if (running) {
       const message = `<p>It looks like Steam is currently running.</p>
         <p>If you move games while Steam is running, bad things may happen.</p>
-        <p>If you have quit Steam or Steam isn't actually running,
-        just continue.</p>`;
+        <p>This message will disappear if you go quit Steam.</p>
+        <p>If Steam isn't actually running, just continue.</p>`;
+      ipc.on('isSteamRunning', handleNewISRResult);
       vex.dialog.confirm({
         message,
         buttons: [
           vexSubmitButton('Continue'),
           vexCancelButton(cancelText)
         ],
-        callback: x => {
-          result.onNext(x);
-          result.onCompleted();
+        callback: r => {
+          if (!skipDialog) {
+            done(r);
+          }
         }
       });
     } else {
-      result = Rx.Observable.just(true);
+      done(true);
     }
-    return result;
-  };
-}
-
-function checkRunning() {
-  const result = new Rx.Subject();
-  ipc.once('isSteamRunning', (evt, x) => {
-    console.log('isSteamRunning:', x);
-    result.onNext(x);
-    result.onCompleted();
   });
-  ipc.send('isSteamRunning');
   return result;
 }
 
@@ -159,8 +173,7 @@ function ready() {
     const copyProgressObserver = makeCopyProgressObserver();
     const deleteProgressObserver = makeDeleteProgressObserver();
 
-    checkRunning()
-      .flatMap(runningConfirm('Cancel'))
+    checkRunningAndConfirm('Cancel')
       .flatMap(go => {
         if (go) {
           ipc.send('progress', 0);
