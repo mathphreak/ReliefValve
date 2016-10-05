@@ -1,8 +1,8 @@
 import test from 'ava';
 import fs from 'fs.extra';
-import Rx from 'rx';
 import lipsum from 'lorem-ipsum';
 import tempfile from 'tempfile';
+import Rx from '../src/util/rx';
 
 import * as moveSteps from '../src/steps/move';
 

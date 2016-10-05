@@ -2,11 +2,11 @@
 
 import EventEmitter from 'events';
 import _ from 'lodash';
-import Rx from 'rx';
 import {shell, ipcRenderer as ipc} from 'electron';
 import storage from 'electron-json-storage';
 import contextMenu from 'electron-contextmenu-middleware';
 import inputMenu from 'electron-input-menu';
+import Rx from '../util/rx';
 
 import * as initSteps from '../steps/init';
 

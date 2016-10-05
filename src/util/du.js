@@ -1,5 +1,5 @@
-import Rx from 'rx';
 import walk from 'walk';
+import Rx from '../util/rx';
 
 function du(target) {
   const observers = [];

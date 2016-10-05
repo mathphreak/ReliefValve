@@ -1,7 +1,7 @@
 // Import the Electron stuff
 import {app, BrowserWindow, ipcMain as ipc, Menu, MenuItem, shell} from 'electron';
 import _ from 'lodash';
-import Rx from 'rx';
+import Rx from './util/rx';
 import * as initSteps from './steps/init';
 
 // Keep a global reference of the window object, if you don't, the window will

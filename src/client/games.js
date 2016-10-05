@@ -2,11 +2,11 @@
 
 import EventEmitter from 'events';
 import _ from 'lodash';
-import Rx from 'rx';
 import filesize from 'filesize';
 import compareIgnoringArticles from 'compare-ignoring-articles';
 import storage from 'electron-json-storage';
 import Templates from '../templates';
+import Rx from '../util/rx';
 
 import * as pathSteps from '../steps/path';
 import * as gameSteps from '../steps/game';
@@ -225,29 +225,23 @@ function fetchCategories() {
 }
 
 function runProcess() {
+  global.Paths = [];
+  global.Games = [];
   fetchCategories();
   Rx.Observable.just(folderListPath)
     .flatMap(pathSteps.readVDF)
     .flatMap(pathSteps.parseFolderList)
-    .toArray()
-    .do(d => {
-      global.Paths = d;
-      const footer = Templates.footer({paths: d});
+    .do(d => global.Paths.push(d), null, () => {
+      const footer = Templates.footer({paths: global.Paths});
       $('#selection').replaceWith(footer);
-      const libs = Templates.libs({paths: d});
+      const libs = Templates.libs({paths: global.Paths});
       $('.libs').replaceWith(libs);
       clGames.emit('pathsLoaded');
     })
-    .flatMap(_.identity)
     .flatMap(gameSteps.getPathACFs)
     .flatMap(gameSteps.readAllACFs)
     .map(gameSteps.buildGameObject)
-    .toArray()
-    .do(d => {
-      global.Games = d;
-      updateCategorySelect();
-    })
-    .flatMap(_.identity)
+    .do(d => global.Games.push(d), null, updateCategorySelect)
     .do(makeGamesStreamObserver())
     .observeOn(Rx.Scheduler.currentThread)
     .do(markGameLoading)

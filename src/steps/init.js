@@ -1,10 +1,10 @@
 /* eslint camelcase:off */
 
-import Rx from 'rx';
 import psList from 'ps-list';
 import _ from 'lodash';
 import request from 'request';
 import semver from 'semver';
+import Rx from '../util/rx';
 import packageInfo from '../../package.json';
 
 let latestVersion;

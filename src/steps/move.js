@@ -1,9 +1,9 @@
 import pathMod from 'path';
 import child from 'child_process';
-import Rx from 'rx';
 import fs from 'fs.extra';
 import del from 'del';
 import _ from 'lodash';
+import Rx from '../util/rx';
 
 export const DUMMY_SIZE = 1337;
 

@@ -1,8 +1,8 @@
 import test from 'ava';
 import fs from 'fs.extra';
 import _ from 'lodash';
-import Rx from 'rx';
 import tempfile from 'tempfile';
+import Rx from '../src/util/rx';
 
 import * as gameSteps from '../src/steps/game';
 

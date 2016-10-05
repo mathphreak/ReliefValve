@@ -1,9 +1,9 @@
 import pathMod from 'path';
 import fs from 'fs';
-import Rx from 'rx';
 import glob from 'glob';
 import _ from 'lodash';
 import vdf from 'vdf';
+import Rx from '../util/rx';
 
 const validStateFlags = {
   1: false,

@@ -2,9 +2,9 @@ import fs from 'fs';
 import pathMod from 'path';
 import os from 'os';
 import iconv from 'iconv-lite';
-import Rx from 'rx';
 import vdf from 'vdf';
 import _ from 'lodash';
+import Rx from '../util/rx';
 
 const steamLibraryPaths = {
   win32: {

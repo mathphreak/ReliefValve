@@ -2,8 +2,8 @@
 
 import EventEmitter from 'events';
 import _ from 'lodash';
-import Rx from 'rx';
 import {ipcRenderer as ipc} from 'electron';
+import Rx from '../util/rx';
 
 import * as moveSteps from '../steps/move';
 
@@ -182,9 +182,7 @@ function ready() {
         return Rx.Observable.empty();
       })
       .filter(game => $(`.game[data-name="${game.name}"]`).hasClass('selected'))
-      .toArray()
-      .do(initializeProgress)
-      .flatMap(x => x)
+      .doWithArray(initializeProgress)
       .map(moveSteps.makeBuilder(destination))
       .toArray()
       .map(combineOverlappingGames)

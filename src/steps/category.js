@@ -1,11 +1,11 @@
 import pathMod from 'path';
 import fs from 'fs';
-import Rx from 'rx';
 import glob from 'glob';
 import _ from 'lodash';
 import vdf from 'vdf';
 import SteamID from 'steamid-interop';
 import userinfo from 'steam-userinfo';
+import Rx from '../util/rx';
 
 export function getAccountIDs(rootLibPath) {
   const userdata = pathMod.join(rootLibPath, 'userdata');
