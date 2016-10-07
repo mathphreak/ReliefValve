@@ -4,7 +4,8 @@
     "src/*.js",
     "src/util/*.js",
     "src/steps/*.js",
-    "src/client/*.js"
+    "src/client/*.js",
+    "src/templates/*.js"
   ],
   "env": {
     "test": {
