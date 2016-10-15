@@ -1,3 +1,4 @@
+/* eslint import/no-unresolved: [2, { ignore: ['dev_secret_config\.json$'] } ] */
 import pathMod from 'path';
 import test from 'ava';
 import fs from 'fs.extra';
