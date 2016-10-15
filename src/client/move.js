@@ -1,8 +1,8 @@
 /* globals vex:false, $:false, clUtils:false, clGames:false, document:false */
 
 import EventEmitter from 'events';
-import _ from 'lodash';
 import {ipcRenderer as ipc} from 'electron';
+import _ from 'lodash';
 import Rx from '../util/rx';
 
 import * as moveSteps from '../steps/move';

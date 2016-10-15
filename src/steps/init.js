@@ -5,7 +5,7 @@ import _ from 'lodash';
 import request from 'request';
 import semver from 'semver';
 import Rx from '../util/rx';
-import packageInfo from '../../package.json';
+import packageInfo from '../../package';
 
 let latestVersion;
 
@@ -21,7 +21,7 @@ export function updateMessage(currentVersion = packageInfo.version) {
     const params = {
       url: 'https://api.github.com/repos/mathphreak/ReliefValve/releases/latest',
       headers: {
-        'Accept': 'application/vnd.github.v3+json',
+        Accept: 'application/vnd.github.v3+json',
         'User-Agent': 'ReliefValve update check'
       },
       json: true
