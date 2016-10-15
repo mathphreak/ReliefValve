@@ -1,8 +1,8 @@
 /* global vex:false, $:false, document:false, clGames:false */
 
 import EventEmitter from 'events';
-import _ from 'lodash';
 import {shell, ipcRenderer as ipc} from 'electron';
+import _ from 'lodash';
 import storage from 'electron-json-storage';
 import contextMenu from 'electron-contextmenu-middleware';
 import inputMenu from 'electron-input-menu';

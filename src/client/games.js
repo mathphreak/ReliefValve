@@ -10,7 +10,7 @@ import Rx from '../util/rx';
 
 import * as pathSteps from '../steps/path';
 import * as gameSteps from '../steps/game';
-import * as sizeSteps from '../steps/size';
+import loadGameSize from '../steps/size';
 import * as catSteps from '../steps/category';
 
 const Categories = {};
@@ -245,7 +245,7 @@ function runProcess() {
     .do(makeGamesStreamObserver())
     .observeOn(Rx.Scheduler.currentThread)
     .do(markGameLoading)
-    .flatMap(sizeSteps.loadGameSize)
+    .flatMap(loadGameSize)
     .subscribe(makeSizesStreamObserver());
 }
 
