@@ -35,7 +35,7 @@
     "cross-env": "^3.1.1",
     "del-cli": "^0.2.0",
     "electron": "1.4.3",
-    "electron-packager": "^8.1.0",
+    "electron-packager": "^8.2.0",
     "less": "^2.7.1",
     "less-plugin-clean-css": "^1.5.1",
     "lorem-ipsum": "^1.0.3",
