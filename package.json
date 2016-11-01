@@ -39,7 +39,7 @@
     "less": "^2.7.1",
     "less-plugin-clean-css": "^1.5.1",
     "lorem-ipsum": "^1.0.3",
-    "npm": "^3.10.8",
+    "npm": "^3.10.9",
     "nyc": "^8.3.1",
     "pug-cli": "^1.0.0-alpha6",
     "rcedit": "^0.5.0",
