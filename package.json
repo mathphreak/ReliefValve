@@ -16,7 +16,7 @@
     "iconv-lite": "^0.4.11",
     "lodash": "^4.16.4",
     "ps-list": "^3.1.0",
-    "request": "^2.75.0",
+    "request": "^2.78.0",
     "rx": "^4.1.0",
     "semver": "^5.3.0",
     "steam-userinfo": "^1.1.5",
