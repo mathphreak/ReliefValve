@@ -34,7 +34,7 @@
     "codecov.io": "^0.1.6",
     "cross-env": "^3.1.1",
     "del-cli": "^0.2.0",
-    "electron": "1.4.5",
+    "electron": "1.4.7",
     "electron-packager": "^8.1.0",
     "less": "^2.7.1",
     "less-plugin-clean-css": "^1.5.1",
