@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "archiver": "^1.0.1",
-    "ava": "^0.16.0",
+    "ava": "^0.17.0",
     "babel-cli": "^6.11.4",
     "babel-plugin-istanbul": "^2.0.1",
     "babel-preset-electron": "^0.37.8",
